@@ -1,8 +1,9 @@
+import type { ReactNode } from 'react'
 import { copy } from '../app/copy'
 import { views, type ViewId } from '../sidebar/views'
 
 /** The open view's panel, between the activity bar and the map. */
-export function Sidebar({ viewId, onClose }: { viewId: ViewId; onClose: () => void }) {
+export function Sidebar({ viewId, onClose, children }: { viewId: ViewId; onClose: () => void; children: ReactNode }) {
   const view = views.find((item) => item.id === viewId)
   if (!view) return null
   return (
@@ -15,7 +16,7 @@ export function Sidebar({ viewId, onClose }: { viewId: ViewId; onClose: () => vo
           </svg>
         </button>
       </div>
-      <div className="sidebar-body">{view.content}</div>
+      <div className="sidebar-body">{children}</div>
     </aside>
   )
 }

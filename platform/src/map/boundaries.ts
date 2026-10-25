@@ -1,6 +1,7 @@
 import {
   Popup,
   type DataDrivenPropertyValueSpecification,
+  type ExpressionSpecification,
   type FeatureIdentifier,
   type LayerSpecification,
   type Map as MaplibreMap,
@@ -8,6 +9,7 @@ import {
   type StyleSpecification,
 } from 'maplibre-gl'
 import { config } from '../app/config'
+import type { DataLevel } from '../data/api'
 import { copy } from '../app/copy'
 import { boundaryLayers, boundaryLevels, boundaryOverlays, type BoundaryLayer, type BoundaryLevel, type BoundaryMode, type BoundaryOverlay } from '../app/settings'
 
@@ -39,6 +41,83 @@ const lineWidths: Record<BoundaryLayer, DataDrivenPropertyValueSpecification<num
   cadastral_parcels: ['interpolate', ['linear'], ['zoom'], 15, 0.15, 18, 0.6],
   postal_codes: ['interpolate', ['linear'], ['zoom'], 6, 0.25, 13, 1],
   rural_polygons: ['interpolate', ['linear'], ['zoom'], 9, 0.25, 14, 1],
+}
+
+/** The statistical level each boundary layer draws (the cadastral and postal layers have no data yet). */
+export const LAYER_LEVEL: Partial<Record<BoundaryLayer, DataLevel>> = {
+  autonomous_communities: 'autonomous_community',
+  provinces: 'province',
+  municipalities: 'municipality',
+  census_districts: 'census_district',
+  census_sections: 'census_section',
+}
+
+/** The boundary layer drawing each statistical level. */
+export const LEVEL_LAYER = Object.fromEntries(Object.entries(LAYER_LEVEL).map(([layer, level]) => [level, layer])) as Partial<
+  Record<DataLevel, BoundaryLayer>
+>
+
+/** The kind of unit a level's features are (their `kind` in the tiles). */
+export const LEVEL_KIND: Partial<Record<DataLevel, string>> = {
+  autonomous_community: 'autonomous_community',
+  province: 'province',
+  municipality: 'municipality',
+  census_district: 'census_district',
+  census_section: 'census_section',
+}
+
+/**
+ * Sequential ramp for choropleths: one hue (blue), light to dark (dataviz reference palette, steps
+ * 150/300/450/550/700). On the dark basemap the anchor flips, so low values recede into the surface.
+ */
+const sequential: Record<BoundaryBasemap, string[]> = {
+  light: ['#b7d3f6', '#6da7ec', '#2a78d6', '#1c5cab', '#0d366b'],
+  satellite: ['#b7d3f6', '#6da7ec', '#2a78d6', '#1c5cab', '#0d366b'],
+  dark: ['#184f95', '#256abf', '#3987e5', '#6da7ec', '#b7d3f6'],
+}
+
+/** A variable painted on a layer: each unit's value, and the class breaks (quantiles) of its legend. */
+export interface Choropleth {
+  layer: BoundaryLayer
+  values: Record<string, number>
+  breaks: number[]
+}
+
+/**
+ * The legend's classes: the distinct breaks, and one color per class taken evenly from the ramp
+ * (fewer classes when quantiles repeat, as when most units share a value).
+ */
+export function choroplethClasses(breaks: number[], basemap: BoundaryBasemap): { breaks: number[]; colors: string[] } {
+  const distinct = [...new Set(breaks)].sort((a, b) => a - b)
+  const ramp = sequential[basemap]
+  const count = distinct.length + 1
+  const colors = Array.from({ length: count }, (_, index) => ramp[count === 1 ? ramp.length - 1 : Math.round((index * (ramp.length - 1)) / (count - 1))])
+  return { breaks: distinct, colors }
+}
+
+const hasState = (key: string): ExpressionSpecification => ['boolean', ['feature-state', key], false]
+const hasValue: ExpressionSpecification = ['==', ['typeof', ['feature-state', 'value']], 'number']
+
+interface FillPaint {
+  'fill-color': DataDrivenPropertyValueSpecification<string>
+  'fill-opacity': DataDrivenPropertyValueSpecification<number>
+}
+
+/** A layer's fill: invisible until hovered or selected, or, with a choropleth, each unit's class color. */
+function fillPaint(basemap: BoundaryBasemap, classes?: { breaks: number[]; colors: string[] }): FillPaint {
+  const { hover } = colors[basemap]
+  const interaction: ExpressionSpecification = ['case', hasState('selected'), 0.3, hasState('hover'), 0.18, 0]
+  if (!classes) return { 'fill-color': hover, 'fill-opacity': interaction }
+  const step = [
+    'step',
+    ['feature-state', 'value'],
+    classes.colors[0],
+    ...classes.breaks.flatMap((limit, index) => [limit, classes.colors[index + 1]]),
+  ] as ExpressionSpecification
+  return {
+    'fill-color': ['case', hasValue, step, hover],
+    'fill-opacity': ['case', hasValue, ['case', hasState('selected'), 0.95, hasState('hover'), 0.9, 0.75], interaction],
+  }
 }
 
 const colors: Record<BoundaryBasemap, { line: string; hover: string }> = {
@@ -105,18 +184,8 @@ function layers(mode: BoundaryMode, basemap: BoundaryBasemap): LayerSpecificatio
       minzoom: ranges[level].fill?.min ?? 0,
       maxzoom: ranges[level].fill?.max ?? NO_MAX_ZOOM,
       layout: { visibility: ranges[level].fill ? 'visible' : 'none' },
-      // Invisible until hovered, but still there to be hovered (and, later, coloured by a statistic).
-      paint: {
-        'fill-color': hover,
-        'fill-opacity': [
-          'case',
-          ['boolean', ['feature-state', 'selected'], false],
-          0.3,
-          ['boolean', ['feature-state', 'hover'], false],
-          0.18,
-          0,
-        ],
-      },
+      // Invisible until hovered or selected, but still there to be hovered; coloured when a variable is painted.
+      paint: fillPaint(basemap),
     }),
   )
   // Overlays, then the levels finest first, so the coarser lines draw on top.
@@ -130,7 +199,7 @@ function layers(mode: BoundaryMode, basemap: BoundaryBasemap): LayerSpecificatio
       maxzoom: ranges[level].line?.max ?? NO_MAX_ZOOM,
       layout: { visibility: ranges[level].line ? 'visible' : 'none', 'line-join': 'round' },
       paint: {
-        'line-color': ['case', ['boolean', ['feature-state', 'selected'], false], hover, line],
+        'line-color': ['case', ['any', hasState('selected'), hasState('hover')], hover, line],
         'line-width': lineWidths[level],
         'line-opacity': 0.85,
       },
@@ -152,6 +221,36 @@ export function withBoundaries(style: StyleSpecification, mode: BoundaryMode, ba
   const firstLabel = style.layers.findIndex((layer) => layer.type === 'symbol')
   const at = firstLabel === -1 ? style.layers.length : firstLabel
   return { ...style, sources, layers: [...style.layers.slice(0, at), ...layers(mode, basemap), ...style.layers.slice(at)] }
+}
+
+/**
+ * Paints a choropleth's classes on its layer's fill (the other layers get their plain fill back),
+ * or none. Values are set apart, as feature state (`setChoroplethValues`).
+ */
+export function paintChoropleth(map: MaplibreMap, basemap: BoundaryBasemap, choropleth: Choropleth | undefined) {
+  for (const layer of boundaryLayers) {
+    if (!map.getLayer(fillId(layer))) continue
+    const paint = fillPaint(basemap, choropleth?.layer === layer ? choroplethClasses(choropleth.breaks, basemap) : undefined)
+    map.setPaintProperty(fillId(layer), 'fill-color', paint['fill-color'])
+    map.setPaintProperty(fillId(layer), 'fill-opacity', paint['fill-opacity'])
+  }
+}
+
+/** Where a unit's feature state lives in the tiles. */
+export const featureTarget = (layer: BoundaryLayer, id: string): FeatureIdentifier => ({ source: sourceId(layer), sourceLayer: layer, id })
+
+/**
+ * Each unit's value as feature state, clearing the values set before (`previous`). Returns what's
+ * now set, to clear next time.
+ */
+export function setChoroplethValues(map: MaplibreMap, choropleth: Choropleth | undefined, previous: { layer: BoundaryLayer; ids: string[] } | undefined) {
+  if (previous && map.getSource(sourceId(previous.layer))) {
+    for (const id of previous.ids) map.removeFeatureState(featureTarget(previous.layer, id), 'value')
+  }
+  if (!choropleth || !map.getSource(sourceId(choropleth.layer))) return undefined
+  const ids = Object.keys(choropleth.values)
+  for (const id of ids) map.setFeatureState(featureTarget(choropleth.layer, id), { value: choropleth.values[id] })
+  return { layer: choropleth.layer, ids }
 }
 
 /** Switches the mode on the loaded style, without reloading it. */
@@ -191,6 +290,20 @@ export function unitLabel(properties: Record<string, unknown>): string {
   }
 }
 
+/**
+ * Catastro's facade photo of a parcel, for state-cadastre parcels with a regular reference (the
+ * foral cadastres have no such service).
+ */
+function facadePhoto(properties: Record<string, unknown>): string | undefined {
+  const reference = String(properties.reference ?? '')
+  if (!String(properties.id ?? '').startsWith('es:catastro:parcel:') || !/^[0-9A-Z]{14}$/.test(reference)) return undefined
+  return config.catastro.facadePhotoUrl + reference
+}
+
+/** A camera struck through: a parcel without a facade photo. */
+const NO_PHOTO_ICON =
+  '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3v10H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 4l16 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+
 /** The unit drawn at a point of the map: the active layer's (only its fill is shown and queryable). */
 function unitAt(map: MaplibreMap, point: MapMouseEvent['point']) {
   const fills = boundaryLayers.map(fillId).filter((id) => map.getLayer(id))
@@ -203,6 +316,14 @@ export interface SelectedUnit {
   target: FeatureIdentifier
   kind: string
   properties: Record<string, unknown>
+}
+
+/** A unit found by search, as if clicked on the map (its layer's feature, by id). */
+export function unitFromPlace(id: string, level: DataLevel, name: string): SelectedUnit | undefined {
+  const layer = LEVEL_LAYER[level]
+  const kind = LEVEL_KIND[level]
+  if (!layer || !kind) return undefined
+  return { target: featureTarget(layer, id), kind, properties: { id, name, kind } }
 }
 
 /** Calls `onSelect` with the unit clicked, or undefined after a click on no unit. Returns the cleanup. */
@@ -234,14 +355,54 @@ export function markSelected(map: MaplibreMap, unit: SelectedUnit | undefined, s
  */
 export function trackBoundaryHover(map: MaplibreMap): () => void {
   let hovered: FeatureIdentifier | undefined
+  let photoTimer: ReturnType<typeof setTimeout> | undefined
   const label = new Popup({ closeButton: false, closeOnClick: false, className: 'boundary-label', offset: 14, maxWidth: 'none' })
 
   const clear = () => {
+    clearTimeout(photoTimer)
     // The source may be gone for a moment while the style swaps.
     if (hovered && map.getSource(hovered.source)) map.setFeatureState(hovered, { hover: false })
     hovered = undefined
     label.remove()
     map.getCanvas().style.cursor = ''
+  }
+
+  /**
+   * The label's text; for parcels, a square thumbnail to its left: a loading placeholder, then
+   * the facade photo (cropped to the square) or, without one, a "no photo" sign.
+   */
+  const showLabel = (properties: Record<string, unknown>) => {
+    const content = document.createElement('div')
+    const text = document.createElement('span')
+    text.textContent = unitLabel(properties)
+    content.append(text)
+    label.setDOMContent(content)
+    if (properties.kind !== 'cadastral_parcel') return
+
+    content.className = 'boundary-label-row'
+    const thumb = document.createElement('div')
+    thumb.className = 'boundary-thumb is-loading'
+    content.prepend(thumb)
+    const missing = () => {
+      thumb.className = 'boundary-thumb is-missing'
+      thumb.title = copy.boundaries.noFacadePhoto
+      thumb.innerHTML = NO_PHOTO_ICON
+    }
+    const photo = facadePhoto(properties)
+    // Foral cadastres have no photo service.
+    if (!photo) return missing()
+    photoTimer = setTimeout(() => {
+      const image = new Image()
+      image.alt = copy.boundaries.facadePhoto
+      image.onload = () => {
+        // Parcels without a photo get an empty answer.
+        if (image.naturalWidth === 0) return missing()
+        thumb.className = 'boundary-thumb'
+        thumb.append(image)
+      }
+      image.onerror = missing
+      image.src = photo
+    }, config.catastro.photoDelayMs)
   }
 
   const onMove = (event: MapMouseEvent) => {
@@ -251,8 +412,8 @@ export function trackBoundaryHover(map: MaplibreMap): () => void {
       clear()
       hovered = { source: feature.source, sourceLayer: feature.sourceLayer, id: feature.id! }
       map.setFeatureState(hovered, { hover: true })
+      showLabel(feature.properties)
     }
-    label.setText(unitLabel(feature.properties))
     label.setLngLat(event.lngLat)
     if (!label.isOpen()) label.addTo(map)
     map.getCanvas().style.cursor = 'pointer'

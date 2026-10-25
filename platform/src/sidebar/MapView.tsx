@@ -1,11 +1,116 @@
+import { useMemo, useState } from 'react'
 import { copy } from '../app/copy'
+import type { Catalog, Choices, Facet, Variable } from '../data/api'
+import { OptionControls, Segmented } from './OptionControls'
+import { PeriodControl } from './PeriodControl'
 
-/** The map tab's panel: the data layers on the map (none yet). */
-export function MapView() {
+interface Props {
+  catalog: Catalog | undefined
+  catalogFailed: boolean
+  variableId: string | undefined
+  onVariable: (id: string | undefined) => void
+  /** Years the chosen variable has at the map's level, newest first. */
+  years: number[]
+  /** The year chosen (undefined: the latest). */
+  period: number | undefined
+  onPeriod: (year: number | undefined) => void
+  /** The chosen variable's options picked so far. */
+  choices: Choices
+  onChoices: (choices: Choices) => void
+  /** The sources the chosen variable has at the map's level, and the one in use. */
+  facets: Facet[]
+  facetId: string | undefined
+  onFacet: (id: string) => void
+}
+
+/** Lower case without accents, to match "poblacion" with "Población". */
+const fold = (text: string) =>
+  text
+    .normalize('NFKD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+
+/**
+ * The map tab's panel: a search over the catalogue's variables, the one painted on the map (with
+ * its year), and the list of all of them by topic, which scrolls on its own.
+ */
+export function MapView({ catalog, catalogFailed, variableId, onVariable, years, period, onPeriod, choices, onChoices, facets, facetId, onFacet }: Props) {
+  const [query, setQuery] = useState('')
+  const topics = useMemo(() => {
+    if (!catalog) return []
+    const words = fold(query).split(/\s+/).filter(Boolean)
+    const labels = new Map(catalog.topics.map((topic) => [topic.id, topic.label]))
+    const matches = (variable: Variable) => {
+      const text = fold(`${variable.label} ${variable.description ?? ''} ${labels.get(variable.topic ?? '') ?? ''}`)
+      return words.every((word) => text.includes(word))
+    }
+    const groups = new Map<string, Variable[]>()
+    for (const variable of catalog.variables.filter(matches)) {
+      const key = variable.topic ?? ''
+      groups.set(key, [...(groups.get(key) ?? []), variable])
+    }
+    return [...groups].map(([id, variables]) => ({ id, label: labels.get(id) ?? copy.mapView.otherTopic, variables }))
+  }, [catalog, query])
+
+  if (catalogFailed) return <p className="sidebar-empty layers-message">{copy.mapView.unavailableApi}</p>
+  if (!catalog) return <p className="sidebar-empty layers-message">{copy.mapView.loading}</p>
+  const active = catalog.variables.find((variable) => variable.id === variableId)
+
   return (
-    <section className="sidebar-section">
-      <h3>{copy.mapView.layers}</h3>
-      <p className="sidebar-empty">{copy.mapView.noLayers}</p>
-    </section>
+    <div className="layers">
+      <div className="layers-search">
+        <svg className="search-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
+          <path d="m15 15 5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        <input type="search" aria-label={copy.mapView.search} placeholder={copy.mapView.search} value={query} onChange={(event) => setQuery(event.target.value)} />
+      </div>
+
+      <section className="layers-active" aria-label={copy.mapView.active}>
+        {active ? (
+          <div className="layer-card">
+            <div className="layer-card-header">
+              <strong>{active.label}</strong>
+              <button type="button" className="icon-button" aria-label={copy.mapView.remove} title={copy.mapView.remove} onClick={() => onVariable(undefined)}>
+                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+            {active.description && <p className="layer-card-description">{active.description}</p>}
+            <OptionControls options={active.options} choices={choices} onChange={onChoices} />
+            {facets.length > 1 && facetId && (
+              <Segmented label={copy.mapView.source} items={facets} value={facetId} onChange={onFacet} />
+            )}
+            <PeriodControl periods={years} value={period} onChange={(value) => onPeriod(value as number | undefined)} />
+          </div>
+        ) : (
+          <p className="layers-none">{copy.mapView.none}</p>
+        )}
+      </section>
+
+      <div className="layers-list" role="list" aria-label={copy.mapView.layers}>
+        {topics.length === 0 && <p className="layers-none">{copy.mapView.noMatches}</p>}
+        {topics.map((topic) => (
+          <section key={topic.id} aria-label={topic.label}>
+            <h3 className="layers-topic">{topic.label}</h3>
+            {topic.variables.map((variable) => (
+              <button
+                key={variable.id}
+                type="button"
+                role="listitem"
+                className="layer-row"
+                aria-pressed={variable.id === variableId}
+                title={variable.description ?? undefined}
+                onClick={() => onVariable(variable.id === variableId ? undefined : variable.id)}
+              >
+                <span className="layer-row-label">{variable.label}</span>
+                <span className="layer-row-unit">{variable.unit === 'personas' ? 'nº' : variable.unit === '%' ? '%' : ''}</span>
+              </button>
+            ))}
+          </section>
+        ))}
+      </div>
+    </div>
   )
 }

@@ -18,6 +18,12 @@
   --bar: #f3f5f7;
   --bar-icon: #7a8590;
   --panel: #fff;
+  /* Charts (dataviz reference palette): categorical slots 1–2, hairline grid, axis, tick ink. */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --chart-grid: #e1e0d9;
+  --chart-axis: #c3c2b7;
+  --chart-tick: #898781;
   color-scheme: light;
 }
 
@@ -36,5 +42,10 @@
   --bar: #16191c;
   --bar-icon: #7d8791;
   --panel: #1d2024;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --chart-grid: #2c2c2a;
+  --chart-axis: #383835;
+  --chart-tick: #898781;
   color-scheme: dark;
 }

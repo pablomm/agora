@@ -1,10 +1,6 @@
 /** Every piece of interface copy, so it can be reviewed and translated in one place. */
 export const copy = {
   appName: 'Agora',
-  search: {
-    label: 'Busca tu ciudad',
-    placeholder: 'Busca tu ciudad',
-  },
   settings: {
     label: 'Ajustes',
     basemap: 'Mapa base',
@@ -41,6 +37,8 @@ export const copy = {
     autoHint: 'Cambia de nivel con el zoom',
     fixed: 'nivel fijado',
     sharedTerritory: 'territorio compartido',
+    facadePhoto: 'Fachada (Catastro)',
+    noFacadePhoto: 'Sin foto de fachada',
   },
   detail: {
     close: 'Cerrar',
@@ -57,6 +55,15 @@ export const copy = {
       rural_polygon: 'Polígono catastral',
     } as Record<string, string>,
     empty: 'Todavía no hay datos de esta unidad.',
+    noData: 'No hay datos estadísticos de este tipo de unidad.',
+    loading: 'Cargando…',
+    series: 'Evolución',
+    pyramid: (year: number) => `Pirámide de población, ${year}`,
+    men: 'Hombres',
+    women: 'Mujeres',
+    source: 'Fuente',
+    seriesTable: 'Tabla de la evolución',
+    year: 'Año',
   },
   controls: {
     fullscreen: { enter: 'Pantalla completa', exit: 'Salir de pantalla completa' },
@@ -75,7 +82,40 @@ export const copy = {
   },
   mapView: {
     layers: 'Capas de datos',
-    noLayers: 'Todavía no hay capas de datos.',
+    none: 'Ninguna capa seleccionada',
+    search: 'Buscar capas',
+    noMatches: 'Ninguna capa coincide con la búsqueda.',
+    active: 'Capa en el mapa',
+    remove: 'Quitar la capa',
+    otherTopic: 'Otras',
+    loading: 'Cargando el catálogo…',
+    unavailableApi: 'No se puede conectar con la API de datos. ¿Está en marcha?',
+    year: 'Año',
+    version: 'Versión',
+    source: 'Fuente',
+    ageRange: (from: string, to: string) => (from === to ? `${from} años` : `${from}–${to} años`),
+    rangeFrom: (label: string) => `${label}: desde`,
+    rangeTo: (label: string) => `${label}: hasta`,
+    latestTag: 'último',
+  },
+  legend: {
+    label: 'Leyenda',
+    loading: 'Cargando datos…',
+    /** The active level has no data for the variable. */
+    unavailable: (level: string) => `Sin datos para ${level.toLowerCase()}. Cambia de nivel o de zoom.`,
+    noLevel: 'Esta capa no tiene datos estadísticos.',
+    source: 'Fuente',
+    failed: 'No se han podido cargar los datos.',
+  },
+  search: {
+    label: 'Busca tu ciudad',
+    placeholder: 'Busca tu ciudad',
+    noResults: 'Sin resultados',
+    levels: {
+      autonomous_community: 'Comunidad autónoma',
+      province: 'Provincia',
+      municipality: 'Municipio',
+    } as Record<string, string>,
   },
   tileError: 'No se ha podido cargar el mapa base.',
   boundariesError: 'No se han podido cargar los límites. ¿Está en marcha el servidor de teselas?',

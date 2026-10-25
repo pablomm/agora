@@ -1,7 +1,9 @@
 import { copy } from '../app/copy'
+import type { Place } from '../data/api'
+import { SearchBox } from './SearchBox'
 
-/** Name and city search. The search doesn't look anything up yet. */
-export function Header() {
+/** Name and place search. */
+export function Header({ onPlace }: { onPlace: (place: Place) => void }) {
   return (
     <header className="floating-header">
       <h1>
@@ -11,13 +13,7 @@ export function Header() {
         </svg>
         <span className="header-name">{copy.appName}</span>
       </h1>
-      <form className="search" role="search" onSubmit={(event) => event.preventDefault()}>
-        <svg className="search-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-          <circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
-          <path d="m15 15 5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-        <input type="search" aria-label={copy.search.label} placeholder={copy.search.placeholder} autoComplete="off" />
-      </form>
+      <SearchBox onPick={onPlace} />
     </header>
   )
 }

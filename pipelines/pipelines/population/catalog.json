@@ -1,5 +1,5 @@
 {
-  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in each dataset's meta.json.",
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in each dataset's meta.json. A variable's options are dimensions the user picks (a value, or a range of ordered values that are summed); facets refer to the pick as \"$dimension\".",
   "dimensions": [
     {
       "id": "sex",
@@ -11,7 +11,12 @@
         "total": "Total",
         "male": "Hombres",
         "female": "Mujeres"
-      }
+      },
+      "order": [
+        "total",
+        "male",
+        "female"
+      ]
     },
     {
       "id": "age",
@@ -22,10 +27,51 @@
       "values": {
         "total": "Todas las edades",
         "Y0T4": "De 0 a 4 años",
-        "…": "five-year groups up to",
+        "Y5T9": "De 5 a 9 años",
+        "Y10T14": "De 10 a 14 años",
+        "Y15T19": "De 15 a 19 años",
+        "Y20T24": "De 20 a 24 años",
+        "Y25T29": "De 25 a 29 años",
+        "Y30T34": "De 30 a 34 años",
+        "Y35T39": "De 35 a 39 años",
+        "Y40T44": "De 40 a 44 años",
+        "Y45T49": "De 45 a 49 años",
+        "Y50T54": "De 50 a 54 años",
+        "Y55T59": "De 55 a 59 años",
+        "Y60T64": "De 60 a 64 años",
+        "Y65T69": "De 65 a 69 años",
+        "Y70T74": "De 70 a 74 años",
+        "Y75T79": "De 75 a 79 años",
+        "Y80T84": "De 80 a 84 años",
+        "Y85T89": "De 85 a 89 años",
+        "Y90T94": "De 90 a 94 años",
         "Y95T99": "De 95 a 99 años",
         "Y_GE100": "100 y más años"
-      }
+      },
+      "order": [
+        "total",
+        "Y0T4",
+        "Y5T9",
+        "Y10T14",
+        "Y15T19",
+        "Y20T24",
+        "Y25T29",
+        "Y30T34",
+        "Y35T39",
+        "Y40T44",
+        "Y45T49",
+        "Y50T54",
+        "Y55T59",
+        "Y60T64",
+        "Y65T69",
+        "Y70T74",
+        "Y75T79",
+        "Y80T84",
+        "Y85T89",
+        "Y90T94",
+        "Y95T99",
+        "Y_GE100"
+      ]
     },
     {
       "id": "nationality",
@@ -37,7 +83,12 @@
         "total": "Total",
         "spanish": "Española",
         "foreign": "Extranjera"
-      }
+      },
+      "order": [
+        "total",
+        "spanish",
+        "foreign"
+      ]
     }
   ],
   "datasets": [
@@ -176,34 +227,381 @@
   ],
   "variables": [
     {
-      "id": "population_total",
+      "id": "population",
+      "topic": "demography",
       "label": {
         "es": "Población",
         "en": "Population"
       },
+      "description": {
+        "es": "Personas residentes a 1 de enero, en total o por sexo.",
+        "en": "Resident persons on 1 January, in total or by sex."
+      },
       "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
       "facets": [
         {
+          "id": "official",
+          "label": {
+            "es": "Padrón (cifras oficiales)",
+            "en": "Register (official figures)"
+          },
           "dataset": "population_official",
-          "filter": {
+          "numerator": {
+            "sex": "$sex"
+          }
+        },
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_sex_age",
+          "numerator": {
+            "sex": "$sex",
+            "age": "total"
+          }
+        }
+      ],
+      "default_facet": {
+        "census_section": "census",
+        "census_district": "census",
+        "municipality": "official",
+        "province": "official",
+        "autonomous_community": "official",
+        "country": "official"
+      }
+    },
+    {
+      "id": "population_sex_share",
+      "topic": "demography",
+      "label": {
+        "es": "% de población por sexo",
+        "en": "% of population by sex"
+      },
+      "description": {
+        "es": "Residentes del sexo elegido sobre el total.",
+        "en": "Residents of the chosen sex, over all residents."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "female",
+            "male"
+          ],
+          "default": "female"
+        }
+      ],
+      "facets": [
+        {
+          "id": "official",
+          "label": {
+            "es": "Padrón (cifras oficiales)",
+            "en": "Register (official figures)"
+          },
+          "dataset": "population_official",
+          "numerator": {
+            "sex": "$sex"
+          },
+          "denominator": {
             "sex": "total"
           }
         },
         {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
           "dataset": "population_sex_age",
-          "filter": {
+          "numerator": {
+            "sex": "$sex",
+            "age": "total"
+          },
+          "denominator": {
             "sex": "total",
             "age": "total"
           }
         }
       ],
-      "default": {
-        "census_section": "population_sex_age",
-        "census_district": "population_sex_age",
-        "municipality": "population_official",
-        "province": "population_official",
-        "autonomous_community": "population_official",
-        "country": "population_official"
+      "default_facet": {
+        "census_section": "census",
+        "census_district": "census",
+        "municipality": "official",
+        "province": "official",
+        "autonomous_community": "official",
+        "country": "official"
+      }
+    },
+    {
+      "id": "sex_ratio",
+      "topic": "demography",
+      "label": {
+        "es": "Hombres por cada 100 mujeres",
+        "en": "Men per 100 women"
+      },
+      "description": {
+        "es": "Hombres por cada 100 mujeres residentes.",
+        "en": "Men per 100 resident women."
+      },
+      "unit": "hombres/100 mujeres",
+      "kind": "ratio",
+      "scale": 100,
+      "facets": [
+        {
+          "id": "official",
+          "label": {
+            "es": "Padrón (cifras oficiales)",
+            "en": "Register (official figures)"
+          },
+          "dataset": "population_official",
+          "numerator": {
+            "sex": "male"
+          },
+          "denominator": {
+            "sex": "female"
+          }
+        },
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_sex_age",
+          "numerator": {
+            "sex": "male",
+            "age": "total"
+          },
+          "denominator": {
+            "sex": "female",
+            "age": "total"
+          }
+        }
+      ],
+      "default_facet": {
+        "census_section": "census",
+        "census_district": "census",
+        "municipality": "official",
+        "province": "official",
+        "autonomous_community": "official",
+        "country": "official"
+      }
+    },
+    {
+      "id": "population_by_age",
+      "topic": "demography",
+      "label": {
+        "es": "Población por edad",
+        "en": "Population by age"
+      },
+      "description": {
+        "es": "Residentes en el tramo de edad elegido.",
+        "en": "Residents in the chosen age band."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "age",
+          "range": true,
+          "values": [
+            "Y0T4",
+            "Y5T9",
+            "Y10T14",
+            "Y15T19",
+            "Y20T24",
+            "Y25T29",
+            "Y30T34",
+            "Y35T39",
+            "Y40T44",
+            "Y45T49",
+            "Y50T54",
+            "Y55T59",
+            "Y60T64",
+            "Y65T69",
+            "Y70T74",
+            "Y75T79",
+            "Y80T84",
+            "Y85T89",
+            "Y90T94",
+            "Y95T99",
+            "Y_GE100"
+          ],
+          "default": [
+            "Y65T69",
+            "Y_GE100"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_sex_age",
+          "numerator": {
+            "sex": "total",
+            "age": "$age"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_age_share",
+      "topic": "demography",
+      "label": {
+        "es": "% de población por edad",
+        "en": "% of population by age"
+      },
+      "description": {
+        "es": "Residentes en el tramo de edad elegido sobre el total.",
+        "en": "Residents in the chosen age band, over all residents."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "age",
+          "range": true,
+          "values": [
+            "Y0T4",
+            "Y5T9",
+            "Y10T14",
+            "Y15T19",
+            "Y20T24",
+            "Y25T29",
+            "Y30T34",
+            "Y35T39",
+            "Y40T44",
+            "Y45T49",
+            "Y50T54",
+            "Y55T59",
+            "Y60T64",
+            "Y65T69",
+            "Y70T74",
+            "Y75T79",
+            "Y80T84",
+            "Y85T89",
+            "Y90T94",
+            "Y95T99",
+            "Y_GE100"
+          ],
+          "default": [
+            "Y65T69",
+            "Y_GE100"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_sex_age",
+          "numerator": {
+            "sex": "total",
+            "age": "$age"
+          },
+          "denominator": {
+            "sex": "total",
+            "age": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_foreign",
+      "topic": "demography",
+      "label": {
+        "es": "Población extranjera",
+        "en": "Foreign population"
+      },
+      "description": {
+        "es": "Residentes de nacionalidad extranjera.",
+        "en": "Residents with a foreign nationality."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_sex_age_nationality",
+          "numerator": {
+            "sex": "total",
+            "age": "total",
+            "nationality": "foreign"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_foreign_share",
+      "topic": "demography",
+      "label": {
+        "es": "% de población extranjera",
+        "en": "% foreign population"
+      },
+      "description": {
+        "es": "Residentes de nacionalidad extranjera sobre el total.",
+        "en": "Residents with a foreign nationality, over all residents."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_sex_age_nationality",
+          "numerator": {
+            "sex": "total",
+            "age": "total",
+            "nationality": "foreign"
+          },
+          "denominator": {
+            "sex": "total",
+            "age": "total",
+            "nationality": "total"
+          }
+        }
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "id": "demography",
+      "label": {
+        "es": "Demografía",
+        "en": "Demography"
       }
     }
   ]

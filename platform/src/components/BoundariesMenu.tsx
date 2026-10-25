@@ -1,8 +1,9 @@
 import type { Map as MaplibreMap } from 'maplibre-gl'
-import { useEffect, useId, useState } from 'react'
+import { useId } from 'react'
 import { copy } from '../app/copy'
 import { boundaryModes, boundaryOverlays, type BoundaryMode } from '../app/settings'
 import { activeLevel } from '../map/boundaries'
+import { useZoom } from '../map/useZoom'
 import { usePopover } from './usePopover'
 
 interface Props {
@@ -73,19 +74,4 @@ export function BoundariesMenu({ mode, onChange, map }: Props) {
       )}
     </div>
   )
-}
-
-/** The map's zoom, updated when a zoom ends. */
-function useZoom(map: MaplibreMap | undefined) {
-  const [zoom, setZoom] = useState(() => map?.getZoom())
-  useEffect(() => {
-    if (!map) return
-    const update = () => setZoom(map.getZoom())
-    update()
-    map.on('zoomend', update)
-    return () => {
-      map.off('zoomend', update)
-    }
-  }, [map])
-  return zoom
 }

@@ -3,16 +3,19 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { useEffect, useRef, useState } from 'react'
 import { config } from '../app/config'
 import { copy } from '../app/copy'
-import type { BoundaryMode, Settings } from '../app/settings'
+import type { BoundaryLayer, BoundaryMode, Settings } from '../app/settings'
 import { useTheme, type Theme } from '../app/theme'
 import {
   applyBoundaryMode,
   isBoundarySource,
   markSelected,
   minZoomFor,
+  paintChoropleth,
+  setChoroplethValues,
   trackBoundaryClicks,
   trackBoundaryHover,
   withBoundaries,
+  type Choropleth,
   type SelectedUnit,
 } from './boundaries'
 
@@ -85,6 +88,8 @@ interface Props {
   selected: SelectedUnit | undefined
   /** A unit clicked on the map, or undefined after a click on no unit. */
   onSelect: (unit: SelectedUnit | undefined) => void
+  /** A variable painted on a boundary layer, or none. */
+  choropleth: Choropleth | undefined
   /** The map once created (again after a remount), for the controls drawn around it. */
   onReady: (map: MaplibreMap) => void
 }
@@ -103,7 +108,7 @@ async function loadStyle(map: MaplibreMap, basemapStyle: BasemapStyle, boundarie
  * The full-size MapLibre map: basemap by theme or the orthophoto, the street names switch, and the
  * administrative boundaries from the tile server.
  */
-export function MainMap({ settings, selected, onSelect, onReady }: Props) {
+export function MainMap({ settings, selected, onSelect, choropleth, onReady }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MaplibreMap | null>(null)
   const theme = useTheme()
@@ -114,6 +119,10 @@ export function MainMap({ settings, selected, onSelect, onReady }: Props) {
   const boundariesRef = useRef(settings.boundaries)
   const selectedRef = useRef(selected)
   const onSelectRef = useRef(onSelect)
+  const choroplethRef = useRef(choropleth)
+  const basemapRef = useRef(basemapStyle)
+  // The values set as feature state, to clear when the choropleth changes.
+  const appliedRef = useRef<{ layer: BoundaryLayer; ids: string[] }>(undefined)
   const [failed, setFailed] = useState(false)
   const [boundariesFailed, setBoundariesFailed] = useState(false)
 
@@ -143,8 +152,12 @@ export function MainMap({ settings, selected, onSelect, onReady }: Props) {
     })
     const stopHover = trackBoundaryHover(map)
     const stopClicks = trackBoundaryClicks(map, (unit) => onSelectRef.current(unit))
-    // A new style brings new sources, without the selection's highlight: mark it again.
-    map.on('style.load', () => markSelected(map, selectedRef.current, true))
+    // A new style brings new sources, without the selection's highlight or the choropleth: apply them again.
+    map.on('style.load', () => {
+      markSelected(map, selectedRef.current, true)
+      paintChoropleth(map, basemapRef.current, choroplethRef.current)
+      appliedRef.current = setChoroplethValues(map, choroplethRef.current, undefined)
+    })
     mapRef.current = map
     onReady(map)
     return () => {
@@ -155,10 +168,19 @@ export function MainMap({ settings, selected, onSelect, onReady }: Props) {
     }
   }, [onReady])
 
-  // Theme or basemap: swap the style in place (MapLibre diffs styles that share their sources).
   useEffect(() => {
     onSelectRef.current = onSelect
   }, [onSelect])
+
+  // The choropleth: its classes on its layer's fill, and each unit's value as feature state.
+  useEffect(() => {
+    choroplethRef.current = choropleth
+    basemapRef.current = basemapStyle
+    const map = mapRef.current
+    if (!map) return
+    paintChoropleth(map, basemapStyle, choropleth)
+    appliedRef.current = setChoroplethValues(map, choropleth, appliedRef.current)
+  }, [choropleth, basemapStyle])
 
   // The selection's highlight follows the selected unit.
   useEffect(() => {
@@ -169,6 +191,7 @@ export function MainMap({ settings, selected, onSelect, onReady }: Props) {
     return () => markSelected(map, selected, false)
   }, [selected])
 
+  // Theme or basemap: swap the style in place (MapLibre diffs styles that share their sources).
   useEffect(() => {
     if (basemapStyle === initialStyle.current) return
     initialStyle.current = basemapStyle

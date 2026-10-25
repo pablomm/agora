@@ -2,9 +2,20 @@ const env = import.meta.env
 
 /** Tunable values in one place: basemap providers, the tile server and the map's initial view. */
 export const config = {
+  api: {
+    /** Agora's API (catalogue and data): see ../api. */
+    url: env.VITE_API_URL ?? 'http://localhost:8000',
+  },
   tiles: {
     /** Tile server (Martin): /{layer} gives each layer's TileJSON. */
     url: env.VITE_TILES_URL ?? 'http://localhost:3000',
+  },
+  catastro: {
+    /** Facade photo of a state-cadastre parcel, by its cadastral reference (the URL INSPIRE buildings link to). */
+    facadePhotoUrl:
+      'https://ovc.catastro.meh.es/OVCServWeb/OVCWcfLibres/OVCFotoFachada.svc/RecuperarFotoFachadaGet?ReferenciaCatastral=',
+    /** How long the pointer rests on a parcel before its photo is asked for (moving across parcels asks for none). */
+    photoDelayMs: 100,
   },
   boundaries: {
     /**

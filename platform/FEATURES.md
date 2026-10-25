@@ -2,6 +2,58 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-25 · Layer options: sex, age range and source
+
+- Layers that are the same measure split by a dimension are now one layer with a **selector
+  next to the year**: "Población" (Total · Hombres · Mujeres), "% de población por sexo"
+  (Mujeres · Hombres), "Población por edad" and "% de población por edad" (a two-thumb slider
+  over the five-year age groups, 0 to 100+: the groups in between are summed). Replaces the
+  separate Hombres, Mujeres, % menores de 15 and % 65 o más layers.
+- **Fuente** selector when the level has two sources of the same layer (Padrón (cifras oficiales)
+  and Censo anual, from municipalities up); at census districts and sections only the census
+  exists (2021–2025). The detail panel's evolution shows both as separate series.
+- Each layer remembers its own choices; the legend, the detail panel's headline and its
+  evolution follow them ("Población · Mujeres").
+
+## 2026-10-25 · Data layers panel redesign
+
+- The Mapa tab's layers panel, top to bottom: a small **search** over the layers (name,
+  description or topic, accents ignored); the **layer on the map** — "Ninguna capa
+  seleccionada" or a card with its name, a ✕ to remove it, its description and its year; then
+  the **list of layers** by topic, dense one-line rows (name, and its unit on the right), no
+  radio buttons, the chosen one marked. The list scrolls on its own, with each topic's heading
+  pinned while its rows scroll, ready for dozens of layers.
+- The active layer's **year is a slider** (thin track filled up to the thumb, year in bold, "último"
+  when it's the newest, first and last year under the ends). It moves over the years the layer has
+  at that level, so missing years are skipped. Layers whose versions aren't years get a select.
+
+## 2026-10-25 · Data layers, search and data in the detail panel
+
+- The web reads the catalogue and the data from the API (`VITE_API_URL`, `../api`).
+- **Data layers**: the sidebar's Mapa tab lists the catalogue's variables by topic (population,
+  men, women, men per 100 women, foreign population and its share, under-15 and 65+ shares).
+  Choosing one paints it as a **choropleth** on the boundary level the map shows: in automatic
+  mode the level, and the data with it, change with the zoom. Five classes by quantiles, one-hue
+  blue ramp (its own steps on the dark basemap). A **year** selector lists the years the variable
+  has at that level (latest by default).
+- **Legend** (bottom left): variable, level, year, source, classes and attribution; it says when the
+  level has no data for the variable, or the layer has no statistics (parcels, postal codes…).
+- **Search** ("Busca tu ciudad") finds autonomous communities, provinces and municipalities by
+  name, accents ignored, with keyboard navigation; picking one fits the map to it and opens its panel.
+- **Detail panel with data**: the variable shown on the map (population when none) as a headline
+  value with its year and source, its **evolution** (one line per source, legend, crosshair
+  tooltip, table view), and the **population pyramid** (men and women by five-year group, tooltip
+  per group) of the year on the map.
+- With a data layer, hovering and selecting a unit raise its fill and outline its border.
+
+## 2026-10-25 · Facade photos of parcels
+
+- Hovering an urban parcel shows a square thumbnail left of its name: a grey loading placeholder
+  (animated), then Catastro's facade photo of it, cropped to the square, from Catastro's facade
+  photo service by cadastral reference (asked for after 100 ms on the parcel, so moving across
+  parcels asks for none). Parcels without a photo, and foral-cadastre parcels (no such service),
+  show a "no photo" sign instead.
+
 ## 2026-10-25 · Labels over the satellite basemap
 
 - The satellite basemap (IGN's PNOA orthophoto) now has place, neighbourhood, street, road and

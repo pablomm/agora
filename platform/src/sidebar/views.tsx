@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { copy } from '../app/copy'
-import { MapView } from './MapView'
 
 export type ViewId = 'map'
 
@@ -9,7 +8,6 @@ export interface SidebarView {
   label: string
   /** 24 px icon for the activity bar. */
   icon: ReactNode
-  content: ReactNode
 }
 
 /** The activity bar's tabs, top to bottom; each opens its panel in the sidebar. */
@@ -26,6 +24,5 @@ export const views: SidebarView[] = [
         strokeLinejoin="round"
       />
     ),
-    content: <MapView />,
   },
 ]
