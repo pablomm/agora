@@ -1,0 +1,138 @@
+{
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details (retrieval date, checksum) are in the outputs' .meta.json files.",
+  "entity_types": [
+    {
+      "id": "municipality",
+      "label": { "es": "Municipio", "en": "Municipality" },
+      "label_plural": { "es": "Municipios", "en": "Municipalities" },
+      "id_pattern": "es:ine:mun:{ine_code}",
+      "id_example": "es:ine:mun:28079",
+      "key": {
+        "name": "ine_code",
+        "description": "INE municipality code: five digits, the province's two followed by three of the municipality's (without INE's control digit).",
+        "authority": "INE",
+        "pattern": "^(0[1-9]|[1-4][0-9]|5[0-2])[0-9]{3}$"
+      },
+      "has_geometry": true
+    },
+    {
+      "id": "shared_territory",
+      "label": { "es": "Territorio compartido", "en": "Shared territory" },
+      "label_plural": { "es": "Territorios compartidos", "en": "Shared territories" },
+      "description": "Land held in common by several municipalities (comunidades, facerías, parzonerías, ledanías, Bardenas Reales…). Not a municipality: it has no INE code and no population of its own.",
+      "id_pattern": "es:ign:au:{ign_code}",
+      "id_example": "es:ign:au:34153153078",
+      "key": {
+        "name": "ign_code",
+        "description": "IGN national code: 34 + CCAA + province + 53 + three digits.",
+        "authority": "IGN",
+        "pattern": "^34[0-9]{4}53[0-9]{3}$"
+      },
+      "has_geometry": true
+    }
+  ],
+  "relation_types": [
+    {
+      "id": "part_of",
+      "from": "municipality",
+      "to": "province",
+      "description": "The municipality belongs to the province.",
+      "source_field": "parent_id"
+    },
+    {
+      "id": "part_of",
+      "from": "shared_territory",
+      "to": "province",
+      "description": "The province IGN files the shared territory under; a few extend into a neighbouring province.",
+      "source_field": "parent_id"
+    }
+  ],
+  "datasets": [
+    {
+      "id": "ign_au_municipalities",
+      "title": "Municipios de España (IGN, unidades administrativas INSPIRE)",
+      "entity_type": "municipality",
+      "publisher": { "name": "Instituto Geográfico Nacional (IGN)", "url": "https://www.ign.es" },
+      "source": {
+        "kind": "wfs",
+        "url": "https://www.ign.es/wfs-inspire/unidades-administrativas",
+        "feature_type": "au:AdministrativeUnit",
+        "filter": "nationalLevel = 4thOrder, units whose code carries an INE municipality code",
+        "metadata_url": "https://www.idee.es/csw-inspire-idee/srv/spa/csw?SERVICE=CSW&VERSION=2.0.2&REQUEST=GetRecordById&outputSchema=http://www.isotc211.org/2005/gmd&ElementSetName=full&ID=spaignLLM"
+      },
+      "license": { "id": "CC-BY-4.0", "url": "https://creativecommons.org/licenses/by/4.0/", "attribution": "CC BY 4.0 ign.es" },
+      "validity": {
+        "kind": "current",
+        "as_of": "retrieval",
+        "description": "The service publishes the current municipalities and boundaries, without validity dates; the data is valid as of its retrieval date. Municipalities that no longer exist are not included; their history will come from INE's registry."
+      },
+      "coverage": {
+        "country": "ES",
+        "count": 8132,
+        "excluded": [
+          {
+            "ign_code_pattern": "^34205454[0-9]{3}$",
+            "name": "Territorios no asociados a ninguna provincia",
+            "reason": "Plazas de soberanía, Isla de los Faisanes and Gibraltar: not INE municipalities."
+          },
+          {
+            "ign_code_pattern": "^34[0-9]{4}53[0-9]{3}$",
+            "name": "Shared territories",
+            "reason": "Not municipalities; published as the ign_au_shared_territories dataset."
+          }
+        ]
+      },
+      "geometry": { "crs": "EPSG:4326", "type": "MultiPolygon", "resolution": "full (as published by IGN, not simplified)" },
+      "output": {
+        "path": "processed/municipalities/municipalities.parquet",
+        "format": "GeoParquet 1.1",
+        "fields": [
+          { "name": "id", "type": "string", "description": "Catalogue id of the municipality (es:ine:mun:{ine_code})." },
+          { "name": "ine_code", "type": "string", "description": "INE municipality code (five digits, no control digit)." },
+          { "name": "name", "type": "string", "description": "Official name as published by IGN; bilingual where official." },
+          { "name": "province_code", "type": "string", "description": "INE province code." },
+          { "name": "ccaa_code", "type": "string", "description": "INE autonomous community code." },
+          { "name": "parent_id", "type": "string", "description": "Catalogue id of the province (es:ine:prov:{province_code})." },
+          { "name": "ign_code", "type": "string", "description": "IGN national code (34 + CCAA + province + INE code)." },
+          { "name": "geometry", "type": "geometry", "description": "Municipal boundary." }
+        ]
+      },
+      "update_frequency": "yearly or on demand (municipalities are created, merged and renamed a few times a year)"
+    },
+    {
+      "id": "ign_au_shared_territories",
+      "title": "Territorios compartidos entre municipios (IGN, unidades administrativas INSPIRE)",
+      "entity_type": "shared_territory",
+      "publisher": { "name": "Instituto Geográfico Nacional (IGN)", "url": "https://www.ign.es" },
+      "source": {
+        "kind": "wfs",
+        "url": "https://www.ign.es/wfs-inspire/unidades-administrativas",
+        "feature_type": "au:AdministrativeUnit",
+        "filter": "nationalLevel = 4thOrder, units whose code carries 53 instead of the province",
+        "metadata_url": "https://www.idee.es/csw-inspire-idee/srv/spa/csw?SERVICE=CSW&VERSION=2.0.2&REQUEST=GetRecordById&outputSchema=http://www.isotc211.org/2005/gmd&ElementSetName=full&ID=spaignLLM"
+      },
+      "license": { "id": "CC-BY-4.0", "url": "https://creativecommons.org/licenses/by/4.0/", "attribution": "CC BY 4.0 ign.es" },
+      "validity": {
+        "kind": "current",
+        "as_of": "retrieval",
+        "description": "Current state as published by IGN; valid as of its retrieval date."
+      },
+      "coverage": { "country": "ES", "count": 81 },
+      "geometry": { "crs": "EPSG:4326", "type": "MultiPolygon", "resolution": "full (as published by IGN, not simplified)" },
+      "output": {
+        "path": "processed/municipalities/shared_territories.parquet",
+        "format": "GeoParquet 1.1",
+        "fields": [
+          { "name": "id", "type": "string", "description": "Catalogue id (es:ign:au:{ign_code})." },
+          { "name": "name", "type": "string", "description": "Name as published by IGN; some list the INE codes of the municipalities that share it." },
+          { "name": "province_code", "type": "string", "description": "INE code of the province IGN files it under." },
+          { "name": "ccaa_code", "type": "string", "description": "INE autonomous community code." },
+          { "name": "parent_id", "type": "string", "description": "Catalogue id of that province." },
+          { "name": "ign_code", "type": "string", "description": "IGN national code." },
+          { "name": "geometry", "type": "geometry", "description": "Boundary of the shared territory." }
+        ]
+      },
+      "update_frequency": "with the municipalities"
+    }
+  ]
+}

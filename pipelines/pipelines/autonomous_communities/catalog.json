@@ -1,0 +1,76 @@
+{
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details (retrieval date, checksum) are in the output's autonomous_communities.meta.json.",
+  "entity_types": [
+    {
+      "id": "autonomous_community",
+      "label": { "es": "Comunidad autónoma", "en": "Autonomous community" },
+      "label_plural": { "es": "Comunidades autónomas", "en": "Autonomous communities" },
+      "id_pattern": "es:ine:ccaa:{ine_code}",
+      "id_example": "es:ine:ccaa:13",
+      "key": {
+        "name": "ine_code",
+        "description": "INE autonomous community code: two digits, 01–19 (18 Ceuta and 19 Melilla are autonomous cities).",
+        "authority": "INE",
+        "pattern": "^(0[1-9]|1[0-9])$"
+      },
+      "has_geometry": true
+    }
+  ],
+  "relation_types": [],
+  "datasets": [
+    {
+      "id": "ign_au_autonomous_communities",
+      "title": "Comunidades autónomas de España (IGN, unidades administrativas INSPIRE)",
+      "entity_type": "autonomous_community",
+      "publisher": {
+        "name": "Instituto Geográfico Nacional (IGN)",
+        "url": "https://www.ign.es"
+      },
+      "source": {
+        "kind": "wfs",
+        "url": "https://www.ign.es/wfs-inspire/unidades-administrativas",
+        "feature_type": "au:AdministrativeUnit",
+        "filter": "nationalLevel = 2ndOrder",
+        "metadata_url": "https://www.idee.es/csw-inspire-idee/srv/spa/csw?SERVICE=CSW&VERSION=2.0.2&REQUEST=GetRecordById&outputSchema=http://www.isotc211.org/2005/gmd&ElementSetName=full&ID=spaignLLM"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "CC BY 4.0 ign.es"
+      },
+      "validity": {
+        "kind": "current",
+        "as_of": "retrieval",
+        "description": "The service publishes the current state of IGN's administrative boundaries, without validity dates; the data is valid as of its retrieval date."
+      },
+      "coverage": {
+        "country": "ES",
+        "count": 19,
+        "excluded": [
+          {
+            "ign_code": "34200000000",
+            "name": "Territorios no asociados a ninguna autonomía",
+            "reason": "The plazas de soberanía are not one of INE's autonomous communities."
+          }
+        ]
+      },
+      "geometry": {
+        "crs": "EPSG:4326",
+        "type": "MultiPolygon",
+        "resolution": "full (as published by IGN, not simplified)"
+      },
+      "output": {
+        "path": "processed/autonomous_communities/autonomous_communities.parquet",
+        "format": "GeoParquet 1.1",
+        "fields": [
+          { "name": "id", "type": "string", "description": "Catalogue id of the autonomous community (es:ine:ccaa:{ine_code})." },
+          { "name": "ine_code", "type": "string", "description": "INE autonomous community code." },
+          { "name": "name", "type": "string", "description": "Official name as published by IGN; bilingual where official (e.g. 'Cataluña/Catalunya')." },
+          { "name": "ign_code", "type": "string", "description": "IGN national code (34 + CCAA + 0000000)." },
+          { "name": "geometry", "type": "geometry", "description": "Boundary of the autonomous community." }
+        ]
+      },
+      "update_frequency": "on demand (boundaries change rarely)"
+    }
+  ]
+}

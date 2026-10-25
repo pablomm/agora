@@ -1,0 +1,6 @@
+# Vite builds
+dist/
+dist-ssr/
+
+# Scratch work
+drafts/

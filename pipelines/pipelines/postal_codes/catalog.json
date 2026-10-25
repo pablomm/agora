@@ -1,0 +1,63 @@
+{
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Provenance and license are pending: see the README.",
+  "entity_types": [
+    {
+      "id": "postal_code",
+      "label": { "es": "Código postal", "en": "Postal code" },
+      "label_plural": { "es": "Códigos postales", "en": "Postal codes" },
+      "description": "Area served by a postal code. Postal codes are sets of addresses with no official boundary; these areas are an approximation.",
+      "id_pattern": "es:correos:cp:{postal_code}",
+      "id_example": "es:correos:cp:28001",
+      "key": {
+        "name": "postal_code",
+        "description": "Five digits; the first two are the province's INE code.",
+        "authority": "Correos",
+        "pattern": "^(0[1-9]|[1-4][0-9]|5[0-2])[0-9]{3}$"
+      },
+      "has_geometry": true
+    }
+  ],
+  "relation_types": [
+    {
+      "id": "part_of",
+      "from": "postal_code",
+      "to": "province",
+      "description": "The province given by the code's first two digits. Postal codes don't nest in municipalities.",
+      "source_field": "parent_id"
+    }
+  ],
+  "datasets": [
+    {
+      "id": "postal_code_areas_2024",
+      "title": "Áreas de códigos postales de España (enero de 2024)",
+      "entity_type": "postal_code",
+      "publisher": null,
+      "source": {
+        "kind": "file",
+        "origin": "Earlier project; original source to be documented",
+        "file": "postal-codes.geo.parquet",
+        "snapshot": "2024-01-08"
+      },
+      "license": null,
+      "validity": {
+        "kind": "snapshot",
+        "as_of": "2024-01-08",
+        "description": "Postal codes as of January 2024; codes created or changed since aren't included."
+      },
+      "coverage": { "country": "ES", "count": 10874 },
+      "geometry": { "crs": "EPSG:4326", "type": "Polygon or MultiPolygon", "resolution": "as in the source" },
+      "output": {
+        "path": "processed/postal_codes/postal_codes.parquet",
+        "format": "GeoParquet 1.1",
+        "fields": [
+          { "name": "id", "type": "string", "description": "Catalogue id (es:correos:cp:{postal_code})." },
+          { "name": "postal_code", "type": "string", "description": "Postal code, five digits." },
+          { "name": "province_code", "type": "string", "description": "INE province code (the code's first two digits)." },
+          { "name": "parent_id", "type": "string", "description": "Catalogue id of the province." },
+          { "name": "geometry", "type": "geometry", "description": "Approximate area of the postal code." }
+        ]
+      },
+      "update_frequency": "none (fixed snapshot)"
+    }
+  ]
+}

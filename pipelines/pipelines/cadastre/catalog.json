@@ -1,0 +1,712 @@
+{
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in the output's .meta.json.",
+  "entity_types": [
+    {
+      "id": "cadastral_zone",
+      "label": {
+        "es": "Masa catastral",
+        "en": "Cadastral zone"
+      },
+      "label_plural": {
+        "es": "Masas catastrales",
+        "en": "Cadastral zones"
+      },
+      "description": "Catastro's zoning: urban blocks (manzanas) and rural polygons (polígonos).",
+      "id_pattern": "es:catastro:zone:{catastro_municipality_code}:{reference}",
+      "id_example": "es:catastro:zone:15015:73795NJ6077N",
+      "key": {
+        "name": "reference",
+        "description": "Catastro's zoning reference; unique only within its Catastro municipality, hence the municipality code in the id.",
+        "authority": "Dirección General del Catastro"
+      },
+      "subtypes": [
+        "urban_block",
+        "rural_polygon"
+      ],
+      "has_geometry": true
+    },
+    {
+      "id": "cadastral_parcel",
+      "label": {
+        "es": "Parcela catastral urbana",
+        "en": "Urban cadastral parcel"
+      },
+      "label_plural": {
+        "es": "Parcelas catastrales urbanas",
+        "en": "Urban cadastral parcels"
+      },
+      "description": "Urban land parcel, from the state Catastro or a foral cadastre (Navarra, Álava, Bizkaia, Gipuzkoa).",
+      "id_pattern": "es:{source}:parcel:{source_municipality_code}:{reference}",
+      "id_example": "es:catastro:parcel:28900:0000602VK4800A",
+      "key": {
+        "name": "reference",
+        "description": "The source's parcel reference, unique within its municipality (hence the municipality in the id).",
+        "authority": "Catastro or the foral cadastre"
+      },
+      "has_geometry": true
+    },
+    {
+      "id": "rural_polygon",
+      "label": {
+        "es": "Polígono catastral",
+        "en": "Cadastral polygon"
+      },
+      "label_plural": {
+        "es": "Polígonos catastrales",
+        "en": "Cadastral polygons"
+      },
+      "description": "Rural zoning that numbers rural parcels, from the state Catastro (its rural cadastral zones) or a foral cadastre.",
+      "id_pattern": "es:catastro:zone:{municipality}:{reference} | es:{territory}:polygon:{municipality}:{polygon}",
+      "id_example": "es:navarra:polygon:31001:001",
+      "has_geometry": true
+    }
+  ],
+  "relation_types": [
+    {
+      "id": "part_of",
+      "from": "cadastral_zone",
+      "to": "municipality",
+      "description": "The IGN/INE municipality containing a point inside the zone (Catastro's own municipality codes differ from INE's).",
+      "source_field": "parent_id"
+    },
+    {
+      "id": "part_of",
+      "from": "cadastral_parcel",
+      "to": "cadastral_zone",
+      "description": "The urban block the parcel lies in (state Catastro, 92 % of parcels).",
+      "source_field": "zone_id"
+    },
+    {
+      "id": "part_of",
+      "from": "cadastral_parcel",
+      "to": "municipality",
+      "description": "The INE municipality the parcel lies in (by position).",
+      "source_field": "municipality_code"
+    },
+    {
+      "id": "part_of",
+      "from": "rural_polygon",
+      "to": "municipality",
+      "description": "The INE municipality it lies in (by position).",
+      "source_field": "parent_id"
+    }
+  ],
+  "datasets": [
+    {
+      "id": "catastro_cadastral_zones",
+      "title": "Masas catastrales: manzanas urbanas y polígonos rústicos (Catastro, INSPIRE, abril de 2023)",
+      "entity_type": "cadastral_zone",
+      "publisher": {
+        "name": "Dirección General del Catastro",
+        "url": "https://www.catastro.hacienda.gob.es"
+      },
+      "source": {
+        "kind": "atom",
+        "url": "http://www.catastro.minhap.es/INSPIRE/CadastralParcels/ES.SDGC.CP.Atom.xml",
+        "file": "A.ES.SDGC.CP.{code}.cadastralzoning.gml",
+        "snapshot": "2023-04",
+        "note": "Imported from a local archive downloaded in August 2023 (files generated 2023-04-03)."
+      },
+      "license": {
+        "id": "DGC-INSPIRE-2016",
+        "title": "Licencia de acceso y uso de los servicios y conjuntos de datos INSPIRE de la Dirección General del Catastro (v1.0, julio 2016)",
+        "url": "https://www.catastro.hacienda.gob.es/webinspire/documentos/Licencia.pdf",
+        "attribution": "Dirección General del Catastro",
+        "conditions": [
+          "Public use, including commercial, only of transformed information; the original information can't be distributed.",
+          "Derived products can't be presented as 'cartografía catastral', 'información catastral' or equivalent terms.",
+          "Revocable for misuse."
+        ]
+      },
+      "validity": {
+        "kind": "snapshot",
+        "as_of": "2023-04-03",
+        "description": "Catastro's INSPIRE downloads as of April 2023 (they're updated twice a year)."
+      },
+      "coverage": {
+        "country": "ES",
+        "count": 1323594,
+        "by_type": {
+          "urban_block": 1148384,
+          "rural_polygon": 175210
+        },
+        "excluded": [
+          {
+            "name": "País Vasco and Navarra",
+            "reason": "Foral cadastres, not in Catastro's INSPIRE downloads."
+          }
+        ]
+      },
+      "geometry": {
+        "crs": "EPSG:4326",
+        "type": "Polygon or MultiPolygon",
+        "resolution": "as published, reprojected from each municipality's UTM zone"
+      },
+      "output": {
+        "path": "processed/cadastre/cadastral_zones_2023-04.parquet",
+        "format": "GeoParquet 1.1",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "Catalogue id."
+          },
+          {
+            "name": "reference",
+            "type": "string",
+            "description": "Catastro's zoning reference."
+          },
+          {
+            "name": "zone_type",
+            "type": "string",
+            "description": "urban_block (MANZANA) or rural_polygon (POLIGONO)."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "description": "Block or polygon number as Catastro labels it."
+          },
+          {
+            "name": "catastro_municipality_code",
+            "type": "string",
+            "description": "Catastro's own municipality code (not INE's)."
+          },
+          {
+            "name": "valid_from",
+            "type": "date",
+            "description": "Catastro's beginLifespanVersion."
+          },
+          {
+            "name": "municipality_code",
+            "type": "string",
+            "description": "INE code of the municipality it lies in."
+          },
+          {
+            "name": "parent_id",
+            "type": "string",
+            "description": "Catalogue id of that municipality."
+          },
+          {
+            "name": "geometry",
+            "type": "geometry",
+            "description": "Zone boundary."
+          }
+        ]
+      },
+      "update_frequency": "none for now (fixed snapshot); Catastro publishes twice a year"
+    },
+    {
+      "id": "catastro_urban_parcels",
+      "title": "Parcelas catastrales urbanas (Catastro, INSPIRE, abril de 2023)",
+      "entity_type": "cadastral_parcel",
+      "geometry": {
+        "crs": "EPSG:4326",
+        "type": "Polygon or MultiPolygon"
+      },
+      "output": {
+        "path": "processed/cadastre/cadastral_parcels_2023-04/{province}.parquet",
+        "format": "GeoParquet 1.1, one file per province",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "Catalogue id."
+          },
+          {
+            "name": "reference",
+            "type": "string",
+            "description": "The source's parcel reference."
+          },
+          {
+            "name": "area_m2",
+            "type": "integer",
+            "description": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."
+          },
+          {
+            "name": "valid_from",
+            "type": "date",
+            "description": "Start of the parcel's current version, where the source gives it."
+          },
+          {
+            "name": "catastro_municipality_code",
+            "type": "string",
+            "description": "Catastro's municipality code (state Catastro only)."
+          },
+          {
+            "name": "municipality_code",
+            "type": "string",
+            "description": "INE code of the municipality it lies in."
+          },
+          {
+            "name": "zone_id",
+            "type": "string",
+            "description": "Catalogue id of its urban block (state Catastro only)."
+          },
+          {
+            "name": "parent_id",
+            "type": "string",
+            "description": "Its block, or its municipality."
+          },
+          {
+            "name": "source",
+            "type": "string",
+            "description": "catastro, navarra, bizkaia, gipuzkoa or alava."
+          },
+          {
+            "name": "geometry",
+            "type": "geometry",
+            "description": "Parcel boundary."
+          }
+        ]
+      },
+      "publisher": {
+        "name": "Dirección General del Catastro",
+        "url": "https://www.catastro.hacienda.gob.es"
+      },
+      "source": {
+        "kind": "atom",
+        "url": "http://www.catastro.minhap.es/INSPIRE/CadastralParcels/ES.SDGC.CP.Atom.xml",
+        "file": "A.ES.SDGC.CP.{code}.cadastralparcel.gml",
+        "snapshot": "2023-04"
+      },
+      "license": {
+        "id": "DGC-INSPIRE-2016",
+        "title": "Licencia de acceso y uso de los servicios y conjuntos de datos INSPIRE de la Dirección General del Catastro (v1.0, julio 2016)",
+        "url": "https://www.catastro.hacienda.gob.es/webinspire/documentos/Licencia.pdf",
+        "attribution": "Dirección General del Catastro",
+        "conditions": [
+          "Public use, including commercial, only of transformed information; the original information can't be distributed.",
+          "Derived products can't be presented as 'cartografía catastral', 'información catastral' or equivalent terms.",
+          "Revocable for misuse."
+        ]
+      },
+      "validity": {
+        "kind": "snapshot",
+        "as_of": "2023-04-03"
+      },
+      "coverage": {
+        "country": "ES",
+        "count": 12847454,
+        "excluded": [
+          {
+            "name": "País Vasco and Navarra",
+            "reason": "Foral cadastres: see the foral datasets."
+          }
+        ]
+      }
+    },
+    {
+      "id": "navarra_urban_parcels",
+      "title": "Parcelas urbanas del Catastro de Navarra (abril de 2023)",
+      "entity_type": "cadastral_parcel",
+      "geometry": {
+        "crs": "EPSG:4326",
+        "type": "Polygon or MultiPolygon"
+      },
+      "output": {
+        "path": "processed/cadastre/cadastral_parcels_2023-04/{province}.parquet",
+        "format": "GeoParquet 1.1, one file per province",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "Catalogue id."
+          },
+          {
+            "name": "reference",
+            "type": "string",
+            "description": "The source's parcel reference."
+          },
+          {
+            "name": "area_m2",
+            "type": "integer",
+            "description": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."
+          },
+          {
+            "name": "valid_from",
+            "type": "date",
+            "description": "Start of the parcel's current version, where the source gives it."
+          },
+          {
+            "name": "catastro_municipality_code",
+            "type": "string",
+            "description": "Catastro's municipality code (state Catastro only)."
+          },
+          {
+            "name": "municipality_code",
+            "type": "string",
+            "description": "INE code of the municipality it lies in."
+          },
+          {
+            "name": "zone_id",
+            "type": "string",
+            "description": "Catalogue id of its urban block (state Catastro only)."
+          },
+          {
+            "name": "parent_id",
+            "type": "string",
+            "description": "Its block, or its municipality."
+          },
+          {
+            "name": "source",
+            "type": "string",
+            "description": "catastro, navarra, bizkaia, gipuzkoa or alava."
+          },
+          {
+            "name": "geometry",
+            "type": "geometry",
+            "description": "Parcel boundary."
+          }
+        ]
+      },
+      "publisher": {
+        "name": "Gobierno de Navarra",
+        "url": "https://idena.navarra.es"
+      },
+      "source": {
+        "kind": "file",
+        "file": "Catastro.gpkg, layer CATAST_Pol_ParcelaUrba",
+        "snapshot": "2023-04-21"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "Información geográfica propiedad del Gobierno de Navarra."
+      },
+      "validity": {
+        "kind": "snapshot",
+        "as_of": "2023-04-21"
+      },
+      "coverage": {
+        "count": 182939
+      }
+    },
+    {
+      "id": "bizkaia_urban_parcels",
+      "title": "Parcelas urbanas del Catastro de Bizkaia (mayo de 2023)",
+      "entity_type": "cadastral_parcel",
+      "geometry": {
+        "crs": "EPSG:4326",
+        "type": "Polygon or MultiPolygon"
+      },
+      "output": {
+        "path": "processed/cadastre/cadastral_parcels_2023-04/{province}.parquet",
+        "format": "GeoParquet 1.1, one file per province",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "Catalogue id."
+          },
+          {
+            "name": "reference",
+            "type": "string",
+            "description": "The source's parcel reference."
+          },
+          {
+            "name": "area_m2",
+            "type": "integer",
+            "description": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."
+          },
+          {
+            "name": "valid_from",
+            "type": "date",
+            "description": "Start of the parcel's current version, where the source gives it."
+          },
+          {
+            "name": "catastro_municipality_code",
+            "type": "string",
+            "description": "Catastro's municipality code (state Catastro only)."
+          },
+          {
+            "name": "municipality_code",
+            "type": "string",
+            "description": "INE code of the municipality it lies in."
+          },
+          {
+            "name": "zone_id",
+            "type": "string",
+            "description": "Catalogue id of its urban block (state Catastro only)."
+          },
+          {
+            "name": "parent_id",
+            "type": "string",
+            "description": "Its block, or its municipality."
+          },
+          {
+            "name": "source",
+            "type": "string",
+            "description": "catastro, navarra, bizkaia, gipuzkoa or alava."
+          },
+          {
+            "name": "geometry",
+            "type": "geometry",
+            "description": "Parcel boundary."
+          }
+        ]
+      },
+      "publisher": {
+        "name": "Diputación Foral de Bizkaia"
+      },
+      "source": {
+        "kind": "file",
+        "file": "{code}_Parcela.shp + {code}_Subparcela.shp per municipality",
+        "snapshot": "2023-05-02",
+        "urban": "parcels with an urban, non-scattered subparcel"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "Diputación Foral de Bizkaia",
+        "note": "Per datos.gob.es; exact attribution wording not confirmed."
+      },
+      "validity": {
+        "kind": "snapshot",
+        "as_of": "2023-05-02"
+      },
+      "coverage": {
+        "count": 69052
+      }
+    },
+    {
+      "id": "gipuzkoa_urban_parcels",
+      "title": "Parcelas urbanas del Catastro de Gipuzkoa (marzo de 2023)",
+      "entity_type": "cadastral_parcel",
+      "geometry": {
+        "crs": "EPSG:4326",
+        "type": "Polygon or MultiPolygon"
+      },
+      "output": {
+        "path": "processed/cadastre/cadastral_parcels_2023-04/{province}.parquet",
+        "format": "GeoParquet 1.1, one file per province",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "Catalogue id."
+          },
+          {
+            "name": "reference",
+            "type": "string",
+            "description": "The source's parcel reference."
+          },
+          {
+            "name": "area_m2",
+            "type": "integer",
+            "description": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."
+          },
+          {
+            "name": "valid_from",
+            "type": "date",
+            "description": "Start of the parcel's current version, where the source gives it."
+          },
+          {
+            "name": "catastro_municipality_code",
+            "type": "string",
+            "description": "Catastro's municipality code (state Catastro only)."
+          },
+          {
+            "name": "municipality_code",
+            "type": "string",
+            "description": "INE code of the municipality it lies in."
+          },
+          {
+            "name": "zone_id",
+            "type": "string",
+            "description": "Catalogue id of its urban block (state Catastro only)."
+          },
+          {
+            "name": "parent_id",
+            "type": "string",
+            "description": "Its block, or its municipality."
+          },
+          {
+            "name": "source",
+            "type": "string",
+            "description": "catastro, navarra, bizkaia, gipuzkoa or alava."
+          },
+          {
+            "name": "geometry",
+            "type": "geometry",
+            "description": "Parcel boundary."
+          }
+        ]
+      },
+      "publisher": {
+        "name": "Diputación Foral de Gipuzkoa"
+      },
+      "source": {
+        "kind": "file",
+        "file": "KATASTROA_CATASTRO.zip, HIRILUR_URBANO.shp",
+        "snapshot": "2023-03-17"
+      },
+      "license": null,
+      "validity": {
+        "kind": "snapshot",
+        "as_of": "2023-03-17"
+      },
+      "coverage": {
+        "count": 58511
+      }
+    },
+    {
+      "id": "alava_urban_parcels",
+      "title": "Parcelas urbanas del Catastro de Álava (abril de 2023)",
+      "entity_type": "cadastral_parcel",
+      "geometry": {
+        "crs": "EPSG:4326",
+        "type": "Polygon or MultiPolygon"
+      },
+      "output": {
+        "path": "processed/cadastre/cadastral_parcels_2023-04/{province}.parquet",
+        "format": "GeoParquet 1.1, one file per province",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "Catalogue id."
+          },
+          {
+            "name": "reference",
+            "type": "string",
+            "description": "The source's parcel reference."
+          },
+          {
+            "name": "area_m2",
+            "type": "integer",
+            "description": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."
+          },
+          {
+            "name": "valid_from",
+            "type": "date",
+            "description": "Start of the parcel's current version, where the source gives it."
+          },
+          {
+            "name": "catastro_municipality_code",
+            "type": "string",
+            "description": "Catastro's municipality code (state Catastro only)."
+          },
+          {
+            "name": "municipality_code",
+            "type": "string",
+            "description": "INE code of the municipality it lies in."
+          },
+          {
+            "name": "zone_id",
+            "type": "string",
+            "description": "Catalogue id of its urban block (state Catastro only)."
+          },
+          {
+            "name": "parent_id",
+            "type": "string",
+            "description": "Its block, or its municipality."
+          },
+          {
+            "name": "source",
+            "type": "string",
+            "description": "catastro, navarra, bizkaia, gipuzkoa or alava."
+          },
+          {
+            "name": "geometry",
+            "type": "geometry",
+            "description": "Parcel boundary."
+          }
+        ]
+      },
+      "publisher": {
+        "name": "Diputación Foral de Álava"
+      },
+      "source": {
+        "kind": "file",
+        "file": "parcela_urbana.shp per municipality",
+        "snapshot": "2023-04-28"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "Diputación Foral de Álava / Arabako Foru Aldundia"
+      },
+      "validity": {
+        "kind": "snapshot",
+        "as_of": "2023-04-28"
+      },
+      "coverage": {
+        "count": 51816
+      }
+    },
+    {
+      "id": "cadastral_polygons_2023",
+      "title": "Polígonos catastrales de España (Catastro y catastros forales, 2023)",
+      "entity_type": "rural_polygon",
+      "source": {
+        "kind": "derived",
+        "from": [
+          "catastro_cadastral_zones",
+          "navarra (CATAST_Pol_Poligono)",
+          "alava (poligono.shp)",
+          "bizkaia ({code}_Poligono.shp)",
+          "gipuzkoa (union of LANDALUR_RUSTICA parcels by polygon)"
+        ]
+      },
+      "license": {
+        "note": "Each source's own: see catastro_cadastral_zones and the foral parcel datasets."
+      },
+      "validity": {
+        "kind": "snapshot",
+        "as_of": "2023"
+      },
+      "coverage": {
+        "country": "ES",
+        "count": 183133,
+        "by_source": {
+          "catastro": 175210,
+          "bizkaia": 4152,
+          "navarra": 2523,
+          "gipuzkoa": 875,
+          "alava": 373
+        }
+      },
+      "geometry": {
+        "crs": "EPSG:4326",
+        "type": "Polygon or MultiPolygon"
+      },
+      "output": {
+        "path": "processed/cadastre/rural_polygons_2023.parquet",
+        "format": "GeoParquet 1.1",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "polygon",
+            "type": "string",
+            "description": "Polygon number."
+          },
+          {
+            "name": "source_municipality_code",
+            "type": "string",
+            "description": "The source's own municipality code."
+          },
+          {
+            "name": "municipality_code",
+            "type": "string",
+            "description": "INE municipality it lies in."
+          },
+          {
+            "name": "source",
+            "type": "string"
+          },
+          {
+            "name": "parent_id",
+            "type": "string"
+          },
+          {
+            "name": "geometry",
+            "type": "geometry"
+          }
+        ]
+      }
+    }
+  ]
+}

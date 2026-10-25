@@ -1,0 +1,274 @@
+{
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details (retrieval date, checksum) are in the outputs' .meta.json files.",
+  "entity_types": [
+    {
+      "id": "census_district",
+      "label": {
+        "es": "Distrito censal",
+        "en": "Census district"
+      },
+      "label_plural": {
+        "es": "Distritos censales",
+        "en": "Census districts"
+      },
+      "id_pattern": "es:ine:dist:{ine_code}",
+      "id_example": "es:ine:dist:2807901",
+      "key": {
+        "name": "ine_code",
+        "description": "INE district code: seven digits, the municipality's five followed by the district's two.",
+        "authority": "INE",
+        "pattern": "^[0-9]{7}$"
+      },
+      "has_geometry": true,
+      "versioned_geometry": "yearly (INE redraws districts each 1 January)"
+    },
+    {
+      "id": "census_section",
+      "label": {
+        "es": "Sección censal",
+        "en": "Census section"
+      },
+      "label_plural": {
+        "es": "Secciones censales",
+        "en": "Census sections"
+      },
+      "id_pattern": "es:ine:sec:{ine_code}",
+      "id_example": "es:ine:sec:2807901001",
+      "key": {
+        "name": "ine_code",
+        "description": "INE section code: ten digits, the district's seven followed by the section's three.",
+        "authority": "INE",
+        "pattern": "^[0-9]{10}$"
+      },
+      "has_geometry": true,
+      "versioned_geometry": "yearly (INE redraws sections each 1 January)"
+    }
+  ],
+  "relation_types": [
+    {
+      "id": "part_of",
+      "from": "census_section",
+      "to": "census_district",
+      "description": "The section belongs to the district (both in the same edition).",
+      "source_field": "parent_id"
+    },
+    {
+      "id": "part_of",
+      "from": "census_district",
+      "to": "municipality",
+      "description": "The district belongs to the municipality.",
+      "source_field": "parent_id"
+    }
+  ],
+  "datasets": [
+    {
+      "id": "ine_census_sections",
+      "title": "Secciones censales de España (INE, cartografía digitalizada)",
+      "entity_type": "census_section",
+      "publisher": {
+        "name": "Instituto Nacional de Estadística (INE)",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "file",
+        "url_pattern": "https://www.ine.es/prodyser/cartografia/seccionado_{year}.zip",
+        "format": "ESRI Shapefile, ETRS89 / UTM 30N (EPSG:25830)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "validity": {
+        "kind": "edition",
+        "as_of": "{year}-01-01",
+        "description": "Each edition is the sectioning in force on 1 January of its year. Section codes can be reused with different boundaries in other editions: a geometry is only meaningful with its year."
+      },
+      "editions": [
+        2026
+      ],
+      "coverage": {
+        "country": "ES",
+        "count": {
+          "2026": 36669
+        }
+      },
+      "geometry": {
+        "crs": "EPSG:4326",
+        "type": "Polygon or MultiPolygon",
+        "resolution": "as published by INE, reprojected",
+        "variants": {
+          "aligned": {
+            "path": "processed/census_sections/census_sections_{year}_aligned.parquet",
+            "description": "Redrawn to IGN's municipal boundaries (align_to_municipalities.py): clipped to each municipality and gaps assigned to the neighbouring section; used by the map."
+          }
+        }
+      },
+      "output": {
+        "path": "processed/census_sections/census_sections_{year}.parquet",
+        "format": "GeoParquet 1.1",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "Catalogue id (es:ine:sec:{ine_code})."
+          },
+          {
+            "name": "ine_code",
+            "type": "string",
+            "description": "INE section code (CUSEC, ten digits)."
+          },
+          {
+            "name": "section_code",
+            "type": "string",
+            "description": "Section number within its district (three digits)."
+          },
+          {
+            "name": "district_code",
+            "type": "string",
+            "description": "District number within its municipality (two digits)."
+          },
+          {
+            "name": "municipality_code",
+            "type": "string",
+            "description": "INE municipality code."
+          },
+          {
+            "name": "province_code",
+            "type": "string",
+            "description": "INE province code."
+          },
+          {
+            "name": "ccaa_code",
+            "type": "string",
+            "description": "INE autonomous community code."
+          },
+          {
+            "name": "municipality_name",
+            "type": "string",
+            "description": "Municipality name as INE writes it (articles at the end)."
+          },
+          {
+            "name": "parent_id",
+            "type": "string",
+            "description": "Catalogue id of the district (es:ine:dist:{code})."
+          },
+          {
+            "name": "year",
+            "type": "integer",
+            "description": "Edition: the sectioning as of 1 January of this year."
+          },
+          {
+            "name": "geometry",
+            "type": "geometry",
+            "description": "Section boundary."
+          }
+        ]
+      },
+      "update_frequency": "yearly (published around March)"
+    },
+    {
+      "id": "ine_census_districts",
+      "title": "Distritos censales de España (derivados de las secciones censales del INE)",
+      "entity_type": "census_district",
+      "publisher": {
+        "name": "Instituto Nacional de Estadística (INE)",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "derived",
+        "from": "ine_census_sections",
+        "method": "Union of each district's sections (INE doesn't publish district boundaries)."
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "validity": {
+        "kind": "edition",
+        "as_of": "{year}-01-01",
+        "description": "Same edition as the sections it's built from."
+      },
+      "editions": [
+        2026
+      ],
+      "coverage": {
+        "country": "ES",
+        "count": {
+          "2026": 10452
+        }
+      },
+      "geometry": {
+        "crs": "EPSG:4326",
+        "type": "Polygon or MultiPolygon",
+        "resolution": "as published by INE, reprojected",
+        "variants": {
+          "aligned": {
+            "path": "processed/census_sections/census_districts_{year}_aligned.parquet",
+            "description": "Redrawn to IGN's municipal boundaries (align_to_municipalities.py): clipped to each municipality and gaps assigned to the neighbouring section; used by the map."
+          }
+        }
+      },
+      "output": {
+        "path": "processed/census_sections/census_districts_{year}.parquet",
+        "format": "GeoParquet 1.1",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "Catalogue id (es:ine:dist:{ine_code})."
+          },
+          {
+            "name": "ine_code",
+            "type": "string",
+            "description": "INE district code (seven digits)."
+          },
+          {
+            "name": "district_code",
+            "type": "string",
+            "description": "District number within its municipality (two digits)."
+          },
+          {
+            "name": "municipality_code",
+            "type": "string",
+            "description": "INE municipality code."
+          },
+          {
+            "name": "province_code",
+            "type": "string",
+            "description": "INE province code."
+          },
+          {
+            "name": "ccaa_code",
+            "type": "string",
+            "description": "INE autonomous community code."
+          },
+          {
+            "name": "municipality_name",
+            "type": "string",
+            "description": "Municipality name as INE writes it."
+          },
+          {
+            "name": "parent_id",
+            "type": "string",
+            "description": "Catalogue id of the municipality (es:ine:mun:{code})."
+          },
+          {
+            "name": "year",
+            "type": "integer",
+            "description": "Edition."
+          },
+          {
+            "name": "geometry",
+            "type": "geometry",
+            "description": "District boundary."
+          }
+        ]
+      },
+      "update_frequency": "with the sections"
+    }
+  ]
+}

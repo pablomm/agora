@@ -1,0 +1,86 @@
+{
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details (retrieval date, checksum) are in the output's provinces.meta.json.",
+  "entity_types": [
+    {
+      "id": "province",
+      "label": { "es": "Provincia", "en": "Province" },
+      "label_plural": { "es": "Provincias", "en": "Provinces" },
+      "id_pattern": "es:ine:prov:{ine_code}",
+      "id_example": "es:ine:prov:28",
+      "key": {
+        "name": "ine_code",
+        "description": "INE province code: two digits, 01–52 (51 Ceuta and 52 Melilla are autonomous cities with province codes).",
+        "authority": "INE",
+        "pattern": "^(0[1-9]|[1-4][0-9]|5[0-2])$"
+      },
+      "has_geometry": true
+    }
+  ],
+  "relation_types": [
+    {
+      "id": "part_of",
+      "from": "province",
+      "to": "autonomous_community",
+      "description": "The province belongs to the autonomous community (Ceuta and Melilla: the autonomous city itself).",
+      "source_field": "parent_id"
+    }
+  ],
+  "datasets": [
+    {
+      "id": "ign_au_provinces",
+      "title": "Provincias de España (IGN, unidades administrativas INSPIRE)",
+      "entity_type": "province",
+      "publisher": {
+        "name": "Instituto Geográfico Nacional (IGN)",
+        "url": "https://www.ign.es"
+      },
+      "source": {
+        "kind": "wfs",
+        "url": "https://www.ign.es/wfs-inspire/unidades-administrativas",
+        "feature_type": "au:AdministrativeUnit",
+        "filter": "nationalLevel = 3rdOrder",
+        "metadata_url": "https://www.idee.es/csw-inspire-idee/srv/spa/csw?SERVICE=CSW&VERSION=2.0.2&REQUEST=GetRecordById&outputSchema=http://www.isotc211.org/2005/gmd&ElementSetName=full&ID=spaignLLM"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "CC BY 4.0 ign.es"
+      },
+      "validity": {
+        "kind": "current",
+        "as_of": "retrieval",
+        "description": "The service publishes the current state of IGN's administrative boundaries, without validity dates; the data is valid as of its retrieval date."
+      },
+      "coverage": {
+        "country": "ES",
+        "count": 52,
+        "excluded": [
+          {
+            "ign_code": "34205400000",
+            "name": "Territorios no asociados a ninguna provincia",
+            "reason": "The plazas de soberanía are not one of INE's provinces."
+          }
+        ]
+      },
+      "geometry": {
+        "crs": "EPSG:4326",
+        "type": "MultiPolygon",
+        "resolution": "full (as published by IGN, not simplified)"
+      },
+      "output": {
+        "path": "processed/provinces/provinces.parquet",
+        "format": "GeoParquet 1.1",
+        "fields": [
+          { "name": "id", "type": "string", "description": "Catalogue id of the province (es:ine:prov:{ine_code})." },
+          { "name": "ine_code", "type": "string", "description": "INE province code." },
+          { "name": "name", "type": "string", "description": "Official name as published by IGN; bilingual where official (e.g. 'Alacant/Alicante')." },
+          { "name": "ccaa_code", "type": "string", "description": "INE code of the autonomous community." },
+          { "name": "parent_id", "type": "string", "description": "Catalogue id of the autonomous community (es:ine:ccaa:{ccaa_code})." },
+          { "name": "ign_code", "type": "string", "description": "IGN national code (34 + CCAA + province + 00000)." },
+          { "name": "geometry", "type": "geometry", "description": "Province boundary." }
+        ]
+      },
+      "update_frequency": "on demand (provincial boundaries change rarely)"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# Martin tile server for local development. Run from this folder: martin --config martin.yaml
+# Docs: https://maplibre.org/martin/
+
+# Local only; the platform's dev server reads tiles from here (CORS is open by default).
+listen_addresses: 127.0.0.1:3000
+
+pmtiles:
+  # Local files only, no remote PMTiles over HTTP.
+  allow_http: false
+  # Every .pmtiles file in the folder becomes a source named after the file:
+  # /{name} for its TileJSON, /{name}/{z}/{x}/{y} for its tiles.
+  paths:
+    - ${AGORA_TILES_DIR:-../pipelines/data/processed/tiles}

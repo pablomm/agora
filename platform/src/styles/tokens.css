@@ -1,0 +1,40 @@
+/* Colour and layout tokens; the dark set is chosen by app/theme.ts. */
+:root {
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --surface: rgb(255 255 255 / 0.95);
+  --text: #1d2125;
+  --muted: #5f6b76;
+  --border: #d9dee3;
+  --focus: #1d4ed8;
+  --accent: #2563eb;
+  --shadow: 0 2px 12px rgb(0 0 0 / 0.15);
+  --radius: 10px;
+  --gutter: 12px;
+  --page: #e9ecef;
+  --field: #fff;
+  --hover: #eef2f6;
+  --warning: #fff4e5;
+  /* Activity bar and sidebar: solid, docked to the left edge. */
+  --bar: #f3f5f7;
+  --bar-icon: #7a8590;
+  --panel: #fff;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --surface: rgb(27 30 34 / 0.94);
+  --text: #e4e7ea;
+  --muted: #9aa4ae;
+  --border: #363c43;
+  --focus: #8ab0ff;
+  --accent: #3b82f6;
+  --shadow: 0 2px 12px rgb(0 0 0 / 0.5);
+  --page: #16191c;
+  --field: #1f2328;
+  --hover: #2b3036;
+  --warning: #4a3519;
+  --bar: #16191c;
+  --bar-icon: #7d8791;
+  --panel: #1d2024;
+  color-scheme: dark;
+}
