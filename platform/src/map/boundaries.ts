@@ -9,6 +9,7 @@ import {
   type StyleSpecification,
 } from 'maplibre-gl'
 import { config } from '../app/config'
+import { formatPeriod, formatValue } from '../app/format'
 import type { DataLevel } from '../data/api'
 import { copy } from '../app/copy'
 import { boundaryLayers, boundaryLevels, boundaryOverlays, type BoundaryLayer, type BoundaryLevel, type BoundaryMode, type BoundaryOverlay } from '../app/settings'
@@ -81,6 +82,17 @@ export interface Choropleth {
   layer: BoundaryLayer
   values: Record<string, number>
   breaks: number[]
+  /** What the values are, for the hover label: the variable with its options, unit and year. */
+  label: string
+  unit: string
+  period: number
+}
+
+/** The color a value gets: its class's. */
+export function choroplethColor(value: number, breaks: number[], basemap: BoundaryBasemap): string {
+  const classes = choroplethClasses(breaks, basemap)
+  const index = classes.breaks.filter((limit) => value >= limit).length
+  return classes.colors[index]
 }
 
 /**
@@ -349,12 +361,37 @@ export function markSelected(map: MaplibreMap, unit: SelectedUnit | undefined, s
   if (unit && map.getSource(unit.target.source)) map.setFeatureState(unit.target, { selected })
 }
 
+/** The hover label's data: the value with its class's swatch, then what it is (variable, year). */
+function dataLine(choropleth: Choropleth, value: number | undefined, basemap: BoundaryBasemap): HTMLElement {
+  const line = document.createElement('div')
+  line.className = 'boundary-label-value'
+  const swatch = document.createElement('span')
+  swatch.className = 'boundary-label-swatch'
+  const amount = document.createElement('strong')
+  if (value === undefined) {
+    swatch.classList.add('is-empty')
+    amount.textContent = copy.boundaries.noValue
+  } else {
+    swatch.style.background = choroplethColor(value, choropleth.breaks, basemap)
+    amount.textContent = formatValue(value, choropleth.unit)
+  }
+  const what = document.createElement('small')
+  what.textContent = `${choropleth.label} · ${formatPeriod(choropleth.period)}`
+  line.append(swatch, amount)
+  const box = document.createElement('div')
+  box.append(line, what)
+  return box
+}
+
 /**
  * Highlights the unit under the pointer, shows its name next to it and a pointer cursor (units
- * can be clicked). Returns the cleanup that removes the listeners and the label.
+ * can be clicked); with a data layer on the hovered unit's layer, the label adds its value. Returns
+ * the cleanup that removes the listeners and the label.
  */
-export function trackBoundaryHover(map: MaplibreMap): () => void {
+export function trackBoundaryHover(map: MaplibreMap, data: () => { choropleth: Choropleth | undefined; basemap: BoundaryBasemap }): () => void {
   let hovered: FeatureIdentifier | undefined
+  // The data layer the label was made with, to remake it when the layer changes under the pointer.
+  let shownWith: Choropleth | undefined
   let photoTimer: ReturnType<typeof setTimeout> | undefined
   const label = new Popup({ closeButton: false, closeOnClick: false, className: 'boundary-label', offset: 14, maxWidth: 'none' })
 
@@ -371,12 +408,20 @@ export function trackBoundaryHover(map: MaplibreMap): () => void {
    * The label's text; for parcels, a square thumbnail to its left: a loading placeholder, then
    * the facade photo (cropped to the square) or, without one, a "no photo" sign.
    */
-  const showLabel = (properties: Record<string, unknown>) => {
+  const showLabel = (properties: Record<string, unknown>, layer: string | undefined, id: string) => {
     const content = document.createElement('div')
     const text = document.createElement('span')
     text.textContent = unitLabel(properties)
     content.append(text)
     label.setDOMContent(content)
+    const { choropleth, basemap } = data()
+    shownWith = choropleth
+    if (choropleth && choropleth.layer === layer) {
+      content.className = 'boundary-label-data'
+      text.className = 'boundary-label-name'
+      content.append(dataLine(choropleth, choropleth.values[id], basemap))
+      return
+    }
     if (properties.kind !== 'cadastral_parcel') return
 
     content.className = 'boundary-label-row'
@@ -412,7 +457,9 @@ export function trackBoundaryHover(map: MaplibreMap): () => void {
       clear()
       hovered = { source: feature.source, sourceLayer: feature.sourceLayer, id: feature.id! }
       map.setFeatureState(hovered, { hover: true })
-      showLabel(feature.properties)
+      showLabel(feature.properties, feature.sourceLayer, String(feature.id))
+    } else if (shownWith !== data().choropleth) {
+      showLabel(feature.properties, feature.sourceLayer, String(feature.id))
     }
     label.setLngLat(event.lngLat)
     if (!label.isOpen()) label.addTo(map)

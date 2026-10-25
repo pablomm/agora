@@ -15,7 +15,8 @@ export interface Facet {
   dataset: string
   dataset_title: string
   license: License | null
-  /** Years with data, by level. */
+  frequency: 'yearly' | 'monthly'
+  /** Periods with data (years, or months as YYYYMM), by level. */
   coverage: Partial<Record<DataLevel, number[]>>
 }
 
@@ -164,9 +165,22 @@ export function optionValue(option: VariableOption, choices: Choices): string {
   return Array.isArray(option.default) ? `${option.default[0]}..${option.default[option.default.length - 1]}` : option.default
 }
 
-/** The year to show at a level: the one chosen if that level has it, otherwise its latest. */
+/**
+ * The period to show at a level: the one chosen if that level has it; for a month chosen on yearly
+ * data, its year (and for a year on monthly data, its last month); otherwise the latest.
+ */
 export function periodFor(facet: Facet, level: DataLevel, chosen: number | undefined): number | undefined {
-  const years = facet.coverage[level] ?? []
-  if (!years.length) return undefined
-  return chosen !== undefined && years.includes(chosen) ? chosen : Math.max(...years)
+  return matchPeriod(facet.coverage[level] ?? [], chosen)
+}
+
+/** Of some periods, the one matching `chosen` (see `periodFor`). */
+export function matchPeriod(periods: number[], chosen: number | undefined): number | undefined {
+  if (!periods.length) return undefined
+  if (chosen !== undefined) {
+    if (periods.includes(chosen)) return chosen
+    const year = chosen > 9999 ? Math.floor(chosen / 100) : chosen
+    const sameYear = periods.filter((period) => (period > 9999 ? Math.floor(period / 100) : period) === year)
+    if (sameYear.length) return Math.max(...sameYear)
+  }
+  return Math.max(...periods)
 }

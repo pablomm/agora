@@ -1,5 +1,5 @@
 import { copy } from '../app/copy'
-import { formatCompact } from '../app/format'
+import { formatCompact, formatPeriod, isCount } from '../app/format'
 import type { Observations, Variable } from '../data/api'
 import { choroplethClasses, type BoundaryBasemap } from '../map/boundaries'
 
@@ -33,7 +33,7 @@ export function Legend({ variable, basemap, levelLabel, observations, status }: 
     body = (
       <>
         <p className="legend-meta">
-          {levelLabel} · {observations.period} · {observations.facet.label}
+          {levelLabel} · {formatPeriod(observations.period)} · {observations.facet.label}
         </p>
         <ul className="legend-classes">
           {(breaks.length ? rows : [{ color: colors[0], text: formatCompact(observations.stats.min ?? 0, unit) }]).map((row) => (
@@ -54,7 +54,7 @@ export function Legend({ variable, basemap, levelLabel, observations, status }: 
   return (
     <div className="map-legend" role="group" aria-label={`${copy.legend.label}: ${variable.label}`}>
       <p className="legend-title">
-        {observations?.label ?? variable.label} {variable.unit !== 'personas' && <span className="legend-unit">({variable.unit})</span>}
+        {observations?.label ?? variable.label} {!isCount(variable.unit) && <span className="legend-unit">({variable.unit})</span>}
       </p>
       {body}
     </div>

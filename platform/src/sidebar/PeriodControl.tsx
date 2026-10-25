@@ -1,4 +1,5 @@
 import { copy } from '../app/copy'
+import { formatPeriod, isMonth } from '../app/format'
 
 type Period = number | string
 
@@ -10,11 +11,12 @@ interface Props {
   onChange: (period: Period | undefined) => void
 }
 
-const isYear = (period: Period) => typeof period === 'number' && Number.isInteger(period)
+/** Years (2025) and months (YYYYMM) go on a slider; named versions in a select. */
+const isTime = (period: Period) => typeof period === 'number' && Number.isInteger(period)
 
 /**
- * A layer's version: a slider when versions are years (over the years it has, so gaps are
- * skipped), a select when they're named otherwise.
+ * A layer's version: a slider when versions are years or months (over the ones it has, so gaps
+ * are skipped), a select when they're named otherwise.
  */
 export function PeriodControl({ periods, value, onChange }: Props) {
   if (!periods.length) return null
@@ -22,7 +24,7 @@ export function PeriodControl({ periods, value, onChange }: Props) {
   // Choosing the newest means "the latest", not that year in particular.
   const choose = (period: Period) => onChange(period === periods[0] ? undefined : period)
 
-  if (!periods.every(isYear)) {
+  if (!periods.every(isTime)) {
     return (
       <label className="period-control">
         <span className="period-label">{copy.mapView.version}</span>
@@ -42,9 +44,9 @@ export function PeriodControl({ periods, value, onChange }: Props) {
   return (
     <div className="period-control is-slider">
       <div className="period-header">
-        <span className="period-label">{copy.mapView.year}</span>
+        <span className="period-label">{isMonth(Number(current)) ? copy.mapView.month : copy.mapView.year}</span>
         <output className="period-value">
-          {current}
+          {formatPeriod(Number(current))}
           {current === periods[0] && <span className="period-latest">{copy.mapView.latestTag}</span>}
         </output>
       </div>
@@ -57,13 +59,13 @@ export function PeriodControl({ periods, value, onChange }: Props) {
             step={1}
             value={index}
             aria-label={copy.mapView.year}
-            aria-valuetext={String(current)}
+            aria-valuetext={formatPeriod(Number(current))}
             style={{ '--fill': `${(index / (years.length - 1)) * 100}%` } as React.CSSProperties}
             onChange={(event) => choose(years[Number(event.target.value)])}
           />
           <div className="period-range" aria-hidden="true">
-            <span>{years[0]}</span>
-            <span>{years[years.length - 1]}</span>
+            <span>{formatPeriod(Number(years[0]))}</span>
+            <span>{formatPeriod(Number(years[years.length - 1]))}</span>
           </div>
         </>
       )}

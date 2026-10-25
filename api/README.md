@@ -34,6 +34,11 @@ list of codes summed) and, for ratios, a denominator filter; value = numerator /
 scale. When a variable has several sources (population: official figures and census), each level
 has a default facet, and series return each source apart (never joined).
 
+Datasets are yearly (period `2025`) or monthly (period `202509`, SEPE's registers); facets say
+their `frequency`. A ratio's denominator can come from another, yearly dataset
+(`{"dataset": …, "filter": …}`): each month is divided by that dataset's value for its year (the
+latest year for later months), so the facet covers months from that dataset's first year.
+
 A variable can have **options**: dimensions the user picks, which its facets refer to as
 `"$dimension"`. `population` takes a sex (total, men, women); `population_age_share` takes a
 range of five-year age groups, summed (`Y0T4..Y10T14` = 0 to 14). REST takes them as

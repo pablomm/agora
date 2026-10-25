@@ -7,15 +7,25 @@ import { Header } from '../components/Header'
 import { Legend } from '../components/Legend'
 import { SettingsMenu } from '../components/SettingsMenu'
 import { Sidebar } from '../components/Sidebar'
-import { api, facetFor, facetsAt, periodFor, type Catalog, type Choices, type Observations, type Place } from '../data/api'
+import { api, facetFor, facetsAt, periodFor, type Catalog, type Choices, type Observations, type Place, type Variable } from '../data/api'
 import { activeLevel, LAYER_LEVEL, minZoomFor, unitFromPlace, type Choropleth, type SelectedUnit } from '../map/boundaries'
 import { MainMap } from '../map/MainMap'
 import { MapControls } from '../map/MapControls'
 import { useZoom } from '../map/useZoom'
 import { MapView } from '../sidebar/MapView'
 import type { ViewId } from '../sidebar/views'
-import { loadSettings, saveSettings } from './settings'
+import { loadSettings, saveSettings, type BoundaryLayer } from './settings'
 import { setThemeMode, useTheme } from './theme'
+
+/** Boundary layers with statistics, from the most detailed. */
+const DATA_LAYERS: BoundaryLayer[] = ['census_sections', 'census_districts', 'municipalities', 'provinces', 'autonomous_communities']
+
+/** The layer to paint a variable on: the one shown, or the finest coarser one with data when it has none there. */
+function finestWithData(variable: Variable, shown: BoundaryLayer): BoundaryLayer {
+  // Layers without statistics in the automatic sequence (parcels) are finer than sections.
+  const start = Math.max(0, DATA_LAYERS.indexOf(shown))
+  return DATA_LAYERS.slice(start).find((layer) => facetsAt(variable, LAYER_LEVEL[layer]!).length > 0) ?? shown
+}
 
 /** A variable with nothing picked yet: its default options and source (one object, so effects see no change). */
 const NO_PICK: { choices: Choices; facet?: string } = { choices: {} }
@@ -48,9 +58,13 @@ export default function App() {
   const pick = (variableId && picks[variableId]) || NO_PICK
   const updatePick = (change: Partial<typeof pick>) => variableId && setPicks({ ...picks, [variableId]: { ...pick, ...change } })
   const zoom = useZoom(map)
-  const layer = zoom === undefined ? undefined : activeLevel(settings.boundaries, zoom)
-  const level = layer ? LAYER_LEVEL[layer] : undefined
   const variable = catalog?.variables.find((item) => item.id === variableId)
+  const zoomLayer = zoom === undefined ? undefined : activeLevel(settings.boundaries, zoom)
+  // In automatic mode, zooming in past the data layer's finest level keeps that level on the map
+  // (municipal registers at district zoom show municipalities).
+  const layer = settings.boundaries === 'auto' && variable && zoomLayer ? finestWithData(variable, zoomLayer) : zoomLayer
+  const level = layer ? LAYER_LEVEL[layer] : undefined
+  const mapSettings = layer && layer !== zoomLayer ? { ...settings, boundaries: layer } : settings
   const facet = variable && level ? facetFor(variable, level, pick.facet) : undefined
   const year = facet && level ? periodFor(facet, level, period) : undefined
   const years = facet && level ? [...(facet.coverage[level] ?? [])].sort((a, b) => b - a) : []
@@ -73,7 +87,10 @@ export default function App() {
   const ready = observations?.key === request ? observations : undefined
 
   const choropleth = useMemo<Choropleth | undefined>(
-    () => (layer && ready?.data ? { layer, values: ready.data.values, breaks: ready.data.stats.quantiles } : undefined),
+    () =>
+      layer && ready?.data
+        ? { layer, values: ready.data.values, breaks: ready.data.stats.quantiles, label: ready.data.label, unit: ready.data.unit, period: ready.data.period }
+        : undefined,
     [layer, ready],
   )
   const theme = useTheme()
@@ -120,7 +137,7 @@ export default function App() {
         </Sidebar>
       )}
       <main className="map-area">
-        <MainMap settings={settings} selected={selected} onSelect={setSelected} choropleth={choropleth} onReady={setMap} />
+        <MainMap settings={mapSettings} selected={selected} onSelect={setSelected} choropleth={choropleth} onReady={setMap} />
         <div className="top-left">
           <Header onPlace={goTo} />
         </div>

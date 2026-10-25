@@ -1,0 +1,948 @@
+{
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in each dataset's meta.json. A denominator can come from another dataset ({dataset, filter}): its yearly values divide every month of that year.",
+  "dimensions": [
+    {
+      "id": "age_band",
+      "label": {
+        "es": "Edad",
+        "en": "Age"
+      },
+      "values": {
+        "total": "Todas las edades",
+        "Y_LT25": "Menores de 25 años",
+        "Y25T44": "De 25 a 44 años",
+        "Y_GE45": "45 años o más"
+      },
+      "order": [
+        "total",
+        "Y_LT25",
+        "Y25T44",
+        "Y_GE45"
+      ]
+    },
+    {
+      "id": "sector",
+      "label": {
+        "es": "Sector",
+        "en": "Sector"
+      },
+      "values": {
+        "total": "Todos los sectores",
+        "agriculture": "Agricultura",
+        "industry": "Industria",
+        "construction": "Construcción",
+        "services": "Servicios",
+        "no_previous_job": "Sin empleo anterior"
+      },
+      "order": [
+        "total",
+        "agriculture",
+        "industry",
+        "construction",
+        "services",
+        "no_previous_job"
+      ]
+    },
+    {
+      "id": "contract_type",
+      "label": {
+        "es": "Tipo de contrato",
+        "en": "Contract type"
+      },
+      "values": {
+        "total": "Todos",
+        "permanent_initial": "Indefinido inicial",
+        "temporary_initial": "Temporal inicial",
+        "converted_permanent": "Convertido en indefinido"
+      },
+      "order": [
+        "total",
+        "permanent_initial",
+        "temporary_initial",
+        "converted_permanent"
+      ]
+    },
+    {
+      "id": "activity",
+      "label": {
+        "es": "Relación con la actividad",
+        "en": "Relation with activity"
+      },
+      "values": {
+        "total": "Total",
+        "employed": "Ocupados",
+        "unemployed": "Parados",
+        "pensioner": "Pensionistas",
+        "student": "Estudiantes",
+        "other_inactive": "Otros inactivos"
+      },
+      "order": [
+        "total",
+        "employed",
+        "unemployed",
+        "pensioner",
+        "student",
+        "other_inactive"
+      ]
+    }
+  ],
+  "datasets": [
+    {
+      "id": "registered_unemployment",
+      "title": "Paro registrado por municipio",
+      "publisher": {
+        "name": "SEPE",
+        "url": "https://www.sepe.es"
+      },
+      "source": {
+        "kind": "sepe_open_data",
+        "url": "https://sede.sepe.gob.es/es/portaltrabaja/resources/sede/datos_abiertos/datos/",
+        "files": "Paro_por_municipios_{year}_csv.csv",
+        "catalog": "https://datos.gob.es/es/catalogo/ea0041513-paro-registrado-por-municipio"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "Servicio Público de Empleo Estatal (SEPE); valores menores de 5 imputados por Agora."
+      },
+      "measure": {
+        "id": "registered_unemployment",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "age_band",
+        "sector"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2006-01 – 2026-09, monthly",
+      "validity": {
+        "kind": "monthly",
+        "as_of": "last day of the month"
+      },
+      "output": "processed/employment/registered_unemployment/{level}.parquet"
+    },
+    {
+      "id": "job_seekers",
+      "title": "Demandantes de empleo por municipio",
+      "publisher": {
+        "name": "SEPE",
+        "url": "https://www.sepe.es"
+      },
+      "source": {
+        "kind": "sepe_open_data",
+        "url": "https://sede.sepe.gob.es/es/portaltrabaja/resources/sede/datos_abiertos/datos/",
+        "files": "Dtes_empleo_por_municipios_{year}_csv.csv",
+        "catalog": "https://datos.gob.es/es/catalogo/ea0041513-demandantes-de-empleo-por-municipio"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "Servicio Público de Empleo Estatal (SEPE); valores menores de 5 imputados por Agora."
+      },
+      "measure": {
+        "id": "job_seekers",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "age_band",
+        "sector"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2006-01 – 2026-09, monthly",
+      "validity": {
+        "kind": "monthly",
+        "as_of": "last day of the month"
+      },
+      "output": "processed/employment/job_seekers/{level}.parquet"
+    },
+    {
+      "id": "contracts",
+      "title": "Contratos registrados por municipio",
+      "publisher": {
+        "name": "SEPE",
+        "url": "https://www.sepe.es"
+      },
+      "source": {
+        "kind": "sepe_open_data",
+        "url": "https://sede.sepe.gob.es/es/portaltrabaja/resources/sede/datos_abiertos/datos/",
+        "files": "Contratos_por_municipios_{year}_csv.csv",
+        "catalog": "https://datos.gob.es/es/catalogo/ea0041513-contratos-registrados-por-municipio"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "Servicio Público de Empleo Estatal (SEPE); valores menores de 5 imputados por Agora."
+      },
+      "measure": {
+        "id": "contracts",
+        "unit": "contratos",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "contract_type",
+        "sector"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2006-01 – 2026-09, monthly",
+      "validity": {
+        "kind": "monthly",
+        "as_of": "last day of the month"
+      },
+      "output": "processed/employment/contracts/{level}.parquet"
+    },
+    {
+      "id": "census_activity",
+      "title": "Población de 16 y más años por sexo y relación con la actividad (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          66594
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population_16_plus",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "activity"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/employment/census_activity/{level}.parquet"
+    }
+  ],
+  "variables": [
+    {
+      "id": "registered_unemployment",
+      "topic": "employment",
+      "label": {
+        "es": "Paro registrado",
+        "en": "Paro registrado"
+      },
+      "description": {
+        "es": "Personas inscritas como paradas en las oficinas de empleo, a final de mes.",
+        "en": "Personas inscritas como paradas en las oficinas de empleo, a final de mes."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age_band",
+          "values": [
+            "total",
+            "Y_LT25",
+            "Y25T44",
+            "Y_GE45"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "sepe",
+          "label": {
+            "es": "SEPE (registros)",
+            "en": "SEPE (registers)"
+          },
+          "dataset": "registered_unemployment",
+          "numerator": {
+            "sex": "$sex",
+            "age_band": "$age_band",
+            "sector": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "registered_unemployment_rate",
+      "topic": "employment",
+      "label": {
+        "es": "Paro registrado sobre población de 15 a 64 años",
+        "en": "Paro registrado sobre población de 15 a 64 años"
+      },
+      "description": {
+        "es": "Parados registrados (SEPE, final de mes) por cada 100 residentes de 15 a 64 años (censo anual del año; el último disponible para los años sin censo).",
+        "en": "Parados registrados (SEPE, final de mes) por cada 100 residentes de 15 a 64 años (censo anual del año; el último disponible para los años sin censo)."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "sepe",
+          "label": {
+            "es": "SEPE (registros)",
+            "en": "SEPE (registers)"
+          },
+          "dataset": "registered_unemployment",
+          "numerator": {
+            "sex": "$sex",
+            "age_band": "total",
+            "sector": "total"
+          },
+          "denominator": {
+            "dataset": "population_sex_age",
+            "filter": {
+              "sex": "$sex",
+              "age": [
+                "Y15T19",
+                "Y20T24",
+                "Y25T29",
+                "Y30T34",
+                "Y35T39",
+                "Y40T44",
+                "Y45T49",
+                "Y50T54",
+                "Y55T59",
+                "Y60T64"
+              ]
+            }
+          }
+        }
+      ],
+      "scale": 100
+    },
+    {
+      "id": "registered_unemployment_by_sector",
+      "topic": "employment",
+      "label": {
+        "es": "Paro registrado por sector",
+        "en": "Paro registrado por sector"
+      },
+      "description": {
+        "es": "Parados registrados según el sector de su último empleo.",
+        "en": "Parados registrados según el sector de su último empleo."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "sector",
+          "values": [
+            "agriculture",
+            "industry",
+            "construction",
+            "services",
+            "no_previous_job"
+          ],
+          "default": "services"
+        }
+      ],
+      "facets": [
+        {
+          "id": "sepe",
+          "label": {
+            "es": "SEPE (registros)",
+            "en": "SEPE (registers)"
+          },
+          "dataset": "registered_unemployment",
+          "numerator": {
+            "sex": "total",
+            "age_band": "total",
+            "sector": "$sector"
+          }
+        }
+      ]
+    },
+    {
+      "id": "registered_unemployment_sector_share",
+      "topic": "employment",
+      "label": {
+        "es": "% del paro registrado por sector",
+        "en": "% del paro registrado por sector"
+      },
+      "description": {
+        "es": "Parados registrados del sector elegido sobre el total de parados registrados.",
+        "en": "Parados registrados del sector elegido sobre el total de parados registrados."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "sector",
+          "values": [
+            "agriculture",
+            "industry",
+            "construction",
+            "services",
+            "no_previous_job"
+          ],
+          "default": "services"
+        }
+      ],
+      "facets": [
+        {
+          "id": "sepe",
+          "label": {
+            "es": "SEPE (registros)",
+            "en": "SEPE (registers)"
+          },
+          "dataset": "registered_unemployment",
+          "numerator": {
+            "sex": "total",
+            "age_band": "total",
+            "sector": "$sector"
+          },
+          "denominator": {
+            "sex": "total",
+            "age_band": "total",
+            "sector": "total"
+          }
+        }
+      ],
+      "scale": 100
+    },
+    {
+      "id": "job_seekers",
+      "topic": "employment",
+      "label": {
+        "es": "Demandantes de empleo",
+        "en": "Demandantes de empleo"
+      },
+      "description": {
+        "es": "Personas inscritas como demandantes de empleo (paradas o no), a final de mes.",
+        "en": "Personas inscritas como demandantes de empleo (paradas o no), a final de mes."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age_band",
+          "values": [
+            "total",
+            "Y_LT25",
+            "Y25T44",
+            "Y_GE45"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "sepe",
+          "label": {
+            "es": "SEPE (registros)",
+            "en": "SEPE (registers)"
+          },
+          "dataset": "job_seekers",
+          "numerator": {
+            "sex": "$sex",
+            "age_band": "$age_band",
+            "sector": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "job_seekers_by_sector",
+      "topic": "employment",
+      "label": {
+        "es": "Demandantes de empleo por sector",
+        "en": "Demandantes de empleo por sector"
+      },
+      "description": {
+        "es": "Demandantes de empleo según el sector de su último empleo.",
+        "en": "Demandantes de empleo según el sector de su último empleo."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "sector",
+          "values": [
+            "agriculture",
+            "industry",
+            "construction",
+            "services",
+            "no_previous_job"
+          ],
+          "default": "services"
+        }
+      ],
+      "facets": [
+        {
+          "id": "sepe",
+          "label": {
+            "es": "SEPE (registros)",
+            "en": "SEPE (registers)"
+          },
+          "dataset": "job_seekers",
+          "numerator": {
+            "sex": "total",
+            "age_band": "total",
+            "sector": "$sector"
+          }
+        }
+      ]
+    },
+    {
+      "id": "contracts",
+      "topic": "employment",
+      "label": {
+        "es": "Contratos registrados",
+        "en": "Contratos registrados"
+      },
+      "description": {
+        "es": "Contratos de trabajo registrados en el mes.",
+        "en": "Contratos de trabajo registrados en el mes."
+      },
+      "unit": "contratos",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "contract_type",
+          "values": [
+            "total",
+            "permanent_initial",
+            "temporary_initial",
+            "converted_permanent"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "sepe",
+          "label": {
+            "es": "SEPE (registros)",
+            "en": "SEPE (registers)"
+          },
+          "dataset": "contracts",
+          "numerator": {
+            "sex": "$sex",
+            "contract_type": "$contract_type",
+            "sector": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "contracts_by_sector",
+      "topic": "employment",
+      "label": {
+        "es": "Contratos registrados por sector",
+        "en": "Contratos registrados por sector"
+      },
+      "description": {
+        "es": "Contratos registrados en el mes según el sector de la actividad.",
+        "en": "Contratos registrados en el mes según el sector de la actividad."
+      },
+      "unit": "contratos",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "sector",
+          "values": [
+            "agriculture",
+            "industry",
+            "construction",
+            "services"
+          ],
+          "default": "services"
+        }
+      ],
+      "facets": [
+        {
+          "id": "sepe",
+          "label": {
+            "es": "SEPE (registros)",
+            "en": "SEPE (registers)"
+          },
+          "dataset": "contracts",
+          "numerator": {
+            "sex": "total",
+            "contract_type": "total",
+            "sector": "$sector"
+          }
+        }
+      ]
+    },
+    {
+      "id": "contracts_permanent_share",
+      "topic": "employment",
+      "label": {
+        "es": "% de contratos indefinidos",
+        "en": "% de contratos indefinidos"
+      },
+      "description": {
+        "es": "Contratos indefinidos (iniciales y conversiones) sobre el total de contratos del mes.",
+        "en": "Contratos indefinidos (iniciales y conversiones) sobre el total de contratos del mes."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "sepe",
+          "label": {
+            "es": "SEPE (registros)",
+            "en": "SEPE (registers)"
+          },
+          "dataset": "contracts",
+          "numerator": {
+            "sex": "$sex",
+            "contract_type": [
+              "permanent_initial",
+              "converted_permanent"
+            ],
+            "sector": "total"
+          },
+          "denominator": {
+            "sex": "$sex",
+            "contract_type": "total",
+            "sector": "total"
+          }
+        }
+      ],
+      "scale": 100
+    },
+    {
+      "id": "unemployment_rate",
+      "topic": "employment",
+      "label": {
+        "es": "Tasa de paro",
+        "en": "Tasa de paro"
+      },
+      "description": {
+        "es": "Parados sobre población activa (ocupados y parados) de 16 y más años, a 1 de enero.",
+        "en": "Parados sobre población activa (ocupados y parados) de 16 y más años, a 1 de enero."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "census_activity",
+          "numerator": {
+            "sex": "$sex",
+            "activity": "unemployed"
+          },
+          "denominator": {
+            "sex": "$sex",
+            "activity": [
+              "employed",
+              "unemployed"
+            ]
+          }
+        }
+      ],
+      "scale": 100
+    },
+    {
+      "id": "activity_rate",
+      "topic": "employment",
+      "label": {
+        "es": "Tasa de actividad",
+        "en": "Tasa de actividad"
+      },
+      "description": {
+        "es": "Población activa (ocupados y parados) sobre la población de 16 y más años, a 1 de enero.",
+        "en": "Población activa (ocupados y parados) sobre la población de 16 y más años, a 1 de enero."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "census_activity",
+          "numerator": {
+            "sex": "$sex",
+            "activity": [
+              "employed",
+              "unemployed"
+            ]
+          },
+          "denominator": {
+            "sex": "$sex",
+            "activity": "total"
+          }
+        }
+      ],
+      "scale": 100
+    },
+    {
+      "id": "employment_rate",
+      "topic": "employment",
+      "label": {
+        "es": "Tasa de empleo",
+        "en": "Tasa de empleo"
+      },
+      "description": {
+        "es": "Ocupados sobre la población de 16 y más años, a 1 de enero.",
+        "en": "Ocupados sobre la población de 16 y más años, a 1 de enero."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "census_activity",
+          "numerator": {
+            "sex": "$sex",
+            "activity": "employed"
+          },
+          "denominator": {
+            "sex": "$sex",
+            "activity": "total"
+          }
+        }
+      ],
+      "scale": 100
+    },
+    {
+      "id": "activity_status_share",
+      "topic": "employment",
+      "label": {
+        "es": "% de población por relación con la actividad",
+        "en": "% de población por relación con la actividad"
+      },
+      "description": {
+        "es": "Población de 16 y más años en la situación elegida sobre el total de 16 y más años, a 1 de enero.",
+        "en": "Población de 16 y más años en la situación elegida sobre el total de 16 y más años, a 1 de enero."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "activity",
+          "values": [
+            "employed",
+            "unemployed",
+            "pensioner",
+            "student",
+            "other_inactive"
+          ],
+          "default": "pensioner"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "census_activity",
+          "numerator": {
+            "sex": "$sex",
+            "activity": "$activity"
+          },
+          "denominator": {
+            "sex": "$sex",
+            "activity": "total"
+          }
+        }
+      ],
+      "scale": 100
+    },
+    {
+      "id": "activity_status",
+      "topic": "employment",
+      "label": {
+        "es": "Población de 16 y más años por relación con la actividad",
+        "en": "Población de 16 y más años por relación con la actividad"
+      },
+      "description": {
+        "es": "Residentes de 16 y más años en la situación elegida, a 1 de enero.",
+        "en": "Residentes de 16 y más años en la situación elegida, a 1 de enero."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "activity",
+          "values": [
+            "total",
+            "employed",
+            "unemployed",
+            "pensioner",
+            "student",
+            "other_inactive"
+          ],
+          "default": "unemployed"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "census_activity",
+          "numerator": {
+            "sex": "$sex",
+            "activity": "$activity"
+          }
+        }
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "id": "employment",
+      "label": {
+        "es": "Empleo",
+        "en": "Employment"
+      }
+    }
+  ]
+}

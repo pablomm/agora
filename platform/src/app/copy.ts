@@ -12,6 +12,7 @@ export const copy = {
     themeLabels: { auto: 'Tema automático (el del sistema)', light: 'Tema claro', dark: 'Tema oscuro' },
   },
   boundaries: {
+    noValue: 'Sin datos',
     label: 'Límites',
     heading: 'Límites administrativos',
     modes: {
@@ -64,6 +65,7 @@ export const copy = {
     source: 'Fuente',
     seriesTable: 'Tabla de la evolución',
     year: 'Año',
+    month: 'Mes',
   },
   controls: {
     fullscreen: { enter: 'Pantalla completa', exit: 'Salir de pantalla completa' },
@@ -92,6 +94,7 @@ export const copy = {
     unavailableApi: 'No se puede conectar con la API de datos. ¿Está en marcha?',
     year: 'Año',
     version: 'Versión',
+    month: 'Mes',
     source: 'Fuente',
     ageRange: (from: string, to: string) => (from === to ? `${from} años` : `${from}–${to} años`),
     rangeFrom: (label: string) => `${label}: desde`,

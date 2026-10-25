@@ -85,7 +85,8 @@ def check_options(variable: dict) -> None:
     """Every "$dimension" a facet uses is one of the variable's options, and every option's default is one of its values."""
     options = {option["dimension"]: option for option in variable.get("options", [])}
     for facet in variable["facets"]:
-        for filter_ in (facet["numerator"], facet.get("denominator") or {}):
+        denominator = facet.get("denominator") or {}
+        for filter_ in (facet["numerator"], denominator.get("filter", denominator) if "dataset" in denominator else denominator):
             for code in filter_.values():
                 if isinstance(code, str) and code.startswith("$") and code[1:] not in options:
                     raise ValueError(f"{variable['id']}: facet {facet['id']} uses {code}, which isn't an option")
@@ -136,7 +137,7 @@ def build(target: Path = CATALOG_DB) -> Path:
                 continue
             template = dataset["output"]
             db.execute(
-                "INSERT INTO datasets VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO datasets VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     dataset["id"],
                     dataset["title"],
@@ -146,6 +147,7 @@ def build(target: Path = CATALOG_DB) -> Path:
                     json.dumps(dataset.get("source"), ensure_ascii=False),
                     json.dumps(dataset["dimensions"]),
                     dataset.get("base_level"),
+                    (dataset.get("validity") or {}).get("kind", "yearly"),
                     template,
                 ),
             )

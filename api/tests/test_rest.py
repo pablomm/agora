@@ -77,3 +77,28 @@ def test_errors(client):
     assert client.get("/observations", params={"variable": "population_foreign_share", "level": "census_section"}).status_code == 404
     assert client.get("/observations", params={"variable": "population", "level": "census_section", "facet": "official"}).status_code == 404
     assert client.get("/rank", params={"variable": "population", "level": "province", "within": MADRID}).status_code == 400
+
+
+def test_monthly_registers(client):
+    body = client.get("/observations", params={"variable": "registered_unemployment", "level": "country", "period": 201912}).json()
+    # SEPE's published national figure for December 2019 (before values under 5 were hidden).
+    assert body["values"]["es:country:es"] == 3_163_605
+    assert body["facet"]["frequency"] == "monthly"
+    women = client.get(
+        "/observations", params={"variable": "registered_unemployment", "level": "province", "period": 202412, "option": ["sex:female", "age_band:Y_LT25"]}
+    ).json()
+    assert women["label"] == "Paro registrado · Mujeres · Menores de 25 años"
+
+
+def test_rate_over_another_dataset(client):
+    body = client.get(f"/entities/{MADRID}/series", params={"variable": "registered_unemployment_rate"}).json()
+    values = body["facets"][0]["values"]
+    # From the census's first year; months after its last year use its latest population.
+    assert values[0]["period"] == 202101 and all(0 < row["value"] < 20 for row in values)
+
+
+def test_census_activity_by_section(client):
+    body = client.get("/observations", params={"variable": "unemployment_rate", "level": "census_section", "period": 2024}).json()
+    assert body["stats"]["count"] > 36_000
+    spain = client.get("/entities/es:country:es/value", params={"variable": "unemployment_rate", "period": 2021}).json()
+    assert 10 < spain["value"] < 20

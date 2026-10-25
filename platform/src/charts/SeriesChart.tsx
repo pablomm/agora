@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { copy } from '../app/copy'
-import { formatCompact, formatValue } from '../app/format'
+import { formatCompact, formatPeriod, formatValue, isMonth, periodTime } from '../app/format'
 import type { Series } from '../data/api'
 
 const WIDTH = 340
@@ -22,8 +22,9 @@ export function SeriesChart({ series, period }: Props) {
   const lines = series.facets.filter((facet) => facet.values.length)
   const points = lines.flatMap((line) => line.values)
   if (!points.length) return null
+  // Periods (years or months) in order; the x axis is time, so months fall between their years.
   const years = [...new Set(points.map((point) => point.period))].sort((a, b) => a - b)
-  const [firstYear, lastYear] = [years[0], years[years.length - 1]]
+  const [firstYear, lastYear] = [periodTime(years[0]), periodTime(years[years.length - 1])]
   const values = points.map((point) => point.value)
   const low = Math.min(...values)
   const high = Math.max(...values)
@@ -31,10 +32,13 @@ export function SeriesChart({ series, period }: Props) {
   const [yMin, yMax] = [low - padding, high + padding]
   const innerWidth = WIDTH - MARGIN.left - MARGIN.right
   const innerHeight = HEIGHT - MARGIN.top - MARGIN.bottom
-  const x = (year: number) => MARGIN.left + (lastYear === firstYear ? innerWidth / 2 : ((year - firstYear) / (lastYear - firstYear)) * innerWidth)
+  const x = (period: number) =>
+    MARGIN.left + (lastYear === firstYear ? innerWidth / 2 : ((periodTime(period) - firstYear) / (lastYear - firstYear)) * innerWidth)
   const y = (value: number) => MARGIN.top + innerHeight - ((value - yMin) / (yMax - yMin)) * innerHeight
   const yTicks = [yMin + (yMax - yMin) * 0.15, (yMin + yMax) / 2, yMax - (yMax - yMin) * 0.15]
-  const xTicks = years.length <= 6 ? years : [firstYear, Math.round((firstYear + lastYear) / 2), lastYear]
+  // Ticks on years: every one when few, otherwise the first, middle and last.
+  const tickYears = [...new Set(years.map((period) => Math.floor(periodTime(period))))]
+  const xTicks = tickYears.length <= 6 ? tickYears : [tickYears[0], tickYears[Math.floor(tickYears.length / 2)], tickYears[tickYears.length - 1]]
 
   const onMove = (event: React.PointerEvent<SVGRectElement>) => {
     const box = event.currentTarget.getBoundingClientRect()
@@ -68,11 +72,11 @@ export function SeriesChart({ series, period }: Props) {
           ))}
           <line className="chart-axis" x1={MARGIN.left} x2={WIDTH - MARGIN.right} y1={HEIGHT - MARGIN.bottom} y2={HEIGHT - MARGIN.bottom} />
           {xTicks.map((year) => (
-            <text key={year} className="chart-tick" x={x(year)} y={HEIGHT - 6} textAnchor="middle">
+            <text key={year} className="chart-tick" x={x(isMonth(years[0]) ? year * 100 + 1 : year)} y={HEIGHT - 6} textAnchor="middle">
               {year}
             </text>
           ))}
-          {period !== undefined && period >= firstYear && period <= lastYear && (
+          {period !== undefined && periodTime(period) >= firstYear && periodTime(period) <= lastYear && (
             <line className="chart-period" x1={x(period)} x2={x(period)} y1={MARGIN.top} y2={HEIGHT - MARGIN.bottom} />
           )}
           {lines.map((line, index) => {
@@ -104,7 +108,7 @@ export function SeriesChart({ series, period }: Props) {
         </svg>
         {hoverYear !== undefined && (
           <div className="chart-tooltip" style={{ left: `${(x(hoverYear) / WIDTH) * 100}%` }} role="status">
-            <strong>{hoverYear}</strong>
+            <strong>{formatPeriod(hoverYear)}</strong>
             {hovered.map(({ line, point }, index) =>
               point ? (
                 <span key={line.id}>
@@ -122,7 +126,7 @@ export function SeriesChart({ series, period }: Props) {
         <table>
           <thead>
             <tr>
-              <th>{copy.detail.year}</th>
+              <th>{isMonth(years[0]) ? copy.detail.month : copy.detail.year}</th>
               {lines.map((line) => (
                 <th key={line.id}>{line.label}</th>
               ))}
@@ -131,7 +135,7 @@ export function SeriesChart({ series, period }: Props) {
           <tbody>
             {[...years].reverse().map((year) => (
               <tr key={year}>
-                <td>{year}</td>
+                <td>{formatPeriod(year)}</td>
                 {lines.map((line) => {
                   const point = line.values.find((value) => value.period === year)
                   return <td key={line.id}>{point ? formatValue(point.value, series.unit) : '–'}</td>

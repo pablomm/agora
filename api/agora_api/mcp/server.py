@@ -22,6 +22,9 @@ you use them. Some variables have several sources (facets), e.g. population from
 register figures (long series) and from the annual census (more detail); results say which one
 was used. Some variables have options (list_variables shows them): pass them as `options`, e.g.
 {"sex": "female"} or, for a range of age groups, {"age": "Y0T4..Y10T14"} (0 to 14 years).
+
+Periods are years (2025) for yearly data and YYYYMM (202509) for monthly data (employment
+registers): list_variables says each source's frequency. Without a period, the latest is used.
 """
 
 server = MCPServer("agora", instructions=INSTRUCTIONS)
@@ -93,6 +96,7 @@ def list_variables(topic: str | None = None) -> list[dict]:
                     {
                         "facet": facet["id"],
                         "source": facet["dataset_title"],
+                        "frequency": facet["frequency"],
                         "levels": {level: f"{min(periods)}–{max(periods)}" for level, periods in facet["coverage"].items()},
                     }
                     for facet in variable["facets"]
@@ -103,14 +107,14 @@ def list_variables(topic: str | None = None) -> list[dict]:
 
 
 @tool
-def get_value(entity_id: str, variable: str, year: int | None = None, facet: str | None = None, options: dict[str, str] | None = None) -> dict:
-    """One place's value of a variable in a year (the latest by default)."""
-    result = data.value(entity_id, variable, year, facet, options)
+def get_value(entity_id: str, variable: str, period: int | None = None, facet: str | None = None, options: dict[str, str] | None = None) -> dict:
+    """One place's value of a variable in a period (a year, or YYYYMM for monthly data; the latest by default)."""
+    result = data.value(entity_id, variable, period, facet, options)
     entity = entities.find(entity_id)
     return {
         "place": entity["label"] if entity else entity_id,
         "variable": result["label"],
-        "year": result["period"],
+        "period": result["period"],
         "value": round(result["value"], 2),
         "unit": result["unit"],
         **_source(result["facet"]),
@@ -134,21 +138,21 @@ def get_series(entity_id: str, variable: str, facet: str | None = None, options:
 
 
 @tool
-def get_breakdown(entity_id: str, dataset: str, year: int | None = None) -> dict:
+def get_breakdown(entity_id: str, dataset: str, period: int | None = None) -> dict:
     """A dataset's full split for one place and year, e.g. population_sex_age (population pyramid) or
     population_sex_age_nationality. Codes are replaced by labels."""
-    result = data.breakdown(entity_id, dataset, year)
+    result = data.breakdown(entity_id, dataset, period)
     labels = {dimension["id"]: {value["code"]: value["label"] for value in dimension["values"]} for dimension in result["dimensions"]}
     rows = [{key: (labels[key].get(value, value) if key in labels else value) for key, value in row.items()} for row in result["rows"]]
     license_ = result["license"] or {}
-    return {"dataset": result["dataset_title"], "year": result["period"], "available_years": result["periods"], "attribution": license_.get("attribution"), "rows": rows}
+    return {"dataset": result["dataset_title"], "period": result["period"], "available_years": result["periods"], "attribution": license_.get("attribution"), "rows": rows}
 
 
 @tool
 def rank(
     variable: str,
     level: str,
-    year: int | None = None,
+    period: int | None = None,
     within: str | None = None,
     top: int = 10,
     ascending: bool = False,
@@ -156,12 +160,12 @@ def rank(
 ) -> dict:
     """The places of a level (municipality, census_section…) with the highest values of a variable
     (lowest with ascending=true), optionally only inside another place (`within`, an id)."""
-    result = data.rank(variable, level, year, within, min(top, 50), ascending, options=options)
+    result = data.rank(variable, level, period, within, min(top, 50), ascending, options=options)
     return {
         "variable": result["label"],
         "unit": result["unit"],
         "level": result["level"],
-        "year": result["period"],
+        "period": result["period"],
         "within": result["within"],
         "out_of": result["total_units"],
         **_source(result["facet"]),
@@ -170,12 +174,12 @@ def rank(
 
 
 @tool
-def compare(entity_ids: list[str], variable: str, year: int | None = None, options: dict[str, str] | None = None) -> list[dict]:
+def compare(entity_ids: list[str], variable: str, period: int | None = None, options: dict[str, str] | None = None) -> list[dict]:
     """The same variable for several places (up to 20), each from its level's default source."""
     out = []
     for entity_id in entity_ids[:20]:
         try:
-            out.append(get_value(entity_id, variable, year, options=options))
+            out.append(get_value(entity_id, variable, period, options=options))
         except (LookupError, ToolError) as error:
             out.append({"place": entity_id, "error": str(error)})
     return out

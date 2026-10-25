@@ -86,12 +86,26 @@ def variables() -> dict[str, dict]:
         facet["numerator"] = json.loads(facet["numerator"])
         facet["denominator"] = json.loads(facet["denominator"]) if facet["denominator"] else None
         source = dataset(facet["dataset"])
-        # Where and when the facet exists: its dataset's coverage, as found on disk.
+        # Where and when the facet exists: its dataset's coverage, as found on disk (and, with a
+        # denominator from another dataset, only from that one's first year on).
+        facet["frequency"] = source["frequency"]
         facet["coverage"] = source["coverage"]
+        if facet["denominator"] and "dataset" in facet["denominator"]:
+            other = dataset(facet["denominator"]["dataset"])["coverage"]
+            facet["coverage"] = {
+                level: [period for period in periods if other.get(level) and year_of(period, source["frequency"]) >= min(other[level])]
+                for level, periods in source["coverage"].items()
+            }
+            facet["coverage"] = {level: periods for level, periods in facet["coverage"].items() if periods}
         facet["license"] = source["license"]
         facet["dataset_title"] = source["title"]
         variable["facets"].append(facet)
     return out
+
+
+def year_of(period: int, frequency: str) -> int:
+    """The year of a period (202509 → 2025 for monthly data)."""
+    return period // 100 if frequency == "monthly" else period
 
 
 def dimension_labels(dimension_id: str) -> dict[str, str]:

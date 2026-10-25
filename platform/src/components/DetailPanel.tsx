@@ -1,9 +1,9 @@
 import { useEffect, useId, useState } from 'react'
 import { copy } from '../app/copy'
-import { formatValue } from '../app/format'
+import { formatPeriod, formatValue, isCount } from '../app/format'
 import { PopulationPyramid } from '../charts/PopulationPyramid'
 import { SeriesChart } from '../charts/SeriesChart'
-import { api, periodFor, type Breakdown, type Catalog, type Choices, type DataLevel, type Series } from '../data/api'
+import { api, matchPeriod, periodFor, type Breakdown, type Catalog, type Choices, type DataLevel, type Series } from '../data/api'
 import { unitLabel, type SelectedUnit } from '../map/boundaries'
 
 /** The dataset whose sex × age split draws the pyramid. */
@@ -91,7 +91,8 @@ export function DetailPanel({ unit, catalog, variableId, choices, facetId, perio
     seriesData?.facets.find((facet) => facet.id === (variableId ? facetId : undefined)) ??
     seriesData?.facets.find((facet) => facet.id === seriesData.default_facet) ??
     seriesData?.facets[0]
-  const point = main && (main.values.find((value) => value.period === period) ?? main.values[main.values.length - 1])
+  const shown = main && matchPeriod(main.values.map((value) => value.period), period)
+  const point = main?.values.find((value) => value.period === shown)
 
   return (
     <aside className="detail-panel" aria-labelledby={titleId}>
@@ -116,8 +117,8 @@ export function DetailPanel({ unit, catalog, variableId, choices, facetId, perio
               <p className="stat-label">{seriesData.label}</p>
               <p className="stat-value">{formatValue(point.value, variable.unit)}</p>
               <p className="stat-meta">
-                {point.period} · {main.label}
-                {variable.unit !== 'personas' && ` · ${variable.unit}`}
+                {formatPeriod(point.period)} · {main.label}
+                {!isCount(variable.unit) && ` · ${variable.unit}`}
               </p>
             </section>
             <section className="panel-section">

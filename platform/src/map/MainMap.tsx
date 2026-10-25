@@ -150,7 +150,7 @@ export function MainMap({ settings, selected, onSelect, choropleth, onReady }: P
       if (isBoundarySource(event.sourceId)) setBoundariesFailed(false)
       else setFailed(false)
     })
-    const stopHover = trackBoundaryHover(map)
+    const stopHover = trackBoundaryHover(map, () => ({ choropleth: choroplethRef.current, basemap: basemapRef.current }))
     const stopClicks = trackBoundaryClicks(map, (unit) => onSelectRef.current(unit))
     // A new style brings new sources, without the selection's highlight or the choropleth: apply them again.
     map.on('style.load', () => {

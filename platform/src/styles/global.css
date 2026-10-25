@@ -678,6 +678,47 @@ body {
   }
 }
 
+/* With a data layer: the name, then the value (its class's swatch) and what it is. */
+.boundary-label-data {
+  display: grid;
+  gap: 3px;
+  padding: 2px 0;
+}
+
+.boundary-label-name {
+  font-weight: 600;
+}
+
+.boundary-label-value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.boundary-label-value strong {
+  font-size: 0.95rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.boundary-label-swatch {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.boundary-label-swatch.is-empty {
+  border: 1px dashed var(--muted);
+}
+
+.boundary-label-data small {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
 .boundary-label .maplibregl-popup-tip {
   display: none;
 }
@@ -1093,6 +1134,52 @@ body {
   text-transform: uppercase;
   color: var(--muted);
   background: var(--panel);
+}
+
+.layers-topic button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  margin: 0;
+  padding: 2px 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.layers-topic button:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.layers-topic button:disabled {
+  cursor: default;
+}
+
+.layers-topic svg {
+  flex: none;
+  transform: rotate(90deg);
+  transition: transform 0.15s ease;
+}
+
+.layers-topic button[aria-expanded='false'] svg {
+  transform: none;
+}
+
+.layers-topic-count {
+  margin-left: auto;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layers-topic svg {
+    transition: none;
+  }
 }
 
 .layer-row {

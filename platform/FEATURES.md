@@ -2,6 +2,39 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-25 · Logo and app icons
+
+- New logo: a pediment over columns of different heights, a stoa whose columns are bars. Used as
+  the favicon (SVG, and an ICO at 16/32/48 with a pixel-aligned 16 px version), the Apple touch
+  icon, and 192/512 PNG icons (plus a maskable one) in a web manifest (`site.webmanifest`), so the
+  site can be added to the home screen as "Agora".
+
+## 2026-10-25 · Collapsible topics in the layers list
+
+- Each topic heading in the layers list (Demografía, Empleo…) collapses and expands its layers,
+  with a chevron and the number of layers it has. The browser remembers which are collapsed. While
+  searching, every topic with matches shows, collapsed or not.
+
+## 2026-10-25 · Employment layers, monthly periods
+
+- New topic **Empleo**: registered unemployment (by sex and age band; by sector; share by sector;
+  over the population aged 15–64), job seekers (by sex and age; by sector), registered contracts
+  (by sex and contract type; by sector; % permanent), monthly by municipality since 2006 (SEPE),
+  and from the annual census by **census section** (2021–2024): unemployment, activity and
+  employment rates, and population 16+ by relation with activity, by sex.
+- **Monthly periods**: the slider moves by month ("sep 2026"), the evolution chart has a time axis
+  with one point per month, legend, tooltip and panel say the month. Switching between a monthly
+  and a yearly layer keeps the time: a month becomes its year, a year its last month.
+- In automatic boundaries mode, zooming in past a layer's finest level keeps that level on the map
+  (municipal registers stay on municipalities at district zoom).
+- Topics in the layers list follow the catalogue's order.
+
+## 2026-10-25 · Hover label with the layer's value
+
+- With a data layer on, hovering a unit of the layer shown adds its value (bold, with its
+  class's color swatch) and what it is ("% de población por edad · 65 años o más · 2025") under
+  its name; "Sin datos" when the unit has no value. Without a layer, the label is the name, as before.
+
 ## 2026-10-25 · Layer options: sex, age range and source
 
 - Layers that are the same measure split by a dimension are now one layer with a **selector

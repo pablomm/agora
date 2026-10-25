@@ -35,6 +35,7 @@ CREATE TABLE datasets (
   source TEXT,                  -- JSON, as in the pipeline's catalog.json
   dimensions TEXT NOT NULL,     -- JSON list of dimension ids
   base_level TEXT,
+  frequency TEXT NOT NULL,      -- yearly (period 2025) | monthly (period 202509)
   path_template TEXT NOT NULL   -- processed/…/{level}.parquet
 );
 
@@ -73,7 +74,7 @@ CREATE TABLE variable_facets (
   label_en TEXT NOT NULL,
   dataset_id TEXT NOT NULL REFERENCES datasets(id),
   numerator TEXT NOT NULL,      -- JSON filter: dimension → code or list of codes (summed)
-  denominator TEXT,             -- JSON filter, for ratios
+  denominator TEXT,             -- JSON filter, for ratios; or {dataset, filter} from another (yearly) dataset
   position INTEGER NOT NULL,
   PRIMARY KEY (variable_id, id)
 );

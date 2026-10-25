@@ -94,7 +94,12 @@ def _apply(facet: dict, chosen: dict) -> dict:
             return filter_
         return {key: chosen[code[1:]] if isinstance(code, str) and code.startswith("$") else code for key, code in filter_.items()}
 
-    return {**facet, "numerator": fill(facet["numerator"]), "denominator": fill(facet["denominator"])}
+    denominator = facet["denominator"]
+    if denominator and "dataset" in denominator:
+        denominator = {**denominator, "filter": fill(denominator["filter"])}
+    else:
+        denominator = fill(denominator)
+    return {**facet, "numerator": fill(facet["numerator"]), "denominator": denominator}
 
 
 def _label(spec: dict, described: dict) -> str:
@@ -145,7 +150,8 @@ def _values(facet: dict, scale: float, level: str, where: str, parameters: list)
     numerator = _condition(facet["numerator"], allowed, numerator_parameters)
     select = f"sum(value) FILTER (WHERE {numerator}) AS numerator"
     select_parameters = numerator_parameters
-    if facet["denominator"]:
+    other = facet["denominator"] if facet["denominator"] and "dataset" in facet["denominator"] else None
+    if facet["denominator"] and not other:
         denominator_parameters: list = []
         denominator = _condition(facet["denominator"], allowed, denominator_parameters)
         select += f", sum(value) FILTER (WHERE {denominator}) AS denominator"
@@ -155,6 +161,8 @@ def _values(facet: dict, scale: float, level: str, where: str, parameters: list)
         f"SELECT entity_id, period, {select} FROM read_parquet('{path}') WHERE {where} GROUP BY entity_id, period",
         select_parameters + parameters,
     )
+    if other:
+        rows = _divide_by_other(rows, other, source["frequency"], level)
     out = []
     for row in rows:
         if facet["denominator"]:
@@ -169,8 +177,44 @@ def _values(facet: dict, scale: float, level: str, where: str, parameters: list)
     return out
 
 
+def _divide_by_other(rows: list[dict], other: dict, frequency: str, level: str) -> list[dict]:
+    """
+    Adds each row's denominator from another (yearly) dataset: its value for the row's unit in the
+    row's year, or in its latest year for years after it.
+    """
+    source = catalog.dataset(other["dataset"])
+    available = source["coverage"].get(level, [])
+    if not available or not rows:
+        return []
+    wanted = {min(catalog.year_of(row["period"], frequency), max(available)) for row in rows}
+    wanted &= set(available)
+    if not wanted:
+        return []
+    parameters: list = []
+    condition = _condition(other["filter"], source["dimensions"], parameters)
+    entities = {row["entity_id"] for row in rows}
+    path = catalog.dataset_path(other["dataset"], level).replace("'", "''")
+    where = f"period IN ({','.join('?' * len(wanted))})"
+    if len(entities) == 1:
+        where += " AND entity_id = ?"
+    values = query(
+        f"SELECT entity_id, period, sum(value) AS denominator FROM read_parquet('{path}') WHERE {condition} AND {where} GROUP BY entity_id, period",
+        parameters + sorted(wanted) + ([next(iter(entities))] if len(entities) == 1 else []),
+    )
+    by_key = {(row["entity_id"], int(row["period"])): row["denominator"] for row in values}
+    latest = max(available)
+    return [{**row, "denominator": by_key.get((row["entity_id"], min(catalog.year_of(row["period"], frequency), latest)))} for row in rows]
+
+
 def _facet_info(facet: dict) -> dict:
-    return {"id": facet["id"], "label": facet["label"], "dataset": facet["dataset"], "dataset_title": facet["dataset_title"], "license": facet["license"]}
+    return {
+        "id": facet["id"],
+        "label": facet["label"],
+        "dataset": facet["dataset"],
+        "dataset_title": facet["dataset_title"],
+        "license": facet["license"],
+        "frequency": facet["frequency"],
+    }
 
 
 def _period(facet: dict, level: str, period: int | None) -> int:
