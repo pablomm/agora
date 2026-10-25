@@ -1,4 +1,4 @@
-import { Map as MaplibreMap, setWorkerUrl, type StyleSpecification } from 'maplibre-gl'
+import { Map as MaplibreMap, setWorkerUrl, type LayerSpecification, type StyleSpecification } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { useEffect, useRef, useState } from 'react'
 import { config } from '../app/config'
@@ -21,7 +21,7 @@ setWorkerUrl(workerUrl)
 
 type BasemapStyle = Theme | 'satellite'
 
-const satelliteStyle: StyleSpecification = {
+const orthophoto: StyleSpecification = {
   version: 8,
   sources: {
     pnoa: {
@@ -35,9 +35,38 @@ const satelliteStyle: StyleSpecification = {
   layers: [{ id: 'pnoa', type: 'raster', source: 'pnoa' }],
 }
 
-const styles: Record<BasemapStyle, string | StyleSpecification> = {
-  light: config.map.styleUrl,
-  dark: config.map.darkStyleUrl,
+/** A label of the vector map restyled to read over imagery: white text, dark halo. */
+function overImagery(layer: LayerSpecification): LayerSpecification {
+  if (layer.type !== 'symbol' || !layer.paint || !('text-color' in layer.paint)) return layer
+  return {
+    ...layer,
+    paint: { ...layer.paint, 'text-color': '#ffffff', 'text-halo-color': 'rgba(0, 0, 0, 0.75)', 'text-halo-width': 1.4, 'text-halo-blur': 0.5 },
+  }
+}
+
+let satellite: Promise<StyleSpecification> | undefined
+
+/**
+ * The orthophoto with the light vector map's labels over it (places, streets, road shields, water),
+ * from the same tiles. Built once; if the vector style can't be fetched, the orthophoto alone.
+ */
+function satelliteStyle(): Promise<StyleSpecification> {
+  satellite ??= fetch(config.map.styleUrl)
+    .then((response) => response.json() as Promise<StyleSpecification>)
+    .then((vector) => ({
+      ...orthophoto,
+      glyphs: vector.glyphs,
+      sprite: vector.sprite,
+      sources: { ...orthophoto.sources, ...vector.sources },
+      layers: [...orthophoto.layers, ...vector.layers.filter((layer) => layer.type === 'symbol').map(overImagery)],
+    }))
+    .catch(() => orthophoto)
+  return satellite
+}
+
+const styles: Record<BasemapStyle, () => string | StyleSpecification | Promise<StyleSpecification>> = {
+  light: () => config.map.styleUrl,
+  dark: () => config.map.darkStyleUrl,
   satellite: satelliteStyle,
 }
 
@@ -60,9 +89,14 @@ interface Props {
   onReady: (map: MaplibreMap) => void
 }
 
-/** Loads a basemap style with the boundary layers added to it (see map/boundaries.ts). */
-function loadStyle(map: MaplibreMap, basemapStyle: BasemapStyle, boundaries: BoundaryMode) {
-  map.setStyle(styles[basemapStyle], { transformStyle: (_, next) => withBoundaries(next, boundaries, basemapStyle) })
+/**
+ * Loads a basemap style with the boundary layers added to it (see map/boundaries.ts). The
+ * satellite style is built asynchronously: `stillWanted` skips it if another one was asked for meanwhile.
+ */
+async function loadStyle(map: MaplibreMap, basemapStyle: BasemapStyle, boundaries: () => BoundaryMode, stillWanted: () => boolean) {
+  const style = await styles[basemapStyle]()
+  if (!stillWanted()) return
+  map.setStyle(style, { transformStyle: (_, next) => withBoundaries(next, boundaries(), basemapStyle) })
 }
 
 /**
@@ -92,7 +126,8 @@ export function MainMap({ settings, selected, onSelect, onReady }: Props) {
       maxZoom: config.map.maxZoom,
       attributionControl: { compact: true },
     })
-    loadStyle(map, initialStyle.current, boundariesRef.current)
+    const firstStyle = initialStyle.current
+    loadStyle(map, firstStyle, () => boundariesRef.current, () => mapRef.current === map && initialStyle.current === firstStyle)
     // Every style load (first one, theme or basemap swaps) starts with all labels: reapply the choice.
     map.on('styledata', () => showStreetNames(map, streetNamesRef.current))
     // The tile server failing isn't the basemap failing: each has its own message.
@@ -137,7 +172,8 @@ export function MainMap({ settings, selected, onSelect, onReady }: Props) {
   useEffect(() => {
     if (basemapStyle === initialStyle.current) return
     initialStyle.current = basemapStyle
-    if (mapRef.current) loadStyle(mapRef.current, basemapStyle, boundariesRef.current)
+    const map = mapRef.current
+    if (map) loadStyle(map, basemapStyle, () => boundariesRef.current, () => mapRef.current === map && initialStyle.current === basemapStyle)
   }, [basemapStyle])
 
   useEffect(() => {

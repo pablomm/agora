@@ -69,6 +69,7 @@ Set `AGORA_DATA_DIR` to keep data somewhere else.
 | [cadastre](pipelines/cadastre/README.md) | 13,209,772 urban parcels and 183,133 cadastral polygons (all municipalities), 1,323,594 cadastral zones (2023) | Catastro INSPIRE and the foral cadastres of Navarra and the Basque Country, imported from local archives |
 | [census_sections](pipelines/census_sections/README.md) | 36,669 census sections + 10,452 census districts (2026) | INE, cartografía digitalizada de secciones censales |
 | [municipalities](pipelines/municipalities/README.md) | 8,132 municipalities + 81 shared territories | IGN, WFS INSPIRE unidades administrativas |
+| [population](pipelines/population/README.md) | Population: official figures by municipality (1996–2025), census by sex and age (sections, 2021–2025) and by sex, age and nationality (municipalities), aggregated up | INE |
 | [postal_codes](pipelines/postal_codes/README.md) | 10,874 postal code areas (January 2024) | GeoParquet from an earlier project (placed by hand in `data/raw/`) |
 | [provinces](pipelines/provinces/README.md) | 52 provinces | IGN, WFS INSPIRE unidades administrativas |
 | [tiles](pipelines/tiles/README.md) | Vector tiles of the boundaries above | The pipelines above |

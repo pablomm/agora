@@ -2,6 +2,12 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-25 · Labels over the satellite basemap
+
+- The satellite basemap (IGN's PNOA orthophoto) now has place, neighbourhood, street, road and
+  water names over it: the light vector map's labels, in white with a dark halo. The street names
+  switch works on it too. If the vector style can't be loaded, the orthophoto shows alone.
+
 ## 2026-10-25 · Matching borders between levels
 
 - Where levels share a border (autonomous community, province, municipality, district, section),

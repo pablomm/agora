@@ -1,0 +1,210 @@
+{
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in each dataset's meta.json.",
+  "dimensions": [
+    {
+      "id": "sex",
+      "label": {
+        "es": "Sexo",
+        "en": "Sex"
+      },
+      "values": {
+        "total": "Total",
+        "male": "Hombres",
+        "female": "Mujeres"
+      }
+    },
+    {
+      "id": "age",
+      "label": {
+        "es": "Edad",
+        "en": "Age"
+      },
+      "values": {
+        "total": "Todas las edades",
+        "Y0T4": "De 0 a 4 años",
+        "…": "five-year groups up to",
+        "Y95T99": "De 95 a 99 años",
+        "Y_GE100": "100 y más años"
+      }
+    },
+    {
+      "id": "nationality",
+      "label": {
+        "es": "Nacionalidad",
+        "en": "Nationality"
+      },
+      "values": {
+        "total": "Total",
+        "spanish": "Española",
+        "foreign": "Extranjera"
+      }
+    }
+  ],
+  "datasets": [
+    {
+      "id": "population_official",
+      "title": "Cifras oficiales de población de los municipios (Revisión del Padrón Municipal)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "tables": [
+          29005
+        ],
+        "check_tables": [
+          2852
+        ],
+        "operation": "DPOP (Cifras Oficiales de Población de los Municipios Españoles)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "1996–2025 (no 1997)",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_official/{level}.parquet"
+    },
+    {
+      "id": "population_sex_age",
+      "title": "Población por sexo y edad (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": "53 tables 'Población por sexo y edad (grupos quinquenales)' by provinces, municipalities and census sections (see census_annual.py)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "age"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_sex_age/{level}.parquet"
+    },
+    {
+      "id": "population_sex_age_nationality",
+      "title": "Población por sexo, edad y nacionalidad (española/extranjera) (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          68535
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "age",
+        "nationality"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_sex_age_nationality/{level}.parquet"
+    }
+  ],
+  "variables": [
+    {
+      "id": "population_total",
+      "label": {
+        "es": "Población",
+        "en": "Population"
+      },
+      "unit": "personas",
+      "facets": [
+        {
+          "dataset": "population_official",
+          "filter": {
+            "sex": "total"
+          }
+        },
+        {
+          "dataset": "population_sex_age",
+          "filter": {
+            "sex": "total",
+            "age": "total"
+          }
+        }
+      ],
+      "default": {
+        "census_section": "population_sex_age",
+        "census_district": "population_sex_age",
+        "municipality": "population_official",
+        "province": "population_official",
+        "autonomous_community": "population_official",
+        "country": "population_official"
+      }
+    }
+  ]
+}

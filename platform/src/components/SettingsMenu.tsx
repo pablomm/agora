@@ -13,8 +13,6 @@ export function SettingsMenu({ settings, onChange }: Props) {
   const { open, setOpen, root, button } = usePopover()
   const panelId = useId()
   const set = (patch: Partial<Settings>) => onChange({ ...settings, ...patch })
-  // The orthophoto has no labels to hide.
-  const noStreetNames = settings.basemap === 'satellite'
 
   return (
     <div className="settings" ref={root}>
@@ -56,12 +54,11 @@ export function SettingsMenu({ settings, onChange }: Props) {
             ))}
           </div>
           <p className="settings-heading">{copy.settings.layers}</p>
-          <label className={`switch${noStreetNames ? ' is-disabled' : ''}`}>
+          <label className="switch">
             <input
               type="checkbox"
               role="switch"
               checked={settings.streetNames}
-              disabled={noStreetNames}
               onChange={(event) => set({ streetNames: event.target.checked })}
             />
             <span className="switch-track" aria-hidden="true" />
