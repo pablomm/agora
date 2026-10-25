@@ -424,10 +424,23 @@ export function trackBoundaryHover(map: MaplibreMap, data: () => { choropleth: C
     }
     if (properties.kind !== 'cadastral_parcel') return
 
-    content.className = 'boundary-label-row'
+    // Parcels: a card with the thumbnail, then what it is, the reference and the municipality.
+    content.className = 'parcel-card'
+    const details = document.createElement('div')
+    details.className = 'parcel-details'
+    const kind = document.createElement('span')
+    kind.className = 'parcel-kind'
+    kind.textContent = copy.detail.kinds.cadastral_parcel
+    const reference = document.createElement('strong')
+    reference.className = 'parcel-reference'
+    reference.textContent = String(properties.reference ?? '')
+    const place = document.createElement('span')
+    place.className = 'parcel-place'
+    place.textContent = String(properties.name ?? '')
+    details.append(kind, reference, place)
     const thumb = document.createElement('div')
     thumb.className = 'boundary-thumb is-loading'
-    content.prepend(thumb)
+    content.replaceChildren(thumb, details)
     const missing = () => {
       thumb.className = 'boundary-thumb is-missing'
       thumb.title = copy.boundaries.noFacadePhoto

@@ -630,22 +630,57 @@ body {
   box-shadow: var(--shadow);
 }
 
-/* Parcels: a square thumbnail (facade photo, loading placeholder or "no photo") left of the name. */
-.boundary-label-row {
+/* Parcels: a card with a square thumbnail (facade photo, loading placeholder or "no photo") and,
+   beside it, the kind, reference and municipality. The popup's padding is the card's. */
+.boundary-label .maplibregl-popup-content:has(.parcel-card) {
+  padding: 6px;
+  border-radius: 10px;
+}
+
+.parcel-card {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
+  padding-right: 6px;
+}
+
+.parcel-details {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.parcel-kind {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.parcel-reference {
+  font-size: 0.85rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.parcel-place {
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--muted);
 }
 
 .boundary-thumb {
   flex: none;
   display: grid;
   place-items: center;
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   overflow: hidden;
   color: var(--muted);
-  border-radius: 6px;
+  border-radius: 5px;
   background: var(--hover);
 }
 
@@ -979,6 +1014,13 @@ body {
   font-size: 0.76rem;
   color: var(--muted);
   border-top: 1px solid var(--border);
+}
+
+/* The control's name (Sexo, Edad, Mes…) in text ink; the range ends under sliders stay muted. */
+.option-label,
+.period-label {
+  font-weight: 500;
+  color: var(--text);
 }
 
 .option-header {
