@@ -49,7 +49,7 @@ def dataset_path(dataset_id: str, level: str) -> str:
 @lru_cache
 def dimensions() -> dict[str, dict]:
     with catalog() as db:
-        rows = db.execute("SELECT id, label_es AS label FROM dimensions").fetchall()
+        rows = db.execute("SELECT id, label_es AS label, classification, groups_of FROM dimensions").fetchall()
         values = db.execute("SELECT dimension_id, code, label, parent FROM dimension_values ORDER BY dimension_id, position").fetchall()
     out = {row["id"]: {**row, "values": []} for row in rows}
     for value in values:

@@ -17,6 +17,10 @@ Annual Population Census (INE, since 2021) by sex and nationality or country of 
 - census_activity_born (employment pipeline): residents aged 16 and over by relation with activity,
   born in Spain or abroad, from census sections up (2021 on); hidden units imputed. Its sibling by
   sex, census_activity, is built by employment/census_activity.py.
+- employed_occupation, employed_sector (employment pipeline): the employed aged 16 and over by
+  occupation (three groups of CNO-11 major groups) or sector (four groups of CNAE-2009 sections),
+  by sex, from census sections up (2021–2023); hidden units imputed. The classifications pipeline
+  links both groupings to their codes.
 - population_education_gender_gap: derived from population_education at every level, the share of
   women with each level of education minus the share of men, in percentage points.
 
@@ -96,6 +100,12 @@ EDUCATION_LEVELS = ["primary_or_less", "lower_secondary", "upper_secondary", "te
 #: "Población de 16 y más años por país de nacimiento (España/extranjero) y relación con la actividad
 #: (agrupado)", one table per province (national: 66595).
 ACTIVITY_BORN_TABLES = list(range(66640, 66845, 4))
+
+
+#: "Ocupados de 16 y más años por sexo y ocupación (agregada)" and "… rama de actividad", one table per
+#: province each (national: 70004, 70005).
+OCCUPATION_TABLES = list(range(70016, 70170, 3))
+SECTOR_TABLES = list(range(70017, 70171, 3))
 
 
 def rooted(tree: dict[str, list[str]], top: str, leave_out: str | None = None) -> dict[str, list[str]]:
@@ -207,6 +217,30 @@ DATASETS = {
         "parts": ["employed", "unemployed", "pensioner", "student", "other_inactive"],
         "level": "census_section",
         "dimension": "activity",
+        "weight_ages": ADULT_AGES,
+    },
+    "employed_occupation": {
+        "pipeline": "employment",
+        "raw": "employment_census",
+        "tables": OCCUPATION_TABLES,
+        "column": "Ocupación",
+        "codes": codelists.OCCUPATION_GROUP,
+        "tree": {},
+        "parts": ["high_skilled", "mid_skilled", "elementary", "not_stated"],
+        "level": "census_section",
+        "dimension": "occupation_group",
+        "weight_ages": ADULT_AGES,
+    },
+    "employed_sector": {
+        "pipeline": "employment",
+        "raw": "employment_census",
+        "tables": SECTOR_TABLES,
+        "column": "Actividad económica",
+        "codes": codelists.SECTOR,
+        "tree": {},
+        "parts": ["agriculture", "industry", "construction", "services", "not_stated"],
+        "level": "census_section",
+        "dimension": "sector",
         "weight_ages": ADULT_AGES,
     },
 }

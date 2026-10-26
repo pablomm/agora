@@ -12,8 +12,10 @@ versions write classes alike (0111). Parents come from the codes (CNAE, CPA, CNE
 order (CNO-11 and CNED-A interleave digits and letters: 1 > A > 11 > 111 > 1111).
 
 Correspondences, one table: CNAE-2009 <-> CNAE-2025 (both ways, as INE publishes them), CNO-11 ->
-CIUO-08 (ISCO-08), CNED-A 2014 -> CINE-A 2011 (ISCED-A), and the census education levels used
-across the platform (`education_level`) -> CNED-A.
+CIUO-08 (ISCO-08), CNED-A 2014 -> CINE-A 2011 (ISCED-A), and the platform's own groupings: census
+education levels (`education_level`) -> CNED-A, occupation groups of the employed
+(`occupation_group`) -> CNO-11 major groups, and sectors (`sector`, census and SEPE) -> CNAE-2009
+sections.
 
     python pipelines/classifications/classifications.py [--refresh]
 """
@@ -71,6 +73,19 @@ CENSUS_EDUCATION = {
     "bachelor_long": ["CK"],
     "master": ["CL"],
     "doctorate": ["CM"],
+}
+
+
+#: The census occupation groups (`occupation_group`, see the employment pipeline) as CNO-11 major
+#: groups (INE's grouping; armed forces, 0, aren't in it).
+OCCUPATION_GROUPS = {"high_skilled": ["1", "2", "3"], "mid_skilled": ["4", "5", "6", "7", "8"], "elementary": ["9"]}
+
+#: The sectors (`sector`, census and SEPE registers) as CNAE-2009 sections.
+SECTORS = {
+    "agriculture": ["A"],
+    "industry": ["B", "C", "D", "E"],
+    "construction": ["F"],
+    "services": ["G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U"],
 }
 
 
@@ -175,8 +190,9 @@ def correspondences(paths: dict) -> pd.DataFrame:
     for to_code, from_code in zip(frame[0], frame[1]):
         if isinstance(from_code, str):
             rows.append(("cned2014_a", from_code.strip(), "cine2011_a", to_code.strip(), None, None))
-    for level, groups in CENSUS_EDUCATION.items():
-        rows.extend(("education_level", level, "cned2014_a", group, None, None) for group in groups)
+    for source, target, groupings in (("education_level", "cned2014_a", CENSUS_EDUCATION), ("occupation_group", "cno11", OCCUPATION_GROUPS), ("sector", "cnae2009", SECTORS)):
+        for value, codes in groupings.items():
+            rows.extend((source, value, target, code, None, None) for code in codes)
     return pd.DataFrame(rows, columns=["from_classification", "from_code", "to_classification", "to_code", "to_label", "note"])
 
 

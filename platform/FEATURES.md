@@ -2,6 +2,17 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Employed by occupation and activity, linked to CNO-11 and CNAE-2009
+
+- **Ocupados por ocupación** (directors and professionals, skilled workers, elementary) and
+  **Ocupados por sector** (agriculture, industry, construction, services), nº · %, by sex, down to
+  census sections (2021–2023, hidden units imputed).
+- **Ocupados por gran grupo de ocupación (CNO-11)** and **por sección de actividad (CNAE-2009)**,
+  nº · %, by sex, in municipalities of 500 residents or more, with the official codes as values.
+- Dimensions are tied to the classifications: by their codes (CNO-11, CNAE-2009) or as groups of
+  them (sector, occupation, education level); a classification code in the API lists the data
+  dimensions that hold it.
+
 ## 2026-10-26 · Statistical classifications (API)
 
 - INE's classifications as tables for later joins, in the API (`/classifications`) and the MCP

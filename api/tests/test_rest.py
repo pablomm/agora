@@ -182,3 +182,16 @@ def test_classifications(client):
     assert cnae["code"] == "0111" and any(pair["classification"] == "cnae2025" and pair["label"] for pair in cnae["correspondences"]["to"])
     education = client.get("/classifications/cned2014_a/CM").json()
     assert {"classification": "education_level", "code": "doctorate", "note": None, "label": None} in education["correspondences"]["from"]
+
+
+def test_dimensions_linked_to_classifications(client):
+    dimensions = {dimension["id"]: dimension for dimension in client.get("/catalog").json()["dimensions"]}
+    assert dimensions["cno11"]["classification"] == "cno11" and dimensions["sector"]["groups_of"] == "cnae2009"
+    # The CNO-11 dimension takes its labels from the classification.
+    assert {"code": "2", "label": "Técnicos y profesionales científicos e intelectuales", "parent": None} in dimensions["cno11"]["values"]
+    held = client.get("/classifications/cno11/2111").json()["dimensions"]
+    assert {"dimension": "cno11", "value": "2", "label": "Técnicos y profesionales científicos e intelectuales"} in held
+    assert any(entry["dimension"] == "occupation_group" and entry["value"] == "high_skilled" for entry in held)
+    assert any(entry["dimension"] == "sector" and entry["value"] == "industry" for entry in client.get("/classifications/cnae2009/1011").json()["dimensions"])
+    employed = client.get("/observations", params={"variable": "employed_by_cnae2009_share", "level": "municipality", "period": 2023, "option": "cnae2009:J"}).json()
+    assert employed["label"] == "Proporción de ocupados por sección de actividad (CNAE-2009) · Información y comunicaciones" and 0 < employed["values"][MADRID] < 30

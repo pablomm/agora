@@ -142,6 +142,36 @@ def load_classifications(db: sqlite3.Connection, con: duckdb.DuckDBPyConnection)
     log.info("%d classifications, %d items, %d correspondences", len(declared), len(rows), len(pairs))
 
 
+def with_classification(db: sqlite3.Connection, dimension: dict) -> dict:
+    """
+    A dimension whose values are a classification's codes ({"classification": {"id", "level"}}):
+    the codes of that level, with their labels, after the dimension's own values (total) and
+    before its last ones ("not_stated"), checked to exist.
+    """
+    linked = dimension["classification"]
+    codes = db.execute(
+        "SELECT code, label FROM classification_items WHERE classification_id = ? AND level = ? ORDER BY position", [linked["id"], linked["level"]]
+    ).fetchall()
+    if not codes:
+        raise ValueError(f"Dimension {dimension['id']}: classification {linked['id']} has no level {linked['level']} (run the classifications pipeline)")
+    own = dimension.get("values", {})
+    first = {code: text for code, text in own.items() if code == "total"}
+    last = {code: text for code, text in own.items() if code != "total"}
+    return {**dimension, "values": {**first, **dict(codes), **last}, "order": [*first, *(code for code, _ in codes), *last]}
+
+
+def check_groupings(db: sqlite3.Connection) -> None:
+    """A dimension that groups a classification's codes has correspondences for its values (but totals and the unknown)."""
+    for dimension, classification in db.execute("SELECT id, groups_of FROM dimensions WHERE groups_of IS NOT NULL").fetchall():
+        values = {row[0] for row in db.execute("SELECT code FROM dimension_values WHERE dimension_id = ?", [dimension])}
+        mapped = {
+            row[0] for row in db.execute("SELECT DISTINCT from_code FROM classification_correspondences WHERE from_classification = ? AND to_classification = ?", [dimension, classification])
+        }
+        missing = values - mapped - {"total", "not_stated", "no_previous_job", "unknown"}
+        if missing:
+            raise ValueError(f"Dimension {dimension} groups {classification} but has no correspondences for {sorted(missing)}")
+
+
 def label(value: dict | str | None, lang: str) -> str | None:
     if value is None or isinstance(value, str):
         return value
@@ -165,13 +195,20 @@ def build(target: Path = CATALOG_DB) -> Path:
     db.execute("INSERT INTO entities_fts (rowid, name, label) SELECT rowid, name, label FROM entities WHERE searchable = 1")
     log.info("%d territorial units", len(entities))
 
+    load_classifications(db, con)
     for path in sorted(PIPELINES_DIR.glob("*/catalog.json")):
         catalog = json.loads(path.read_text())
         pipeline = path.parent.name
         for topic in catalog.get("topics", []):
             db.execute("INSERT OR REPLACE INTO topics VALUES (?, ?, ?)", (topic["id"], label(topic["label"], "es"), label(topic["label"], "en")))
         for dimension in catalog.get("dimensions", []):
-            db.execute("INSERT INTO dimensions VALUES (?, ?, ?)", (dimension["id"], label(dimension["label"], "es"), label(dimension["label"], "en")))
+            linked = dimension.get("classification")
+            db.execute(
+                "INSERT INTO dimensions VALUES (?, ?, ?, ?, ?)",
+                (dimension["id"], label(dimension["label"], "es"), label(dimension["label"], "en"), linked["id"] if linked else None, dimension.get("groups_of")),
+            )
+            if linked:
+                dimension = with_classification(db, dimension)
             order = dimension.get("order", list(dimension["values"]))
             parents = dimension.get("parents", {})
             if not set(parents) | set(parents.values()) <= set(dimension["values"]):
@@ -243,7 +280,7 @@ def build(target: Path = CATALOG_DB) -> Path:
             )
 
     check_measures(db)
-    load_classifications(db, con)
+    check_groupings(db)
     db.execute("INSERT INTO build VALUES ('built_at', ?)", (datetime.now(timezone.utc).isoformat(timespec="seconds"),))
     db.commit()
     db.close()

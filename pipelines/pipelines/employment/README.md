@@ -9,6 +9,8 @@ python pipelines/employment/sepe.py              # SEPE registers, monthly (≈ 
 python pipelines/employment/census_activity.py sex             # INE census, by section (needs the population pipeline's census_annual.py first)
 python pipelines/population/census_origin.py census_activity_born   # the same by birthplace (52 provincial tables)
 python pipelines/employment/census_activity.py groups gaps     # both in one dimension, and the gaps
+python pipelines/population/census_origin.py employed_occupation employed_sector   # the employed by occupation and sector, by section
+python pipelines/population/census_municipal.py employed_cno11 employed_cnae2009  # … by CNO-11 and CNAE-2009 codes (needs the classifications pipeline)
 ```
 
 ## Datasets
@@ -21,6 +23,10 @@ python pipelines/employment/census_activity.py groups gaps     # both in one dim
 | `census_activity` | INE, Censo anual de población, table 66594 | Census section | Yearly (1 January), 2021–2024 | sex × relation with activity (employed, unemployed, pensioner, student, other inactive) |
 | `census_activity_born` | INE, Censo anual de población, "Población de 16 y más años por país de nacimiento (España/extranjero) y relación con la actividad", one table per province (52, from 66640) | Census section | Yearly, 2021–2024 | born in Spain/abroad × relation with activity; hidden units imputed like the population pipeline's (`census_origin.py`) |
 | `census_activity_groups` | Derived from the two above | Census section | Yearly, 2021–2024 | group (everyone, men, women, born in Spain, born abroad) × relation with activity, with `active` and `inactive` as groups |
+| `employed_occupation` | INE, Censo anual, "Ocupados de 16 y más años por sexo y ocupación (agregada)", one table per province (52, from 70016) | Census section | Yearly, 2021–2023 | sex × occupation group (CNO-11 1–3, 4–8, 9, not stated); hidden units imputed |
+| `employed_sector` | INE, Censo anual, "… por sexo y rama de actividad", one table per province (52, from 70017) | Census section | Yearly, 2021–2023 | sex × sector (CNAE-2009 A, B–E, F, G–U, not stated); hidden units imputed |
+| `employed_cno11` | INE, Censo anual, table 69991 | Municipality (500 residents or more) | Yearly, 2021–2023 | sex × CNO-11 major group (`1`–`9`, codes of the classification) |
+| `employed_cnae2009` | INE, Censo anual, table 69992 | Municipality (500 residents or more) | Yearly, 2021–2023 | sex × CNAE-2009 section (`A`–`U`) |
 | `census_activity_gaps` | Derived from `census_activity_groups` | Census section | Yearly, 2021–2024 | rate (activity, employment, unemployment) × comparison (women − men, born abroad − born in Spain), in points |
 
 Output: `data/processed/employment/{dataset}/{level}.parquet` (`entity_id`, `code`, `period`,
@@ -66,4 +72,6 @@ for later months), job seekers (by sex and age; by sector), contracts (by sex an
 type's share of all contracts; by sector, and each sector's share; share of permanent contracts), and from the census: unemployment, activity and employment
 rates, and population 16+ by relation with activity (count and share, with the active and the
 inactive), all by group (sex or birthplace); and the gaps in those rates between women and men,
-and between those born abroad and in Spain.
+and between those born abroad and in Spain. The employed by occupation and by sector (nº · %),
+down to census sections, and by CNO-11 major group and CNAE-2009 section in municipalities of 500
+residents or more. Their totals match the employed of `census_activity` exactly.

@@ -36,9 +36,25 @@ python pipelines/classifications/classifications.py   # seconds (10 small files)
 | `cno11` | `ciuo08` (ISCO-08) | 541 | `corr_cno11_ciuo08.xls` (ISCO-08 occupations with no Spanish one are left out) |
 | `cned2014_a` | `cine2011_a` (ISCED-A 2011) | 24 | `CORR_CNED14_CINE11_A.xls` |
 | `education_level` | `cned2014_a` | 19 | This pipeline: the census education levels used across the platform (see the population pipeline) as CNED-A groups |
+| `occupation_group` | `cno11` | 9 | This pipeline: the census occupation groups (CNO-11 major groups 1–3, 4–8, 9) |
+| `sector` | `cnae2009` | 21 | This pipeline: the sectors of the census and the SEPE registers (A; B–E; F; G–U) |
 
 One row per pair; an item can match several (a CNAE-2009 class split in CNAE-2025). Labels of
 ISCO-08 and ISCED-2011 come with the pairs (they aren't classifications here).
+
+## Links with the data
+
+Data dimensions say how they relate to a classification, in their pipeline's `catalog.json`:
+
+- `"classification": {"id": "cno11", "level": 1}`: the values are the classification's codes of
+  that level (`employed_cno11`'s `cno11`: `1`–`9`; `cnae2009`: `A`–`U`), with its labels; the API
+  checks every code exists.
+- `"groups_of": "cnae2009"`: the values group the classification's codes, through the
+  correspondences above (`sector`, `occupation_group`, `education_level`); the API checks every
+  value has them.
+
+`/classifications/{id}/{code}` lists the dimensions that hold a code, directly or in a group (CNO-11
+`2111` is in `cno11` = `2` and in `occupation_group` = `high_skilled`).
 
 ## Output
 

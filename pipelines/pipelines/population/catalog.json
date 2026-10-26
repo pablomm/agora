@@ -958,7 +958,8 @@
         "bachelor_long": "university",
         "master": "university",
         "doctorate": "university"
-      }
+      },
+      "groups_of": "cned2014_a"
     },
     {
       "id": "born",

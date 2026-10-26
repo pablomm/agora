@@ -172,3 +172,22 @@ ACTIVITY = {
     "Estudiante": "student",
     "Otra situación de inactividad": "other_inactive",
 }
+
+#: Occupation of the employed, aggregated (census sections): groups of CNO-11 major groups.
+OCCUPATION_GROUP = {
+    "Total": "total",
+    "Directores/gerentes y profesionales/técnicos de nivel medio o alto": "high_skilled",
+    "Trabajadores cualificados y oficiales/operarios de nivel bajo": "mid_skilled",
+    "Ocupaciones elementales": "elementary",
+    "No consta": "not_stated",
+}
+
+#: Economic activity of the employed, by sector (census sections): groups of CNAE-2009 sections.
+SECTOR = {
+    "Total CNAE": "total",
+    "Agricultura, ganadería y pesca": "agriculture",
+    "Industria": "industry",
+    "Construcción": "construction",
+    "Servicios": "services",
+    "No consta": "not_stated",
+}

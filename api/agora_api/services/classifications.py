@@ -47,7 +47,10 @@ def items(classification_id: str, level: int | None = None, parent: str | None =
 
 
 def item(classification_id: str, code: str) -> dict:
-    """One item with its ancestors (from the top), its children and its correspondences either way."""
+    """
+    One item with its ancestors (from the top), its children, its correspondences either way, and
+    the data dimensions that hold it: as a value (the code itself) or in a group of codes.
+    """
     rows = {row["code"]: row for row in _items(classification_id)}
     code = code.replace(".", "")
     if code not in rows:
@@ -65,6 +68,19 @@ def item(classification_id: str, code: str) -> dict:
             "SELECT from_classification AS classification, from_code AS code, note FROM classification_correspondences WHERE to_classification = ? AND to_code = ?",
             [classification_id, code],
         ).fetchall()
+        # Dimensions whose values are this classification's codes, or groups of them (an ancestor counts).
+        lineage = [*(ancestor["code"] for ancestor in ancestors), code]
+        held = db.execute(
+            f"SELECT d.id AS dimension, v.code AS value, v.label FROM dimensions d JOIN dimension_values v ON v.dimension_id = d.id "
+            f"WHERE d.classification = ? AND v.code IN ({','.join('?' * len(lineage))})",
+            [classification_id, *lineage],
+        ).fetchall()
+        held += db.execute(
+            f"SELECT d.id AS dimension, v.code AS value, v.label FROM dimensions d JOIN dimension_values v ON v.dimension_id = d.id "
+            f"JOIN classification_correspondences c ON c.from_classification = d.id AND c.from_code = v.code AND c.to_classification = d.groups_of "
+            f"WHERE d.groups_of = ? AND c.to_code IN ({','.join('?' * len(lineage))})",
+            [classification_id, *lineage],
+        ).fetchall()
     # Labels of the other side when it's a classification here.
     for pair in to + back:
         pair.setdefault("label", None)
@@ -77,4 +93,5 @@ def item(classification_id: str, code: str) -> dict:
         "ancestors": ancestors,
         "children": [row for row in rows.values() if row["parent"] == code],
         "correspondences": {"to": to, "from": back},
+        "dimensions": held,
     }

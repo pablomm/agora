@@ -32,7 +32,8 @@
         "industry": "Industria",
         "construction": "Construcción",
         "services": "Servicios",
-        "no_previous_job": "Sin empleo anterior"
+        "no_previous_job": "Sin empleo anterior",
+        "not_stated": "No consta"
       },
       "order": [
         "total",
@@ -40,8 +41,10 @@
         "industry",
         "construction",
         "services",
-        "no_previous_job"
-      ]
+        "no_previous_job",
+        "not_stated"
+      ],
+      "groups_of": "cnae2009"
     },
     {
       "id": "contract_type",
@@ -148,6 +151,58 @@
         "women_vs_men",
         "abroad_vs_spain"
       ]
+    },
+    {
+      "id": "occupation_group",
+      "label": {
+        "es": "Ocupación",
+        "en": "Occupation"
+      },
+      "groups_of": "cno11",
+      "values": {
+        "total": "Total",
+        "high_skilled": "Directores, profesionales y técnicos",
+        "mid_skilled": "Trabajadores cualificados y operarios",
+        "elementary": "Ocupaciones elementales",
+        "not_stated": "No consta"
+      },
+      "order": [
+        "total",
+        "high_skilled",
+        "mid_skilled",
+        "elementary",
+        "not_stated"
+      ]
+    },
+    {
+      "id": "cno11",
+      "label": {
+        "es": "Ocupación (CNO-11)",
+        "en": "Occupation (CNO-11)"
+      },
+      "classification": {
+        "id": "cno11",
+        "level": 1
+      },
+      "values": {
+        "total": "Total",
+        "not_stated": "No consta"
+      }
+    },
+    {
+      "id": "cnae2009",
+      "label": {
+        "es": "Actividad (CNAE-2009)",
+        "en": "Activity (CNAE-2009)"
+      },
+      "classification": {
+        "id": "cnae2009",
+        "level": 1
+      },
+      "values": {
+        "total": "Total",
+        "not_stated": "No consta"
+      }
     }
   ],
   "datasets": [
@@ -505,6 +560,278 @@
         "as_of": "{year}-01-01"
       },
       "output": "processed/employment/census_activity_gaps/{level}.parquet"
+    },
+    {
+      "id": "employed_occupation",
+      "title": "Ocupados de 16 y más años por sexo y ocupación (agregada) (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          70016,
+          70019,
+          70022,
+          70025,
+          70028,
+          70031,
+          70034,
+          70037,
+          70040,
+          70043,
+          70046,
+          70049,
+          70052,
+          70055,
+          70058,
+          70061,
+          70064,
+          70067,
+          70070,
+          70073,
+          70076,
+          70079,
+          70082,
+          70085,
+          70088,
+          70091,
+          70094,
+          70097,
+          70100,
+          70103,
+          70106,
+          70109,
+          70112,
+          70115,
+          70118,
+          70121,
+          70124,
+          70127,
+          70130,
+          70133,
+          70136,
+          70139,
+          70142,
+          70145,
+          70148,
+          70151,
+          70154,
+          70157,
+          70160,
+          70163,
+          70166,
+          70169
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "employed_16_plus",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "occupation_group"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2023",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/employment/employed_occupation/{level}.parquet"
+    },
+    {
+      "id": "employed_sector",
+      "title": "Ocupados de 16 y más años por sexo y rama de actividad (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          70017,
+          70020,
+          70023,
+          70026,
+          70029,
+          70032,
+          70035,
+          70038,
+          70041,
+          70044,
+          70047,
+          70050,
+          70053,
+          70056,
+          70059,
+          70062,
+          70065,
+          70068,
+          70071,
+          70074,
+          70077,
+          70080,
+          70083,
+          70086,
+          70089,
+          70092,
+          70095,
+          70098,
+          70101,
+          70104,
+          70107,
+          70110,
+          70113,
+          70116,
+          70119,
+          70122,
+          70125,
+          70128,
+          70131,
+          70134,
+          70137,
+          70140,
+          70143,
+          70146,
+          70149,
+          70152,
+          70155,
+          70158,
+          70161,
+          70164,
+          70167,
+          70170
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "employed_16_plus",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "sector"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2023",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/employment/employed_sector/{level}.parquet"
+    },
+    {
+      "id": "employed_cno11",
+      "title": "Ocupados de 16 y más años por sexo y ocupación (CNO-11, 1 dígito), municipios de 500 habitantes o más (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          69991
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "employed_16_plus",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "cno11"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality"
+      ],
+      "periods": "2021–2023",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/employment/employed_cno11/{level}.parquet"
+    },
+    {
+      "id": "employed_cnae2009",
+      "title": "Ocupados de 16 y más años por sexo y actividad (CNAE-2009, sección), municipios de 500 habitantes o más (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          69992
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "employed_16_plus",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "cnae2009"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality"
+      ],
+      "periods": "2021–2023",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/employment/employed_cnae2009/{level}.parquet"
     }
   ],
   "variables": [
@@ -1350,6 +1677,472 @@
           "numerator": {
             "activity": "$activity",
             "group": "$group"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_occupation",
+      "topic": "employment",
+      "label": {
+        "es": "Ocupados por ocupación",
+        "en": "Employed by occupation"
+      },
+      "description": {
+        "es": "Ocupados de 16 y más años según su ocupación: directores, profesionales y técnicos (CNO-11 1–3), trabajadores cualificados y operarios (4–8) u ocupaciones elementales (9). A 1 de enero, hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Employed aged 16 and over by occupation: managers, professionals and technicians (CNO-11 1–3), skilled workers and operators (4–8) or elementary occupations (9). On 1 January, down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "occupation_group",
+          "values": [
+            "high_skilled",
+            "mid_skilled",
+            "elementary",
+            "not_stated"
+          ],
+          "default": "high_skilled"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_occupation",
+          "numerator": {
+            "occupation_group": "$occupation_group",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_occupation_share",
+      "topic": "employment",
+      "label": {
+        "es": "Proporción de ocupados por ocupación",
+        "en": "Share of employed by occupation"
+      },
+      "measure_of": "employed_by_occupation",
+      "description": {
+        "es": "Ocupados de 16 y más años según su ocupación: directores, profesionales y técnicos (CNO-11 1–3), trabajadores cualificados y operarios (4–8) u ocupaciones elementales (9), sobre el total de ocupados del mismo sexo. A 1 de enero, hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Employed aged 16 and over by occupation: managers, professionals and technicians (CNO-11 1–3), skilled workers and operators (4–8) or elementary occupations (9), over all employed of the same sex. On 1 January, down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "occupation_group",
+          "values": [
+            "high_skilled",
+            "mid_skilled",
+            "elementary",
+            "not_stated"
+          ],
+          "default": "high_skilled"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_occupation",
+          "numerator": {
+            "occupation_group": "$occupation_group",
+            "sex": "$sex"
+          },
+          "denominator": {
+            "occupation_group": "total",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_sector",
+      "topic": "employment",
+      "label": {
+        "es": "Ocupados por sector",
+        "en": "Employed by sector"
+      },
+      "description": {
+        "es": "Ocupados de 16 y más años según el sector de su actividad: agricultura (CNAE-2009 A), industria (B–E), construcción (F) o servicios (G–U). A 1 de enero, hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Employed aged 16 and over by sector: agriculture (CNAE-2009 A), industry (B–E), construction (F) or services (G–U). On 1 January, down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "sector",
+          "values": [
+            "agriculture",
+            "industry",
+            "construction",
+            "services",
+            "not_stated"
+          ],
+          "default": "services"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_sector",
+          "numerator": {
+            "sector": "$sector",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_sector_share",
+      "topic": "employment",
+      "label": {
+        "es": "Proporción de ocupados por sector",
+        "en": "Share of employed by sector"
+      },
+      "measure_of": "employed_by_sector",
+      "description": {
+        "es": "Ocupados de 16 y más años según el sector de su actividad: agricultura (CNAE-2009 A), industria (B–E), construcción (F) o servicios (G–U), sobre el total de ocupados del mismo sexo. A 1 de enero, hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Employed aged 16 and over by sector: agriculture (CNAE-2009 A), industry (B–E), construction (F) or services (G–U), over all employed of the same sex. On 1 January, down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "sector",
+          "values": [
+            "agriculture",
+            "industry",
+            "construction",
+            "services",
+            "not_stated"
+          ],
+          "default": "services"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_sector",
+          "numerator": {
+            "sector": "$sector",
+            "sex": "$sex"
+          },
+          "denominator": {
+            "sector": "total",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_cno11",
+      "topic": "employment",
+      "label": {
+        "es": "Ocupados por gran grupo de ocupación (CNO-11)",
+        "en": "Employed by occupation major group (CNO-11)"
+      },
+      "description": {
+        "es": "Ocupados de 16 y más años según el gran grupo de su ocupación en la CNO-11. A 1 de enero, solo municipios de 500 habitantes o más.",
+        "en": "Employed aged 16 and over by the CNO-11 major group of their occupation. On 1 January, only municipalities of 500 residents or more."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "cno11",
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "not_stated"
+          ],
+          "default": "2"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_cno11",
+          "numerator": {
+            "cno11": "$cno11",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_cno11_share",
+      "topic": "employment",
+      "label": {
+        "es": "Proporción de ocupados por gran grupo de ocupación (CNO-11)",
+        "en": "Share of employed by occupation major group (CNO-11)"
+      },
+      "measure_of": "employed_by_cno11",
+      "description": {
+        "es": "Ocupados de 16 y más años según el gran grupo de su ocupación en la CNO-11, sobre el total de ocupados del mismo sexo. A 1 de enero, solo municipios de 500 habitantes o más.",
+        "en": "Employed aged 16 and over by the CNO-11 major group of their occupation, over all employed of the same sex. On 1 January, only municipalities of 500 residents or more."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "cno11",
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "not_stated"
+          ],
+          "default": "2"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_cno11",
+          "numerator": {
+            "cno11": "$cno11",
+            "sex": "$sex"
+          },
+          "denominator": {
+            "cno11": "total",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_cnae2009",
+      "topic": "employment",
+      "label": {
+        "es": "Ocupados por sección de actividad (CNAE-2009)",
+        "en": "Employed by activity section (CNAE-2009)"
+      },
+      "description": {
+        "es": "Ocupados de 16 y más años según la sección de la CNAE-2009 de su actividad. A 1 de enero, solo municipios de 500 habitantes o más.",
+        "en": "Employed aged 16 and over by the CNAE-2009 section of their activity. On 1 January, only municipalities of 500 residents or more."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "cnae2009",
+          "values": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "not_stated"
+          ],
+          "default": "G"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_cnae2009",
+          "numerator": {
+            "cnae2009": "$cnae2009",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_cnae2009_share",
+      "topic": "employment",
+      "label": {
+        "es": "Proporción de ocupados por sección de actividad (CNAE-2009)",
+        "en": "Share of employed by activity section (CNAE-2009)"
+      },
+      "measure_of": "employed_by_cnae2009",
+      "description": {
+        "es": "Ocupados de 16 y más años según la sección de la CNAE-2009 de su actividad, sobre el total de ocupados del mismo sexo. A 1 de enero, solo municipios de 500 habitantes o más.",
+        "en": "Employed aged 16 and over by the CNAE-2009 section of their activity, over all employed of the same sex. On 1 January, only municipalities of 500 residents or more."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "cnae2009",
+          "values": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "not_stated"
+          ],
+          "default": "G"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_cnae2009",
+          "numerator": {
+            "cnae2009": "$cnae2009",
+            "sex": "$sex"
+          },
+          "denominator": {
+            "cnae2009": "total",
+            "sex": "$sex"
           }
         }
       ]

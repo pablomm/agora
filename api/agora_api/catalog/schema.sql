@@ -42,7 +42,9 @@ CREATE TABLE datasets (
 CREATE TABLE dimensions (
   id TEXT PRIMARY KEY,
   label_es TEXT NOT NULL,
-  label_en TEXT NOT NULL
+  label_en TEXT NOT NULL,
+  classification TEXT,          -- its values are this classification's codes (cno11: 1–9)
+  groups_of TEXT                -- its values group this classification's codes (see classification_correspondences)
 );
 
 CREATE TABLE dimension_values (

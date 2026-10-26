@@ -24,6 +24,12 @@ Education, residents aged 15 and over, in municipalities of 500 residents or mor
   66627 and 66628).
 - population_education_age: highest level completed (grouped) by sex and age (table 66620).
 
+The employed aged 16 and over, in municipalities of 500 residents or more (2021–2023), output to the
+employment pipeline, with classification codes as values (INE's labels start with them):
+
+- employed_cno11: by sex and CNO-11 major group (1–9) (table 69991).
+- employed_cnae2009: by sex and CNAE-2009 section (A–U) (table 69992).
+
 Empty cells are structural (adults not born a year before; arrival years after the census) and count
 as zero. Every breakdown is checked to add up to the totals INE publishes.
 
@@ -53,6 +59,25 @@ ORIGIN_BORN = ("birth_nationality", {"Total": "total", "España": "born_spain", 
 ORIGIN_NATIONALITY = ("birth_nationality", {"Total": "total", "Española": "spanish", "Extranjera": "foreign"})
 #: The total of the education tables' ages.
 ADULTS = "15 y más años"
+
+
+def classified(classification: str):
+    """
+    A code list for labels that start with a classification's top-level code ("1 Directores y
+    gerentes", "A Agricultura…"): the code, checked against the classifications pipeline's output.
+    """
+
+    def codes(labels: set[str]) -> dict[str, str]:
+        items = pd.read_parquet(output_dir("classifications") / "items.parquet", filters=[("classification", "==", classification), ("level", "==", 1)])
+        out = {"Total": "total", "Total CNAE": "total", "No consta": "not_stated"}
+        for label in labels - set(out):
+            code = label.split(" ", 1)[0]
+            if code not in set(items["code"]):
+                raise ValueError(f"{label!r} doesn't start with a top-level {classification} code")
+            out[label] = code
+        return out
+
+    return codes
 
 #: Arrivals from another municipality counted as recent: within the last N years (always exact,
 #: since INE gives single years from 2016 and the first census is 2021).
@@ -123,6 +148,24 @@ DATASETS = {
         "column": "Nivel de estudios",
         "codes": codelists.EDUCATION_GROUPED,
         "dimension": "education_level",
+        "groups": {},
+    },
+    "employed_cno11": {
+        "pipeline": "employment",
+        "raw": "employment_census",
+        "tables": {69991: {}},
+        "column": "Ocupación",
+        "codes": classified("cno11"),
+        "dimension": "cno11",
+        "groups": {},
+    },
+    "employed_cnae2009": {
+        "pipeline": "employment",
+        "raw": "employment_census",
+        "tables": {69992: {}},
+        "column": "Actividad económica",
+        "codes": classified("cnae2009"),
+        "dimension": "cnae2009",
         "groups": {},
     },
 }
@@ -210,12 +253,13 @@ def build(name: str, refresh: bool) -> None:
         frame = arrival_bands(frame)
         parts = ["from_other_municipality", "since_arrival_in_spain", "since_birth"]
     else:
-        frame = frame.assign(**{dimension: codelists.mapped(frame["label"], spec["codes"], spec["column"])}).drop(columns="label")
+        codes = spec["codes"](set(frame["label"])) if callable(spec["codes"]) else spec["codes"]
+        frame = frame.assign(**{dimension: codelists.mapped(frame["label"], codes, spec["column"])}).drop(columns="label")
         for group, members in spec["groups"].items():
             summed = frame[frame[dimension].isin(members)].groupby(keys, as_index=False, observed=True)["value"].sum().assign(**{dimension: group})
             frame = pd.concat([frame, summed], ignore_index=True)
         grouped = {member for members in spec["groups"].values() for member in members}
-        parts = [code for code in spec["codes"].values() if code != "total" and code not in grouped] + [group for group in spec["groups"] if group not in grouped]
+        parts = [code for code in codes.values() if code != "total" and code not in grouped] + [group for group in spec["groups"] if group not in grouped]
 
     # Every breakdown adds up to INE's totals: the categories, each sex, each age group, each nationality.
     checks = []
@@ -239,7 +283,7 @@ def build(name: str, refresh: bool) -> None:
     frame = frame[[*keys, dimension, "value"]].sort_values([*keys, dimension], ignore_index=True)
     frame.insert(0, "entity_id", entity_ids(frame["code"], "municipality"))
     frame["origin"] = "published"
-    out = output_dir(PIPELINE) / name
+    out = output_dir(spec.get("pipeline", PIPELINE)) / name
     out.mkdir(parents=True, exist_ok=True)
     frame.to_parquet(out / "municipality.parquet", compression="zstd", index=False)
     metadata = {

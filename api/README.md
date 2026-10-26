@@ -50,6 +50,11 @@ años").
 A share can say it's another measure of a count (`measure_of`: `population_age_share` of
 `population_by_age`): both stay variables of their own here, and the web shows them as one layer
 with a Número / % switch. They must share topic and option dimensions (checked when building).
+A dimension can be tied to a classification: `"classification": {"id", "level"}` when its values
+are that level's codes (labels come from the classification), `"groups_of": "<classification>"`
+when they group its codes through the correspondences. Both are checked when building, and
+`/classifications/{id}/{code}` lists the dimensions that hold a code.
+
 A variable whose values are above or below zero (a gap between two groups) says
 `"palette": "diverging"`: the web colors it with two hues and gray around zero.
 
