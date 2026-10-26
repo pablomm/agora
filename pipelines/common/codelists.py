@@ -204,3 +204,13 @@ PROFESSIONAL_STATUS_DETAIL = {
     "Trabajador por cuenta ajena fijo o indefinido, y otra situación": "employee_permanent",
     "Trabajador por cuenta ajena temporal": "employee_temporary",
 }
+
+#: Marital status of residents aged 16 and over (annual census): INE gives divorced and separated together.
+MARITAL_STATUS = {
+    "Total": "total",
+    "Soltero/a": "single",
+    "Casado/a": "married",
+    "Viudo/a": "widowed",
+    "Divorciado/a o separado/a": "divorced_separated",
+    "No consta": "not_stated",
+}

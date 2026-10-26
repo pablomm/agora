@@ -2,6 +2,16 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Marital status
+
+- **Población por estado civil** (Demografía), nº · %: residents aged 16 and over single, married,
+  widowed, or divorced or separated (INE gives them together), by sex, 2021–2024, in every
+  municipality and up to Spain (no census sections: INE doesn't publish them). Municipalities under
+  50 residents are estimated from their province's residual.
+- **Población por estado civil y edad**, nº · %: the same in an age band (16–34 … 75+), likewise in
+  every municipality and up to Spain (under 500 residents, fitted to their totals and their
+  province's figures by age).
+
 ## 2026-10-26 · Income distributions (pipeline, experimental)
 
 - Every census section's income distribution (2015–2024), a Dagum fitted to INE's published

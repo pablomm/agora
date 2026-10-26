@@ -218,6 +218,18 @@ def test_income(client):
     assert change["unit"] == "%" and all(-5 < value < 20 for value in change["values"].values())
 
 
+def test_marital_status(client):
+    married = client.get("/observations", params={"variable": "population_marital_status_share", "level": "municipality", "period": 2024}).json()
+    assert married["label"] == "Proporción de población por estado civil · Casados/as" and married["stats"]["count"] > 8_100
+    madrid = client.get(f"/entities/{MADRID}/value", params={"variable": "population_marital_status_share", "period": 2024, "option": "marital_status:married"}).json()["value"]
+    assert 35 < madrid < 45
+    young = client.get("/observations", params={"variable": "population_marital_status_age_share", "level": "municipality", "period": 2024, "option": ["marital_status:single", "age:Y16T34"]}).json()
+    assert young["stats"]["count"] > 8_000 and all(0 <= value <= 100 for value in young["values"].values())
+    # Every municipality, summed up: provinces and communities too.
+    provinces = client.get("/observations", params={"variable": "population_marital_status_age_share", "level": "province", "period": 2024, "option": ["marital_status:single", "age:Y16T34"]}).json()
+    assert len(provinces["values"]) == 52
+
+
 def test_income_distribution(client):
     # A dataset without a layer: the Dagum's parameters, for a unit's detail.
     body = client.get(f"/entities/{MADRID}/breakdown", params={"dataset": "income_distribution", "period": 2023}).json()

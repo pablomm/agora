@@ -8,6 +8,7 @@ python pipelines/population/official_figures.py   # ~1 min
 python pipelines/population/census_annual.py      # ~10 min (54 downloads, one of 690 MB)
 python pipelines/population/census_origin.py      # ~5 min, plus ~5.4 GB of downloads (316 tables)
 python pipelines/population/census_municipal.py   # ~1 min (8 tables), after census_origin
+python pipelines/population/census_marital.py     # seconds (4 tables), after census_annual
 ```
 
 Needs the provinces pipeline (provinces → autonomous communities).
@@ -34,6 +35,8 @@ Needs the provinces pipeline (provinces → autonomous communities).
 | `population_education_detail` | Censo de Población anual, tables 66621 and 66622 | municipality (500 residents or more) | municipality only | 2021–2024 | sex, birthplace or nationality (`birth_nationality`), level of education (detail, nested in the groups) |
 | `population_studying` | Censo de Población anual, tables 66627 and 66628 | municipality (500 residents or more) | municipality only | 2021–2024 | sex, birthplace or nationality, studies in progress |
 | `population_education_age` | Censo de Población anual, table 66620 | municipality (500 residents or more) | municipality only | 2021–2024 | sex, age (11 groups), level of education (grouped) |
+| `population_marital_status` | Censo de Población anual, tables 76306 (municipalities of 500 residents or more) and 76312 (50 to 500); 76288 (provinces, communities, Spain) to impute and check | municipality | municipality → province → autonomous community → Spain | 2021–2024 | sex, marital status (residents aged 16 and over) |
+| `population_marital_status_age` | Censo de Población anual, tables 76306 (municipalities of 500 residents or more) and 76312; 76291 (provinces, communities, Spain) to impute and check | municipality | municipality → province → autonomous community → Spain | 2021–2024 | sex, age (16–34, 35–54, 55–74, 75+), marital status |
 | `population_mean_age` | Derived from `population_sex_age` (no download but table 68527, to check) | every level of `population_sex_age` | section → … → Spain | 2021–2025 | sex; the value is a mean age, in years (not a sum) |
 
 - **Official figures** are each municipality's legal population on 1 January (the Padrón). The
@@ -74,6 +77,19 @@ Needs the provinces pipeline (provinces → autonomous communities).
   nested in the same groups, which match the sections summed up exactly. Birthplace and
   nationality come from two tables and share one dimension, `birth_nationality`. The gender gap is
   the share of women with a level minus the share of men, at every level.
+- **Marital status** (residents aged 16 and over, 2021–2024): single, married, widowed, divorced or
+  separated (INE gives them together), not stated. INE publishes no census sections: municipalities
+  of 500 residents or more (by sex and age, 16–34, 35–54, 55–74, 75+) and of 50 to 500 (by sex),
+  and provinces, communities and Spain. Municipalities under 50 residents (569 a year) take their
+  province's residual, by sex and marital status, shared out by their residents aged 16 and over
+  (20 and over plus four fifths of 15–19, from `population_sex_age`): each province's residual is
+  within 2% of those residents. Usansolo (48916, split from Galdakao) isn't in the municipal tables
+  in 2024 but is in its province's total, and is imputed like the rest. By age, every municipality
+  under 500 residents has a known total by sex and status (published, or imputed as above) and its
+  province a residual by age (76291 less the municipalities of 500 or more): its cells are fitted to
+  both from its residents by age (iterative proportional fitting) and rounded keeping both exact
+  (a max flow per province, year, sex and status). Crosses with nationality or birthplace exist
+  only for provinces and communities, and aren't used.
 - **Mean age** counts each five-year group at its midpoint (2.5 for 0–4… 102.5 for 100+), at every
   level from the aggregated groups. Against INE's mean age by province, sex and year (table
   68527, 780 values) it's at most 0.034 years off; the run fails beyond 0.1. Other age indicators
@@ -108,8 +124,9 @@ Needs the provinces pipeline (provinces → autonomous communities).
 | `birth_nationality` | `total`, `born_spain`, `born_abroad`, `spanish`, `foreign` (two breakdowns of the same total) |
 | `studying` | `total`, `studying` (by level: `studying_primary_or_less` … `studying_tertiary`, `studying_unknown`), `not_studying` |
 | `residence_year_ago` | `total`, `same_municipality`, `moved_in` (= `elsewhere_in_spain` + `abroad`), `same_province`, `same_community`, `other_community`, `not_born` |
+| `marital_status` | `total`, `single`, `married`, `widowed`, `divorced_separated` (INE gives them together), `not_stated` |
 | `value` | Persons |
-| `origin` | `published` (the base level, as INE publishes it) or `aggregated` (summed from the level below) |
+| `origin` | `published` (the base level, as INE publishes it), `aggregated` (summed from the level below) or `imputed` |
 
 Totals are rows like any other (`sex = total`, `age = total`…), as INE publishes them, so a level's
 total and the sum of its parts can be compared. `meta.json` next to each dataset records the
@@ -138,6 +155,10 @@ stops the run, except the ones listed in the pipeline as known (with why):
 - `population_birthplace`: the total from its parts against INE's, and the levels above against
   the same tables' rows. Gipuzkoa's table (69172) comes in English format ("Period", 733,149):
   `common/ine.py` reads it as the others.
+- `population_marital_status`: every breakdown (statuses, sexes) adds up to its total, and the
+  municipalities summed up match 76288 exactly for every province, community and Spain;
+  `population_marital_status_age` likewise against 76291, and its totals by age against
+  `population_marital_status`, cell by cell.
 - The nationality and country of birth datasets: the total from Spanish plus foreign (born in Spain
   plus abroad) against INE's total, at the base level; the levels above against the same tables'
   rows; and, in the detail datasets, every country group against INE's "grandes grupos" tables.
@@ -169,6 +190,8 @@ left out, so a unit only has rows for the years it existed.
 | `population_education_detail` | municipality 3,729,600 |
 | `population_studying` | municipality 2,237,760 |
 | `population_education_age` | municipality 2,983,680 |
+| `population_marital_status` | municipality 585,450 · province 3,744 · autonomous community 1,368 · Spain 72 |
+| `population_marital_status_age` | municipality 2,927,250 · province 18,720 · autonomous community 6,840 · Spain 360 |
 | `population_mean_age` | section 546,616 · district 156,998 · municipality 121,967 · province 780 · autonomous community 285 · Spain 15 |
 
 ## Code lists

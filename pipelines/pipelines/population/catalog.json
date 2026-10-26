@@ -60,7 +60,11 @@
         "Y60T69": "De 60 a 69 años",
         "Y70T79": "De 70 a 79 años",
         "Y80T89": "De 80 a 89 años",
-        "Y_GE90": "90 años o más"
+        "Y_GE90": "90 años o más",
+        "Y16T34": "De 16 a 34 años",
+        "Y35T54": "De 35 a 54 años",
+        "Y55T74": "De 55 a 74 años",
+        "Y_GE75": "75 y más años"
       },
       "order": [
         "total",
@@ -98,7 +102,11 @@
         "Y60T69",
         "Y70T79",
         "Y80T89",
-        "Y_GE90"
+        "Y_GE90",
+        "Y16T34",
+        "Y35T54",
+        "Y55T74",
+        "Y_GE75"
       ]
     },
     {
@@ -1037,6 +1045,29 @@
         "studying_tertiary": "studying",
         "studying_unknown": "studying"
       }
+    },
+    {
+      "id": "marital_status",
+      "label": {
+        "es": "Estado civil",
+        "en": "Marital status"
+      },
+      "values": {
+        "total": "Total",
+        "single": "Solteros/as",
+        "married": "Casados/as",
+        "widowed": "Viudos/as",
+        "divorced_separated": "Divorciados/as o separados/as",
+        "not_stated": "No consta"
+      },
+      "order": [
+        "total",
+        "single",
+        "married",
+        "widowed",
+        "divorced_separated",
+        "not_stated"
+      ]
     }
   ],
   "datasets": [
@@ -2168,6 +2199,99 @@
         "as_of": "{year}-01-01"
       },
       "output": "processed/population/population_education_age/{level}.parquet"
+    },
+    {
+      "id": "population_marital_status",
+      "title": "Población de 16 y más años por sexo y estado civil (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          76306,
+          76312,
+          76288
+        ],
+        "method": "municipalities of 50 residents or more as published; under 50, their province's residual shared out by residents aged 16 and over; levels above summed and checked against table 76288"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population_16_plus",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "marital_status"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_marital_status/{level}.parquet"
+    },
+    {
+      "id": "population_marital_status_age",
+      "title": "Población de 16 y más años por sexo, edad y estado civil (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          76306,
+          76312,
+          76291
+        ],
+        "method": "municipalities of 500 residents or more as published; under 500, fitted to their totals by sex and marital status and their province's residual by age (iterative proportional fitting from residents by age, rounded keeping both); levels above summed and checked against table 76291"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population_16_plus",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "age",
+        "marital_status"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_marital_status_age/{level}.parquet"
     }
   ],
   "variables": [
@@ -4981,6 +5105,249 @@
           "dataset": "population_education_gender_gap",
           "numerator": {
             "education_level": "$education_level"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_marital_status",
+      "topic": "demography",
+      "label": {
+        "es": "Población por estado civil",
+        "en": "Population by marital status"
+      },
+      "description": {
+        "es": "Residentes de 16 años o más solteros, casados, viudos, o divorciados o separados (el INE los da juntos). A 1 de enero; municipios de menos de 50 habitantes estimados a partir de su provincia.",
+        "en": "Residents aged 16 and over who are single, married, widowed, or divorced or separated (INE gives them together). On 1 January; municipalities under 50 residents estimated from their province."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "marital_status",
+          "values": [
+            "single",
+            "married",
+            "widowed",
+            "divorced_separated",
+            "not_stated"
+          ],
+          "default": "married"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_marital_status",
+          "numerator": {
+            "marital_status": "$marital_status",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_marital_status_share",
+      "topic": "demography",
+      "label": {
+        "es": "Proporción de población por estado civil",
+        "en": "Share of population by marital status"
+      },
+      "measure_of": "population_marital_status",
+      "description": {
+        "es": "Residentes de 16 años o más solteros, casados, viudos, o divorciados o separados (el INE los da juntos), sobre el total de residentes de 16 años o más del mismo sexo. A 1 de enero; municipios de menos de 50 habitantes estimados a partir de su provincia.",
+        "en": "Residents aged 16 and over who are single, married, widowed, or divorced or separated (INE gives them together), over all residents aged 16 and over of the same sex. On 1 January; municipalities under 50 residents estimated from their province."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "marital_status",
+          "values": [
+            "single",
+            "married",
+            "widowed",
+            "divorced_separated",
+            "not_stated"
+          ],
+          "default": "married"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_marital_status",
+          "numerator": {
+            "marital_status": "$marital_status",
+            "sex": "$sex"
+          },
+          "denominator": {
+            "marital_status": "total",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_marital_status_age",
+      "topic": "demography",
+      "label": {
+        "es": "Población por estado civil y edad",
+        "en": "Population by marital status and age"
+      },
+      "description": {
+        "es": "Residentes de 16 años o más por estado civil, en el tramo de edad elegido (compara sin que pese la estructura de edad). A 1 de enero; municipios de menos de 500 habitantes estimados a partir de su total y de su provincia.",
+        "en": "Residents aged 16 and over by marital status, in the chosen age band (to compare regardless of age structure). On 1 January; municipalities under 500 residents estimated from their total and their province."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "marital_status",
+          "values": [
+            "single",
+            "married",
+            "widowed",
+            "divorced_separated",
+            "not_stated"
+          ],
+          "default": "married"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "range": true,
+          "values": [
+            "Y16T34",
+            "Y35T54",
+            "Y55T74",
+            "Y_GE75"
+          ],
+          "default": [
+            "Y16T34",
+            "Y_GE75"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_marital_status_age",
+          "numerator": {
+            "marital_status": "$marital_status",
+            "sex": "$sex",
+            "age": "$age"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_marital_status_age_share",
+      "topic": "demography",
+      "label": {
+        "es": "Proporción de población por estado civil y edad",
+        "en": "Share of population by marital status and age"
+      },
+      "measure_of": "population_marital_status_age",
+      "description": {
+        "es": "Residentes de 16 años o más por estado civil, en el tramo de edad elegido, sobre el total de residentes del mismo sexo y edad. A 1 de enero; municipios de menos de 500 habitantes estimados a partir de su total y de su provincia.",
+        "en": "Residents aged 16 and over by marital status, in the chosen age band, over all residents of the same sex and age. On 1 January; municipalities under 500 residents estimated from their total and their province."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "marital_status",
+          "values": [
+            "single",
+            "married",
+            "widowed",
+            "divorced_separated",
+            "not_stated"
+          ],
+          "default": "married"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "range": true,
+          "values": [
+            "Y16T34",
+            "Y35T54",
+            "Y55T74",
+            "Y_GE75"
+          ],
+          "default": [
+            "Y16T34",
+            "Y_GE75"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_marital_status_age",
+          "numerator": {
+            "marital_status": "$marital_status",
+            "sex": "$sex",
+            "age": "$age"
+          },
+          "denominator": {
+            "marital_status": "total",
+            "sex": "$sex",
+            "age": "$age"
           }
         }
       ]
