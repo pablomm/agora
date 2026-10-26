@@ -1,5 +1,5 @@
 {
-  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in each dataset's meta.json. A variable's options are dimensions the user picks (a value, or a range of ordered values that are summed); facets refer to the pick as \"$dimension\".",
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in each dataset's meta.json. A variable's options are dimensions the user picks (a value, or a range of ordered values that are summed); facets refer to the pick as \"$dimension\". A variable with \"measure_of\" is another measure (a share) of that variable: the web shows both as one layer.",
   "dimensions": [
     {
       "id": "sex",
@@ -1196,8 +1196,8 @@
       "id": "population_sex_share",
       "topic": "demography",
       "label": {
-        "es": "% de población por sexo",
-        "en": "% of population by sex"
+        "es": "Proporción de población por sexo",
+        "en": "Share of population by sex"
       },
       "description": {
         "es": "Residentes del sexo elegido sobre el total.",
@@ -1377,9 +1377,10 @@
       "id": "population_age_share",
       "topic": "demography",
       "label": {
-        "es": "% de población por edad",
-        "en": "% of population by age"
+        "es": "Proporción de población por edad",
+        "en": "Share of population by age"
       },
+      "measure_of": "population_by_age",
       "description": {
         "es": "Residentes en el tramo de edad elegido sobre el total.",
         "en": "Residents in the chosen age band, over all residents."
@@ -1514,9 +1515,10 @@
       "id": "population_foreign_share",
       "topic": "origin",
       "label": {
-        "es": "% de población extranjera",
-        "en": "% foreign population"
+        "es": "Proporción de población extranjera",
+        "en": "Share of foreign population"
       },
+      "measure_of": "population_foreign",
       "description": {
         "es": "Residentes de nacionalidad extranjera sobre el total de residentes del mismo sexo y edad.",
         "en": "Residents with a foreign nationality, over all residents of the same sex and age."
@@ -1662,9 +1664,10 @@
       "id": "population_nationality_share",
       "topic": "origin",
       "label": {
-        "es": "% de población por nacionalidad",
-        "en": "% of population by nationality"
+        "es": "Proporción de población por nacionalidad",
+        "en": "Share of population by nationality"
       },
+      "measure_of": "population_nationality",
       "description": {
         "es": "Residentes con la nacionalidad elegida sobre el total de residentes del mismo sexo. Principales países; hasta sección censal.",
         "en": "Residents with the chosen nationality, over all residents of the same sex. Main countries; down to census sections."
@@ -1854,9 +1857,10 @@
       "id": "population_nationality_detail_share",
       "topic": "origin",
       "label": {
-        "es": "% de población por nacionalidad (detalle)",
-        "en": "% of population by nationality (detail)"
+        "es": "Proporción de población por nacionalidad (detalle)",
+        "en": "Share of population by nationality (detail)"
       },
+      "measure_of": "population_nationality_detail",
       "description": {
         "es": "Residentes con la nacionalidad elegida sobre el total de residentes del mismo sexo. Unas sesenta nacionalidades y los grandes grupos; hasta municipio.",
         "en": "Residents with the chosen nationality, over all residents of the same sex. About sixty nationalities and country groups; down to municipalities."
@@ -2045,9 +2049,10 @@
       "id": "population_birth_country_share",
       "topic": "origin",
       "label": {
-        "es": "% de población por país de nacimiento",
-        "en": "% of population by country of birth"
+        "es": "Proporción de población por país de nacimiento",
+        "en": "Share of population by country of birth"
       },
+      "measure_of": "population_birth_country",
       "description": {
         "es": "Residentes nacidos en el país elegido sobre el total de residentes del mismo sexo. Principales países; hasta sección censal.",
         "en": "Residents born in the chosen country, over all residents of the same sex. Main countries; down to census sections."
@@ -2235,9 +2240,10 @@
       "id": "population_birth_country_detail_share",
       "topic": "origin",
       "label": {
-        "es": "% de población por país de nacimiento (detalle)",
-        "en": "% of population by country of birth (detail)"
+        "es": "Proporción de población por país de nacimiento (detalle)",
+        "en": "Share of population by country of birth (detail)"
       },
+      "measure_of": "population_birth_country_detail",
       "description": {
         "es": "Residentes nacidos en el país elegido sobre el total de residentes del mismo sexo. Unos sesenta países y los grandes grupos; hasta municipio.",
         "en": "Residents born in the chosen country, over all residents of the same sex. About sixty countries and country groups; down to municipalities."

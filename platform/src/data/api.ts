@@ -54,6 +54,8 @@ export interface Variable {
   default_facet: Partial<Record<DataLevel, string>>
   facets: Facet[]
   options: VariableOption[]
+  /** The variable this one is another measure of (its share): both show as one layer. */
+  measure_of: string | null
 }
 
 export interface Dimension {
@@ -165,9 +167,14 @@ export function facetFor(variable: Variable, level: DataLevel, chosen?: string):
   return available.find((facet) => facet.id === chosen) ?? available.find((facet) => facet.id === variable.default_facet[level]) ?? available[0]
 }
 
-/** An option's value as the API takes it (a range as "first..last"). */
+/**
+ * An option's value as the API takes it (a range as "first..last"): the one chosen if the option has
+ * it (a choice carried over from another measure of the layer may not be), or the default.
+ */
 export function optionValue(option: VariableOption, choices: Choices): string {
-  if (choices[option.dimension] !== undefined) return choices[option.dimension]
+  const chosen = choices[option.dimension]
+  const codes = option.values.map((value) => value.code)
+  if (chosen !== undefined && chosen.split('..').every((code) => codes.includes(code))) return chosen
   return Array.isArray(option.default) ? `${option.default[0]}..${option.default[option.default.length - 1]}` : option.default
 }
 

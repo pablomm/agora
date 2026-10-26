@@ -112,7 +112,7 @@ def test_nationality_lists(client):
     share = client.get(
         "/observations", params={"variable": "population_nationality_share", "level": "census_section", "period": 2025, "option": ["nationality_main:MAR", "sex:female"]}
     ).json()
-    assert share["label"] == "% de población por nacionalidad · Marruecos · Mujeres" and share["stats"]["count"] > 36_000
+    assert share["label"] == "Proporción de población por nacionalidad · Marruecos · Mujeres" and share["stats"]["count"] > 36_000
     detail = client.get("/variables/population_nationality_detail").json()
     values = {value["code"]: value for value in detail["options"][0]["values"]}
     assert values["FRA"]["parent"] == "eu" and values["eu"]["parent"] == "europe" and values["europe"]["parent"] == "foreign"

@@ -1,5 +1,5 @@
 {
-  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in each dataset's meta.json. A denominator can come from another dataset ({dataset, filter}): its yearly values divide every month of that year.",
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in each dataset's meta.json. A denominator can come from another dataset ({dataset, filter}): its yearly values divide every month of that year. A variable with \"measure_of\" is another measure (a share) of that variable: the web shows both as one layer.",
   "dimensions": [
     {
       "id": "age_band",
@@ -416,9 +416,10 @@
       "id": "registered_unemployment_sector_share",
       "topic": "employment",
       "label": {
-        "es": "% del paro registrado por sector",
-        "en": "% del paro registrado por sector"
+        "es": "Proporción del paro registrado por sector",
+        "en": "Share of registered unemployment by sector"
       },
+      "measure_of": "registered_unemployment_by_sector",
       "description": {
         "es": "Parados registrados del sector elegido sobre el total de parados registrados.",
         "en": "Parados registrados del sector elegido sobre el total de parados registrados."
@@ -651,8 +652,8 @@
       "id": "contracts_permanent_share",
       "topic": "employment",
       "label": {
-        "es": "% de contratos indefinidos",
-        "en": "% de contratos indefinidos"
+        "es": "Contratos indefinidos",
+        "en": "Permanent contracts"
       },
       "description": {
         "es": "Contratos indefinidos (iniciales y conversiones) sobre el total de contratos del mes.",
@@ -838,9 +839,10 @@
       "id": "activity_status_share",
       "topic": "employment",
       "label": {
-        "es": "% de población por relación con la actividad",
-        "en": "% de población por relación con la actividad"
+        "es": "Proporción de población por relación con la actividad",
+        "en": "Share of population by relation with activity"
       },
+      "measure_of": "activity_status",
       "description": {
         "es": "Población de 16 y más años en la situación elegida sobre el total de 16 y más años, a 1 de enero.",
         "en": "Población de 16 y más años en la situación elegida sobre el total de 16 y más años, a 1 de enero."

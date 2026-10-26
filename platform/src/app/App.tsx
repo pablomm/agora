@@ -125,6 +125,11 @@ export default function App() {
             catalogFailed={catalogFailed}
             variableId={variableId}
             onVariable={setVariableId}
+            onMeasure={(id) => {
+              // The other measure takes what's picked here (options it lacks fall back to its default).
+              setPicks({ ...picks, [id]: pick })
+              setVariableId(id)
+            }}
             years={years}
             period={period}
             onPeriod={setPeriod}

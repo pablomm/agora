@@ -96,6 +96,8 @@ export const copy = {
     version: 'Versión',
     month: 'Mes',
     source: 'Fuente',
+    measure: 'Medida',
+    count: 'Número',
     ageRange: (from: string, to: string) => (from === to ? `${from} años` : `${from}–${to} años`),
     rangeFrom: (label: string) => `${label}: desde`,
     rangeTo: (label: string) => `${label}: hasta`,

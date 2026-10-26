@@ -24,7 +24,7 @@ def test_breakdown_has_labels():
 
 def test_options():
     result = tools.get_value("es:ine:mun:28079", "population_sex_share", 2025, options={"sex": "male"})
-    assert result["variable"] == "% de población por sexo · Hombres" and 40 < result["value"] < 50
+    assert result["variable"] == "Proporción de población por sexo · Hombres" and 40 < result["value"] < 50
 
 
 def test_list_variables_is_compact():

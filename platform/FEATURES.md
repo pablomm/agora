@@ -2,6 +2,16 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Number and share as one layer
+
+- A layer with a number and a share (Población por edad, Paro registrado por sector, the
+  nationality and country of birth layers…) is one row in the list, marked `nº · %`, with a
+  **Medida: Número | %** switch in its card. Switching keeps the options, source and year picked;
+  an option the other measure lacks falls back to its default. The search finds a layer by either
+  name. 29 rows become 21.
+- No layer name starts with "%": shares are "Proporción de…" (the legend still says "(%)"), and
+  "% de contratos indefinidos" is "Contratos indefinidos".
+
 ## 2026-10-26 · Nationality and country of birth layers, searchable dropdown
 
 - New topic **Nacionalidad y origen** with eight layers, each as persons and as % of residents of

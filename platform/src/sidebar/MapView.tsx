@@ -10,6 +10,8 @@ interface Props {
   catalogFailed: boolean
   variableId: string | undefined
   onVariable: (id: string | undefined) => void
+  /** Shows another measure of the layer (its number or its share), keeping what's picked. */
+  onMeasure: (id: string) => void
   /** Years the chosen variable has at the map's level, newest first. */
   years: number[]
   /** The year chosen (undefined: the latest). */
@@ -38,7 +40,7 @@ function loadCollapsed(): Set<string> {
  * The map tab's panel: a search over the catalogue's variables, the one painted on the map (with
  * its year), and the list of all of them by topic, which scrolls on its own.
  */
-export function MapView({ catalog, catalogFailed, variableId, onVariable, years, period, onPeriod, choices, onChoices, facets, facetId, onFacet }: Props) {
+export function MapView({ catalog, catalogFailed, variableId, onVariable, onMeasure, years, period, onPeriod, choices, onChoices, facets, facetId, onFacet }: Props) {
   const [query, setQuery] = useState('')
   // Collapsed topics, remembered in this browser. A search shows every match, collapsed or not.
   const [collapsed, setCollapsed] = useState(loadCollapsed)
@@ -53,16 +55,29 @@ export function MapView({ catalog, catalogFailed, variableId, onVariable, years,
       // Storage unavailable (private mode…): the choice lasts until the page is reloaded.
     }
   }
+  // A layer is a variable with its other measures (its share): one row, a measure switch in the card.
+  const measures = useMemo(() => {
+    const out = new Map<string, Variable[]>()
+    for (const variable of catalog?.variables ?? []) {
+      const layer = variable.measure_of ?? variable.id
+      out.set(layer, [...(out.get(layer) ?? []), variable])
+    }
+    // The number first, then its share.
+    for (const list of out.values()) list.sort((a, b) => Number(Boolean(a.measure_of)) - Number(Boolean(b.measure_of)))
+    return out
+  }, [catalog])
   const topics = useMemo(() => {
     if (!catalog) return []
     const words = fold(query).split(/\s+/).filter(Boolean)
     const labels = new Map(catalog.topics.map((topic) => [topic.id, topic.label]))
     const matches = (variable: Variable) => {
-      const text = fold(`${variable.label} ${variable.description ?? ''} ${labels.get(variable.topic ?? '') ?? ''}`)
+      const text = fold(
+        (measures.get(variable.id) ?? [variable]).map((item) => `${item.label} ${item.description ?? ''}`).join(' ') + ` ${labels.get(variable.topic ?? '') ?? ''}`,
+      )
       return words.every((word) => text.includes(word))
     }
     const groups = new Map<string, Variable[]>()
-    for (const variable of catalog.variables.filter(matches)) {
+    for (const variable of catalog.variables.filter((item) => !item.measure_of && matches(item))) {
       const key = variable.topic ?? ''
       groups.set(key, [...(groups.get(key) ?? []), variable])
     }
@@ -75,11 +90,13 @@ export function MapView({ catalog, catalogFailed, variableId, onVariable, years,
         label: labels.get(id) ?? copy.mapView.otherTopic,
         variables,
       }))
-  }, [catalog, query])
+  }, [catalog, measures, query])
 
   if (catalogFailed) return <p className="sidebar-empty layers-message">{copy.mapView.unavailableApi}</p>
   if (!catalog) return <p className="sidebar-empty layers-message">{copy.mapView.loading}</p>
   const active = catalog.variables.find((variable) => variable.id === variableId)
+  const layerId = active ? (active.measure_of ?? active.id) : undefined
+  const activeMeasures = layerId ? (measures.get(layerId) ?? []) : []
 
   return (
     <div className="layers">
@@ -109,6 +126,14 @@ export function MapView({ catalog, catalogFailed, variableId, onVariable, years,
               </button>
             </div>
             {active.description && <p className="layer-card-description">{active.description}</p>}
+            {activeMeasures.length > 1 && (
+              <Segmented
+                label={copy.mapView.measure}
+                items={activeMeasures.map((item) => ({ id: item.id, label: isCount(item.unit) ? copy.mapView.count : item.unit }))}
+                value={active.id}
+                onChange={onMeasure}
+              />
+            )}
             <OptionControls options={active.options} choices={choices} onChange={onChoices} />
             {facets.length > 1 && facetId && <Segmented label={copy.mapView.source} items={facets} value={facetId} onChange={onFacet} />}
             <PeriodControl periods={years} value={period} onChange={(value) => onPeriod(value as number | undefined)} />
@@ -144,12 +169,17 @@ export function MapView({ catalog, catalogFailed, variableId, onVariable, years,
                   type="button"
                   role="listitem"
                   className="layer-row"
-                  aria-pressed={variable.id === variableId}
+                  aria-pressed={variable.id === layerId}
                   title={variable.description ?? undefined}
-                  onClick={() => onVariable(variable.id === variableId ? undefined : variable.id)}
+                  onClick={() => onVariable(variable.id === layerId ? undefined : variable.id)}
                 >
                   <span className="layer-row-label">{variable.label}</span>
-                  <span className="layer-row-unit">{isCount(variable.unit) ? 'nº' : variable.unit === '%' ? '%' : ''}</span>
+                  <span className="layer-row-unit">
+                    {(measures.get(variable.id) ?? [variable])
+                      .map((item) => (isCount(item.unit) ? 'nº' : item.unit === '%' ? '%' : ''))
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </span>
                 </button>
               ))}
             </div>

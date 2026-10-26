@@ -44,7 +44,12 @@ A variable can have **options**: dimensions the user picks, which its facets ref
 range of five-year age groups, summed (`Y0T4..Y10T14` = 0 to 14). REST takes them as
 `option=sex:female` or `option=age:Y0T4..Y10T14` (repeat for several); MCP tools as
 `options={"age": "Y0T4..Y10T14"}`. Options left out take the variable's default, and results
-carry the choice in their label ("Población · Mujeres", "% de población por edad · De 0 a 14 años").
+carry the choice in their label ("Población · Mujeres", "Proporción de población por edad · De 0 a 14
+años").
+
+A share can say it's another measure of a count (`measure_of`: `population_age_share` of
+`population_by_age`): both stay variables of their own here, and the web shows them as one layer
+with a Número / % switch. They must share topic and option dimensions (checked when building).
 
 ## REST
 

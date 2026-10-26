@@ -65,7 +65,8 @@ CREATE TABLE variables (
   kind TEXT NOT NULL,           -- count | ratio
   scale REAL NOT NULL DEFAULT 1,
   default_facet TEXT,           -- JSON: level → facet id
-  options TEXT                  -- JSON: dimensions the user picks ({dimension, values, default, range?, control?}); facets say "$dimension"
+  options TEXT,                 -- JSON: dimensions the user picks ({dimension, values, default, range?, control?}); facets say "$dimension"
+  measure_of TEXT               -- another measure (a share) of this variable: the web shows both as one layer
 );
 
 CREATE TABLE variable_facets (

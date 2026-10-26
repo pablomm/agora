@@ -61,7 +61,7 @@ def dimensions() -> dict[str, dict]:
 def variables() -> dict[str, dict]:
     with catalog() as db:
         rows = db.execute(
-            "SELECT id, topic_id AS topic, label_es AS label, description_es AS description, unit, kind, scale, default_facet, options FROM variables"
+            "SELECT id, topic_id AS topic, label_es AS label, description_es AS description, unit, kind, scale, default_facet, options, measure_of FROM variables"
         ).fetchall()
         facets = db.execute(
             "SELECT variable_id, id, label_es AS label, dataset_id AS dataset, numerator, denominator FROM variable_facets ORDER BY variable_id, position"

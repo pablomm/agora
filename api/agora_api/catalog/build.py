@@ -102,6 +102,19 @@ def check_options(variable: dict) -> None:
             raise ValueError(f"{variable['id']}: option {option['dimension']} has control {option.get('control')!r}, not one of {CONTROLS} (and ranges take none)")
 
 
+def check_measures(db: sqlite3.Connection) -> None:
+    """A variable shown as another measure of one ("measure_of") has its topic and its options' dimensions, and isn't itself another's."""
+    rows = {row[0]: row[1:] for row in db.execute("SELECT id, topic_id, options, measure_of FROM variables")}
+    for id_, (topic, options, measure_of) in rows.items():
+        if not measure_of:
+            continue
+        if measure_of not in rows or rows[measure_of][2]:
+            raise ValueError(f"{id_}: measure_of {measure_of!r} isn't a variable shown on its own")
+        dimensions = [{option["dimension"] for option in json.loads(spec or "[]")} for spec in (options, rows[measure_of][1])]
+        if topic != rows[measure_of][0] or dimensions[0] != dimensions[1]:
+            raise ValueError(f"{id_}: another measure of {measure_of} must have its topic and options")
+
+
 def label(value: dict | str | None, lang: str) -> str | None:
     if value is None or isinstance(value, str):
         return value
@@ -165,7 +178,7 @@ def build(target: Path = CATALOG_DB) -> Path:
             log.info("%s: %d level-periods on disk", dataset["id"], len(rows))
         for variable in catalog.get("variables", []):
             db.execute(
-                "INSERT INTO variables VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO variables VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     variable["id"],
                     variable.get("topic"),
@@ -178,6 +191,7 @@ def build(target: Path = CATALOG_DB) -> Path:
                     variable.get("scale", 1),
                     json.dumps(variable.get("default_facet", {})),
                     json.dumps(variable.get("options", [])),
+                    variable.get("measure_of"),
                 ),
             )
             check_options(variable)
@@ -198,6 +212,7 @@ def build(target: Path = CATALOG_DB) -> Path:
                 ],
             )
 
+    check_measures(db)
     db.execute("INSERT INTO build VALUES ('built_at', ?)", (datetime.now(timezone.utc).isoformat(timespec="seconds"),))
     db.commit()
     db.close()
