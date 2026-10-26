@@ -1600,8 +1600,10 @@ body {
 }
 
 /* A dropdown with a search box, for long lists: a button like the plain select, and a popover. */
+/* min-width 0: a long label is cut with an ellipsis instead of widening the card. */
 .search-select {
   position: relative;
+  min-width: 0;
 }
 
 .search-select-button {
@@ -1623,6 +1625,7 @@ body {
 }
 
 .search-select-button span {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

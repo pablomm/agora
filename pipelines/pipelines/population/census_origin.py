@@ -21,6 +21,8 @@ Annual Population Census (INE, since 2021) by sex and nationality or country of 
   occupation (three groups of CNO-11 major groups) or sector (four groups of CNAE-2009 sections),
   by sex, from census sections up (2021–2023); hidden units imputed. The classifications pipeline
   links both groupings to their codes.
+- employed_status (employment pipeline): the employed by professional status (self-employed, or
+  employees and other situations), by sex, from census sections up (2021–2023); hidden units imputed.
 - population_education_gender_gap: derived from population_education at every level, the share of
   women with each level of education minus the share of men, in percentage points.
 
@@ -106,6 +108,8 @@ ACTIVITY_BORN_TABLES = list(range(66640, 66845, 4))
 #: province each (national: 70004, 70005).
 OCCUPATION_TABLES = list(range(70016, 70170, 3))
 SECTOR_TABLES = list(range(70017, 70171, 3))
+#: "Ocupados de 16 y más años por sexo y situación profesional (agregada)", one table per province (national: 70006).
+STATUS_TABLES = list(range(70018, 70172, 3))
 
 
 def rooted(tree: dict[str, list[str]], top: str, leave_out: str | None = None) -> dict[str, list[str]]:
@@ -241,6 +245,18 @@ DATASETS = {
         "parts": ["agriculture", "industry", "construction", "services", "not_stated"],
         "level": "census_section",
         "dimension": "sector",
+        "weight_ages": ADULT_AGES,
+    },
+    "employed_status": {
+        "pipeline": "employment",
+        "raw": "employment_census",
+        "tables": STATUS_TABLES,
+        "column": "Situación profesional",
+        "codes": codelists.PROFESSIONAL_STATUS,
+        "tree": {},
+        "parts": ["self_employed", "employee"],
+        "level": "census_section",
+        "dimension": "professional_status",
         "weight_ages": ADULT_AGES,
     },
 }

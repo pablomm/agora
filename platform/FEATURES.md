@@ -2,6 +2,17 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Professional status, groups of activity sections
+
+- **Ocupados por situación profesional** (self-employed, employees), nº · %, by sex, down to census
+  sections; **(detalle)** in municipalities of 500 residents or more: employers, own-account,
+  permanent and temporary employees.
+- Ocupados por sección de actividad (CNAE-2009) gains two groups, nested over their sections in
+  the dropdown: professional and support services (M–N) and administration, education and health
+  (O–Q). Hospitality (I) and trade (G) are sections already.
+- The searchable dropdown no longer widens the card with a long label (it's cut with an ellipsis),
+  and its search placeholder keeps acronyms' case ("Buscar: actividad (CNAE-2009)").
+
 ## 2026-10-26 · Employed by occupation and activity, linked to CNO-11 and CNAE-2009
 
 - **Ocupados por ocupación** (directors and professionals, skilled workers, elementary) and

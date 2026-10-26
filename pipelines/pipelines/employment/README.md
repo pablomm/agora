@@ -9,8 +9,8 @@ python pipelines/employment/sepe.py              # SEPE registers, monthly (≈ 
 python pipelines/employment/census_activity.py sex             # INE census, by section (needs the population pipeline's census_annual.py first)
 python pipelines/population/census_origin.py census_activity_born   # the same by birthplace (52 provincial tables)
 python pipelines/employment/census_activity.py groups gaps     # both in one dimension, and the gaps
-python pipelines/population/census_origin.py employed_occupation employed_sector   # the employed by occupation and sector, by section
-python pipelines/population/census_municipal.py employed_cno11 employed_cnae2009  # … by CNO-11 and CNAE-2009 codes (needs the classifications pipeline)
+python pipelines/population/census_origin.py employed_occupation employed_sector employed_status   # the employed by occupation, sector and status, by section
+python pipelines/population/census_municipal.py employed_cno11 employed_cnae2009 employed_status_detail  # … by CNO-11 and CNAE-2009 codes, status in detail (needs the classifications pipeline)
 ```
 
 ## Datasets
@@ -25,8 +25,10 @@ python pipelines/population/census_municipal.py employed_cno11 employed_cnae2009
 | `census_activity_groups` | Derived from the two above | Census section | Yearly, 2021–2024 | group (everyone, men, women, born in Spain, born abroad) × relation with activity, with `active` and `inactive` as groups |
 | `employed_occupation` | INE, Censo anual, "Ocupados de 16 y más años por sexo y ocupación (agregada)", one table per province (52, from 70016) | Census section | Yearly, 2021–2023 | sex × occupation group (CNO-11 1–3, 4–8, 9, not stated); hidden units imputed |
 | `employed_sector` | INE, Censo anual, "… por sexo y rama de actividad", one table per province (52, from 70017) | Census section | Yearly, 2021–2023 | sex × sector (CNAE-2009 A, B–E, F, G–U, not stated); hidden units imputed |
+| `employed_status` | INE, Censo anual, "Ocupados de 16 y más años por sexo y situación profesional (agregada)", one table per province (52, from 70018) | Census section | Yearly, 2021–2023 | sex × professional status (self-employed, employees and other); hidden units imputed |
+| `employed_status_detail` | INE, Censo anual, table 69993 | Municipality (500 residents or more) | Yearly, 2021–2023 | sex × professional status (employers, own-account, permanent and temporary employees, nested in the two above); matches `employed_status` summed up to municipalities exactly |
 | `employed_cno11` | INE, Censo anual, table 69991 | Municipality (500 residents or more) | Yearly, 2021–2023 | sex × CNO-11 major group (`1`–`9`, codes of the classification) |
-| `employed_cnae2009` | INE, Censo anual, table 69992 | Municipality (500 residents or more) | Yearly, 2021–2023 | sex × CNAE-2009 section (`A`–`U`) |
+| `employed_cnae2009` | INE, Censo anual, table 69992 | Municipality (500 residents or more) | Yearly, 2021–2023 | sex × CNAE-2009 section (`A`–`U`), plus groups: professional services (M–N), public administration, education and health (O–Q) |
 | `census_activity_gaps` | Derived from `census_activity_groups` | Census section | Yearly, 2021–2024 | rate (activity, employment, unemployment) × comparison (women − men, born abroad − born in Spain), in points |
 
 Output: `data/processed/employment/{dataset}/{level}.parquet` (`entity_id`, `code`, `period`,
@@ -74,4 +76,6 @@ rates, and population 16+ by relation with activity (count and share, with the a
 inactive), all by group (sex or birthplace); and the gaps in those rates between women and men,
 and between those born abroad and in Spain. The employed by occupation and by sector (nº · %),
 down to census sections, and by CNO-11 major group and CNAE-2009 section in municipalities of 500
-residents or more. Their totals match the employed of `census_activity` exactly.
+residents or more (with professional services and administration, education and health as groups
+of sections); by professional status (self-employed, employees) down to sections, and in detail
+(employers, own-account, permanent and temporary employees) by municipality. Their totals match the employed of `census_activity` exactly.

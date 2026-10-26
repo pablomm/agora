@@ -195,3 +195,13 @@ def test_dimensions_linked_to_classifications(client):
     assert any(entry["dimension"] == "sector" and entry["value"] == "industry" for entry in client.get("/classifications/cnae2009/1011").json()["dimensions"])
     employed = client.get("/observations", params={"variable": "employed_by_cnae2009_share", "level": "municipality", "period": 2023, "option": "cnae2009:J"}).json()
     assert employed["label"] == "Proporción de ocupados por sección de actividad (CNAE-2009) · Información y comunicaciones" and 0 < employed["values"][MADRID] < 30
+
+
+def test_professional_status_and_activity_groups(client):
+    own = client.get("/observations", params={"variable": "employed_by_status_share", "level": "census_section", "period": 2023}).json()
+    assert own["label"] == "Proporción de ocupados por situación profesional · Cuenta propia" and own["stats"]["count"] > 36_000
+    spain = client.get("/entities/es:country:es/value", params={"variable": "employed_by_status_share", "period": 2023}).json()["value"]
+    assert 10 < spain < 25
+    public = client.get(f"/entities/{MADRID}/value", params={"variable": "employed_by_cnae2009_share", "period": 2023, "option": "cnae2009:public_services"}).json()
+    parts = [client.get(f"/entities/{MADRID}/value", params={"variable": "employed_by_cnae2009_share", "period": 2023, "option": f"cnae2009:{code}"}).json()["value"] for code in "OPQ"]
+    assert abs(public["value"] - sum(parts)) < 1e-9

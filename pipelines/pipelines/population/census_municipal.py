@@ -28,7 +28,10 @@ The employed aged 16 and over, in municipalities of 500 residents or more (2021�
 employment pipeline, with classification codes as values (INE's labels start with them):
 
 - employed_cno11: by sex and CNO-11 major group (1–9) (table 69991).
-- employed_cnae2009: by sex and CNAE-2009 section (A–U) (table 69992).
+- employed_cnae2009: by sex and CNAE-2009 section (A–U) (table 69992), with two groups of sections:
+  professional services (M–N) and public administration, education and health (O–Q).
+- employed_status_detail: by sex and professional status: self-employed with or without staff,
+  employees permanent or temporary (table 69993).
 
 Empty cells are structural (adults not born a year before; arrival years after the census) and count
 as zero. Every breakdown is checked to add up to the totals INE publishes.
@@ -166,7 +169,16 @@ DATASETS = {
         "column": "Actividad económica",
         "codes": classified("cnae2009"),
         "dimension": "cnae2009",
-        "groups": {},
+        "groups": {"professional_services": ["M", "N"], "public_services": ["O", "P", "Q"]},
+    },
+    "employed_status_detail": {
+        "pipeline": "employment",
+        "raw": "employment_census",
+        "tables": {69993: {}},
+        "column": "Situación profesional",
+        "codes": codelists.PROFESSIONAL_STATUS_DETAIL,
+        "dimension": "professional_status",
+        "groups": {"self_employed": ["employer", "own_account"], "employee": ["employee_permanent", "employee_temporary"]},
     },
 }
 

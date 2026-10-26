@@ -201,7 +201,47 @@
       },
       "values": {
         "total": "Total",
+        "professional_services": "Servicios profesionales y auxiliares (M–N)",
+        "public_services": "Administración, educación y sanidad (O–Q)",
         "not_stated": "No consta"
+      },
+      "parents": {
+        "M": "professional_services",
+        "N": "professional_services",
+        "O": "public_services",
+        "P": "public_services",
+        "Q": "public_services"
+      }
+    },
+    {
+      "id": "professional_status",
+      "label": {
+        "es": "Situación profesional",
+        "en": "Professional status"
+      },
+      "values": {
+        "total": "Total",
+        "self_employed": "Cuenta propia",
+        "employer": "Empleadores (con asalariados)",
+        "own_account": "Autónomos sin asalariados",
+        "employee": "Cuenta ajena (asalariados)",
+        "employee_permanent": "Asalariados fijos o indefinidos",
+        "employee_temporary": "Asalariados temporales"
+      },
+      "order": [
+        "total",
+        "self_employed",
+        "employer",
+        "own_account",
+        "employee",
+        "employee_permanent",
+        "employee_temporary"
+      ],
+      "parents": {
+        "employer": "self_employed",
+        "own_account": "self_employed",
+        "employee_permanent": "employee",
+        "employee_temporary": "employee"
       }
     }
   ],
@@ -832,6 +872,142 @@
         "as_of": "{year}-01-01"
       },
       "output": "processed/employment/employed_cnae2009/{level}.parquet"
+    },
+    {
+      "id": "employed_status",
+      "title": "Ocupados de 16 y más años por sexo y situación profesional (agregada) (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          70018,
+          70021,
+          70024,
+          70027,
+          70030,
+          70033,
+          70036,
+          70039,
+          70042,
+          70045,
+          70048,
+          70051,
+          70054,
+          70057,
+          70060,
+          70063,
+          70066,
+          70069,
+          70072,
+          70075,
+          70078,
+          70081,
+          70084,
+          70087,
+          70090,
+          70093,
+          70096,
+          70099,
+          70102,
+          70105,
+          70108,
+          70111,
+          70114,
+          70117,
+          70120,
+          70123,
+          70126,
+          70129,
+          70132,
+          70135,
+          70138,
+          70141,
+          70144,
+          70147,
+          70150,
+          70153,
+          70156,
+          70159,
+          70162,
+          70165,
+          70168,
+          70171
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "employed_16_plus",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "professional_status"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2023",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/employment/employed_status/{level}.parquet"
+    },
+    {
+      "id": "employed_status_detail",
+      "title": "Ocupados de 16 y más años por sexo y situación profesional, municipios de 500 habitantes o más (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          69993
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "employed_16_plus",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "professional_status"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality"
+      ],
+      "periods": "2021–2023",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/employment/employed_status_detail/{level}.parquet"
     }
   ],
   "variables": [
@@ -2036,8 +2212,10 @@
             "J",
             "K",
             "L",
+            "professional_services",
             "M",
             "N",
+            "public_services",
             "O",
             "P",
             "Q",
@@ -2105,8 +2283,10 @@
             "J",
             "K",
             "L",
+            "professional_services",
             "M",
             "N",
+            "public_services",
             "O",
             "P",
             "Q",
@@ -2142,6 +2322,214 @@
           },
           "denominator": {
             "cnae2009": "total",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_status",
+      "topic": "employment",
+      "label": {
+        "es": "Ocupados por situación profesional",
+        "en": "Employed by professional status"
+      },
+      "description": {
+        "es": "Ocupados de 16 y más años por cuenta propia o por cuenta ajena (asalariados y otras situaciones). A 1 de enero, hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Employed aged 16 and over, self-employed or employees (and other situations). On 1 January, down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "professional_status",
+          "values": [
+            "self_employed",
+            "employee"
+          ],
+          "default": "self_employed"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_status",
+          "numerator": {
+            "professional_status": "$professional_status",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_status_share",
+      "topic": "employment",
+      "label": {
+        "es": "Proporción de ocupados por situación profesional",
+        "en": "Share of employed by professional status"
+      },
+      "measure_of": "employed_by_status",
+      "description": {
+        "es": "Ocupados de 16 y más años por cuenta propia o por cuenta ajena (asalariados y otras situaciones), sobre el total de ocupados del mismo sexo. A 1 de enero, hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Employed aged 16 and over, self-employed or employees (and other situations), over all employed of the same sex. On 1 January, down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "professional_status",
+          "values": [
+            "self_employed",
+            "employee"
+          ],
+          "default": "self_employed"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_status",
+          "numerator": {
+            "professional_status": "$professional_status",
+            "sex": "$sex"
+          },
+          "denominator": {
+            "professional_status": "total",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_status_detail",
+      "topic": "employment",
+      "label": {
+        "es": "Ocupados por situación profesional (detalle)",
+        "en": "Employed by professional status (detail)"
+      },
+      "description": {
+        "es": "Ocupados de 16 y más años por cuenta propia (empleadores o autónomos sin asalariados) o por cuenta ajena (fijos o temporales). A 1 de enero, solo municipios de 500 habitantes o más.",
+        "en": "Employed aged 16 and over, self-employed (employers or own-account) or employees (permanent or temporary). On 1 January, only municipalities of 500 residents or more."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "professional_status",
+          "values": [
+            "self_employed",
+            "employer",
+            "own_account",
+            "employee",
+            "employee_permanent",
+            "employee_temporary"
+          ],
+          "default": "own_account"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_status_detail",
+          "numerator": {
+            "professional_status": "$professional_status",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "employed_by_status_detail_share",
+      "topic": "employment",
+      "label": {
+        "es": "Proporción de ocupados por situación profesional (detalle)",
+        "en": "Share of employed by professional status (detail)"
+      },
+      "measure_of": "employed_by_status_detail",
+      "description": {
+        "es": "Ocupados de 16 y más años por cuenta propia (empleadores o autónomos sin asalariados) o por cuenta ajena (fijos o temporales), sobre el total de ocupados del mismo sexo. A 1 de enero, solo municipios de 500 habitantes o más.",
+        "en": "Employed aged 16 and over, self-employed (employers or own-account) or employees (permanent or temporary), over all employed of the same sex. On 1 January, only municipalities of 500 residents or more."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "professional_status",
+          "values": [
+            "self_employed",
+            "employer",
+            "own_account",
+            "employee",
+            "employee_permanent",
+            "employee_temporary"
+          ],
+          "default": "own_account"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "employed_status_detail",
+          "numerator": {
+            "professional_status": "$professional_status",
+            "sex": "$sex"
+          },
+          "denominator": {
+            "professional_status": "total",
             "sex": "$sex"
           }
         }

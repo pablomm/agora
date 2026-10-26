@@ -146,7 +146,8 @@ def with_classification(db: sqlite3.Connection, dimension: dict) -> dict:
     """
     A dimension whose values are a classification's codes ({"classification": {"id", "level"}}):
     the codes of that level, with their labels, after the dimension's own values (total) and
-    before its last ones ("not_stated"), checked to exist.
+    before its last ones ("not_stated"), checked to exist. Own values that group codes (its
+    `parents`) go right before the first code they hold.
     """
     linked = dimension["classification"]
     codes = db.execute(
@@ -155,9 +156,17 @@ def with_classification(db: sqlite3.Connection, dimension: dict) -> dict:
     if not codes:
         raise ValueError(f"Dimension {dimension['id']}: classification {linked['id']} has no level {linked['level']} (run the classifications pipeline)")
     own = dimension.get("values", {})
-    first = {code: text for code, text in own.items() if code == "total"}
-    last = {code: text for code, text in own.items() if code != "total"}
-    return {**dimension, "values": {**first, **dict(codes), **last}, "order": [*first, *(code for code, _ in codes), *last]}
+    parents = dimension.get("parents", {})
+    groups = set(parents.values())
+    first = [code for code in own if code == "total"]
+    last = [code for code in own if code != "total" and code not in groups]
+    order = [*first]
+    for code, _ in codes:
+        group = parents.get(code)
+        if group and group not in order:
+            order.append(group)
+        order.append(code)
+    return {**dimension, "values": {**own, **dict(codes)}, "order": [*order, *last]}
 
 
 def check_groupings(db: sqlite3.Connection) -> None:

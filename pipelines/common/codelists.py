@@ -191,3 +191,16 @@ SECTOR = {
     "Servicios": "services",
     "No consta": "not_stated",
 }
+
+#: Professional status of the employed, aggregated (census sections).
+PROFESSIONAL_STATUS = {"Total": "total", "Trabajador por cuenta propia": "self_employed", "Trabajador por cuenta ajena y otra situación": "employee"}
+
+#: Professional status of the employed, in detail (municipalities of 500 residents or more): the
+#: self-employed with or without staff, employees permanent or temporary.
+PROFESSIONAL_STATUS_DETAIL = {
+    "Total": "total",
+    "Trabajador por cuenta propia que emplea personal": "employer",
+    "Trabajador por cuenta propia que no emplea personal": "own_account",
+    "Trabajador por cuenta ajena fijo o indefinido, y otra situación": "employee_permanent",
+    "Trabajador por cuenta ajena temporal": "employee_temporary",
+}
