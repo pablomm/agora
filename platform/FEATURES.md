@@ -2,6 +2,12 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Header: new logo, folding search
+
+- The header shows the app's logo (`public/favicon.svg`) instead of the old bars.
+- The place search folds to its icon; clicking it to type widens it to a full search box, and it
+  folds again when focus leaves it (or with Esc once its list is closed).
+
 ## 2026-10-26 · Migration and mobility
 
 - New topic **Migración y movilidad**, each layer nº · % with sex:

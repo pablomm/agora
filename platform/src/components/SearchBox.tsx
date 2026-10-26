@@ -5,7 +5,10 @@ import { api, type Place } from '../data/api'
 /** Wait after the last keystroke before searching. */
 const DEBOUNCE_MS = 200
 
-/** Search for an autonomous community, province or municipality by name; picking one goes there. */
+/**
+ * Search for an autonomous community, province or municipality by name; picking one goes there.
+ * Folded to its icon until it's clicked to type, then as wide as a search box; it folds again on blur.
+ */
 export function SearchBox({ onPick }: { onPick: (place: Place) => void }) {
   const [query, setQuery] = useState('')
   // Results belong to the query they answer: a newer query hides them until its own arrive.
@@ -14,6 +17,7 @@ export function SearchBox({ onPick }: { onPick: (place: Place) => void }) {
   const results = text.length >= 2 && found?.query === text ? found.places : undefined
   const [active, setActive] = useState(0)
   const [open, setOpen] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   const listId = useId()
   const root = useRef<HTMLFormElement>(null)
 
@@ -50,7 +54,8 @@ export function SearchBox({ onPick }: { onPick: (place: Place) => void }) {
     setOpen(false)
   }
 
-  const onKeyDown = (event: React.KeyboardEvent) => {
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Escape' && !(open && results?.length)) event.currentTarget.blur()
     if (!results?.length) return
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault()
@@ -66,7 +71,7 @@ export function SearchBox({ onPick }: { onPick: (place: Place) => void }) {
 
   const showList = open && results !== undefined
   return (
-    <form ref={root} className="search" role="search" onSubmit={(event) => event.preventDefault()}>
+    <form ref={root} className={expanded ? 'search is-expanded' : 'search'} role="search" onSubmit={(event) => event.preventDefault()}>
       <svg className="search-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
         <circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
         <path d="m15 15 5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -85,7 +90,11 @@ export function SearchBox({ onPick }: { onPick: (place: Place) => void }) {
           setQuery(event.target.value)
           setOpen(true)
         }}
-        onFocus={() => setOpen(true)}
+        onFocus={() => {
+          setOpen(true)
+          setExpanded(true)
+        }}
+        onBlur={() => setExpanded(false)}
         onKeyDown={onKeyDown}
       />
       {showList && (
