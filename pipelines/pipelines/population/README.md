@@ -6,7 +6,8 @@ detailed level and aggregated up the territorial hierarchy (`common/rollup.py`).
 ```sh
 python pipelines/population/official_figures.py   # ~1 min
 python pipelines/population/census_annual.py      # ~10 min (54 downloads, one of 690 MB)
-python pipelines/population/census_origin.py      # ~4 min, plus ~3.7 GB of downloads (160 tables)
+python pipelines/population/census_origin.py      # ~4 min, plus ~4.2 GB of downloads (212 tables)
+python pipelines/population/census_mobility.py    # ~1 min (3 tables)
 ```
 
 Needs the provinces pipeline (provinces → autonomous communities).
@@ -23,6 +24,10 @@ Needs the provinces pipeline (provinces → autonomous communities).
 | `population_birth_country` | Censo de Población anual, "Población por sexo y país de nacimiento (principales países)", one table per province (52) | census section | section → … → Spain | 2021–2025 | sex, country of birth (`birth_country_main`) |
 | `population_birth_country_detail` | Censo de Población anual, tables 66322 (main countries) and 68538 (country groups, only to check) | municipality | municipality → … → Spain | 2021–2025 | sex, country of birth (`birth_country_detail`) |
 | `population_birthplace` | Censo de Población anual, "Población por sexo y relación entre lugar de nacimiento y lugar de residencia", one table per province (52) | census section | section → … → Spain | 2021–2025 | sex, birthplace against residence (`birthplace`) |
+| `population_arrival_spain` | Censo de Población anual, "Población por año de llegada a España (agregado) y sexo", one table per province (52) | census section | section → … → Spain | 2021–2025 | sex, arrival in Spain (`arrival_spain`) |
+| `population_previous_residence` | Censo de Población anual, table 70382 | municipality (500 residents or more: 4,144) | municipality only | 2021–2025 | sex, age (<16, 16–64, 65+), previous residence |
+| `population_arrival_municipality` | Censo de Población anual, table 70371 | municipality (151 provincial capitals and main cities) | municipality only | 2021–2025 | sex, age (8 groups), arrival in the municipality (years before the census) |
+| `population_residence_year_ago` | Censo de Población anual, table 79570 | municipality (the same 151) | municipality only | 2021–2025 | sex, age (<16, 16–64, 65+), nationality (Spanish/foreign), residence a year before |
 | `population_mean_age` | Derived from `population_sex_age` (no download but table 68527, to check) | every level of `population_sex_age` | section → … → Spain | 2021–2025 | sex; the value is a mean age, in years (not a sum) |
 
 - **Official figures** are each municipality's legal population on 1 January (the Padrón). The
@@ -42,6 +47,17 @@ Needs the provinces pipeline (provinces → autonomous communities).
 - **Birthplace against residence**: same municipality, another municipality of the province,
   another province of the community, another community, abroad; `born_in_spain` is the sum of
   the first four.
+- **Migration and mobility.** By census section INE only publishes arrival in Spain, in bands
+  (after 2020, 2011–2020, 2001–2010, before 2001, always in Spain): "after 2020" is the last year
+  in 2021 and the last five in 2025. INE hides small sections and municipalities whole (2,876
+  section-years, 2,856 municipality-years, all under 86 residents): hidden municipalities share
+  their province's residual and hidden sections their municipality's, by residents of each sex
+  (`common/imputation.py`); imputed totals are 1.4 people off the census population on average.
+  Previous residence, arrival in the municipality and residence a year before are published only
+  for some municipalities (500 residents or more, or the 151 main cities), so they aren't
+  aggregated up. Arrival in the municipality only dates those who came from another Spanish
+  municipality (those who came straight from abroad are "since they came to Spain"); its calendar
+  years become years before each census (within the last 1, 2, 3, 5 years, always exact).
 - **Mean age** counts each five-year group at its midpoint (2.5 for 0–4… 102.5 for 100+), at every
   level from the aggregated groups. Against INE's mean age by province, sex and year (table
   68527, 780 values) it's at most 0.034 years off; the run fails beyond 0.1. Other age indicators
@@ -68,6 +84,10 @@ Needs the provinces pipeline (provinces → autonomous communities).
 | `nationality_main`, `nationality_detail` | `total`, `spanish`, `foreign`, continents and groups (`europe`, `eu`, `africa`, `south_america`…), countries (`MAR`…) and rests (`africa_other`…): the nationality datasets |
 | `birth_country_main`, `birth_country_detail` | the same with `spain` and `abroad`: the country of birth datasets |
 | `birthplace` | `total`, `born_in_spain`, `same_municipality`, `same_province`, `same_community`, `other_community`, `abroad` |
+| `arrival_spain` | `total`, `arrived`, `after_2020`, `2011_2020`, `2001_2010`, `before_2001`, `always_in_spain` |
+| `previous_residence` | `total`, `always_here`, `came_from_elsewhere` (= `other_municipality` + `abroad`), `unknown` |
+| `arrival_municipality` | `total`, `from_other_municipality`, `within_1_year`, `within_2_years`, `within_3_years`, `within_5_years` (cumulative), `more_than_5_years`, `since_arrival_in_spain`, `since_birth` |
+| `residence_year_ago` | `total`, `same_municipality`, `moved_in` (= `elsewhere_in_spain` + `abroad`), `same_province`, `same_community`, `other_community`, `not_born` |
 | `value` | Persons |
 | `origin` | `published` (the base level, as INE publishes it) or `aggregated` (summed from the level below) |
 
@@ -87,6 +107,10 @@ stops the run, except the ones listed in the pipeline as known (with why):
   municipal and provincial rows of the same tables.
 - `population_sex_age_nationality`: provinces aggregated from municipalities against the provincial
   rows of the same table.
+- `population_arrival_spain`: like `population_birthplace`, with the imputed units filling exactly
+  what each province and municipality publishes.
+- The mobility datasets: every breakdown (categories, sexes, age groups, nationalities) adds up to
+  the totals INE publishes.
 - `population_birthplace`: the total from its parts against INE's, and the levels above against
   the same tables' rows. Gipuzkoa's table (69172) comes in English format ("Period", 733,149):
   `common/ine.py` reads it as the others.
@@ -113,6 +137,10 @@ left out, so a unit only has rows for the years it existed.
 | `population_birth_country` | section 14,212,224 · district 4,082,052 · municipality 3,171,246 · province 20,280 · autonomous community 7,410 · Spain 390 |
 | `population_birth_country_detail` | municipality 8,659,941 · province 55,380 · autonomous community 20,235 · Spain 1,065 |
 | `population_birthplace` | section 3,826,368 · district 1,099,014 · municipality 853,797 · province 5,460 · autonomous community 1,995 · Spain 105 |
+| `population_arrival_spain` | section 3,826,368 · district 1,099,014 · municipality 853,797 · province 5,460 · autonomous community 1,995 · Spain 105 |
+| `population_previous_residence` | municipality 1,491,840 |
+| `population_arrival_municipality` | municipality 163,080 |
+| `population_residence_year_ago` | municipality 244,620 |
 | `population_mean_age` | section 546,616 · district 156,998 · municipality 121,967 · province 780 · autonomous community 285 · Spain 15 |
 
 ## Code lists

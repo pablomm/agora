@@ -29,6 +29,7 @@ import pandas as pd
 
 from common import ine
 from common.download import sha256
+from common.imputation import share_out
 from common.paths import DATA_DIR, output_dir, raw_dir
 from common.rollup import check_against, rollup, write_levels
 
@@ -59,31 +60,6 @@ def adults(level: str) -> pd.Series:
         filters=[("age", "in", ADULT_AGES), ("sex", "in", list(SEX.values()))],
     )
     return frame.groupby(["code", "period", "sex"], observed=True)["value"].sum()
-
-
-def share_out(residual: pd.DataFrame, hidden: pd.DataFrame, weights: pd.Series, parent: str) -> pd.Series:
-    """
-    Integers for the hidden units' cells: each parent's residual (per sex and activity) split
-    among its hidden units by weight (equal shares where there's no weight), largest remainder.
-    `residual` has parent, period, sex, activity and residual; `hidden` the hidden cells (code,
-    parent, period, sex, activity). Returns values indexed like `hidden`.
-    """
-    keys = [parent, "period", "sex", "activity"]
-    frame = hidden.merge(residual, on=keys, how="left")
-    frame["residual"] = frame["residual"].fillna(0).clip(lower=0)
-    frame["weight"] = weights.reindex(pd.MultiIndex.from_frame(frame[["code", "period", "sex"]])).fillna(0).to_numpy()
-    totals = frame.groupby(keys)["weight"].transform("sum")
-    count = frame.groupby(keys)["weight"].transform("size")
-    share = np.where(totals > 0, frame["weight"] / totals.where(totals > 0, 1), 1 / count)
-    exact = frame["residual"] * share
-    floor = np.floor(exact)
-    frame["value"] = floor
-    frame["remainder"] = exact - floor
-    left = (frame["residual"] - frame.groupby(keys)["value"].transform("sum")).round().astype(int)
-    # The units with the largest remainders get one more until the residual is used up.
-    frame["rank"] = frame.groupby(keys)["remainder"].rank(method="first", ascending=False)
-    frame["value"] += (frame["rank"] <= left).astype(float)
-    return frame.set_index(hidden.index)["value"]
 
 
 def run(refresh: bool) -> None:
@@ -117,7 +93,7 @@ def run(refresh: bool) -> None:
         provinces.set_index(["code", "period", "sex", "activity"]).index.rename(["province", "period", "sex", "activity"]), fill_value=0
     )).rename("residual").reset_index()
     hidden = municipalities[municipalities["hidden"]]
-    municipalities.loc[hidden.index, "value"] = share_out(residual, hidden, adults("municipality"), "province")
+    municipalities.loc[hidden.index, "value"] = share_out(residual, hidden, adults("municipality"), "province", ["sex", "activity"])
 
     # Hidden sections: what their municipality (published or imputed) has left over.
     sections["municipality"] = sections["code"].str[:5]
@@ -125,7 +101,7 @@ def run(refresh: bool) -> None:
     published = municipalities.set_index(["code", "period", "sex", "activity"])["value"].rename_axis(["municipality", "period", "sex", "activity"])
     residual = (published - known.reindex(published.index, fill_value=0)).rename("residual").reset_index()
     hidden = sections[sections["hidden"]]
-    sections.loc[hidden.index, "value"] = share_out(residual, hidden, adults("census_section"), "municipality")
+    sections.loc[hidden.index, "value"] = share_out(residual, hidden, adults("census_section"), "municipality", ["sex", "activity"])
 
     # Every margin (sex total, activity total) as sums, so any filter is a sum of rows.
     base = sections[["code", "period", "sex", "activity", "value", "hidden"]]

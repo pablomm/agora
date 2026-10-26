@@ -135,3 +135,15 @@ def test_foreign_by_section_ignores_age(client):
     assert section["facet"]["id"] == "census_sections" and section["label"] == "Proporción de población extranjera · Mujeres"
     municipality = client.get("/observations", params={**params, "level": "municipality"}).json()
     assert municipality["label"] == "Proporción de población extranjera · Mujeres · De 20 a 34 años"
+
+
+def test_mobility(client):
+    recent = client.get("/observations", params={"variable": "population_arrival_spain_share", "level": "census_section", "period": 2025}).json()
+    assert recent["label"] == "Proporción de población por año de llegada a España · Después de 2020" and recent["stats"]["count"] > 36_000
+    # Municipal only: the 151 cities, with the choices named.
+    cities = client.get(
+        "/observations", params={"variable": "population_residence_year_ago_share", "level": "municipality", "period": 2025, "option": ["nationality:foreign", "age:Y16T64"]}
+    ).json()
+    assert len(cities["values"]) == 151 and 0 < cities["values"][MADRID] < 100
+    assert cities["label"] == "Proporción de población por residencia hace un año · Fuera del municipio · De 16 a 64 años · Extranjera"
+    assert client.get("/observations", params={"variable": "population_previous_residence", "level": "province"}).status_code == 404

@@ -2,6 +2,18 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Migration and mobility
+
+- New topic **Migración y movilidad**, each layer nº · % with sex:
+  - **Población por año de llegada a España** (after 2020, 2011–2020, 2001–2010, before 2001,
+    always in Spain), down to census sections; the small units INE hides are imputed.
+  - **Población por residencia anterior** (always here, from another municipality, from abroad),
+    by age, in municipalities of 500 residents or more.
+  - **Población por llegada al municipio** (within the last 1, 2, 3, 5 years or earlier, since
+    birth, since coming to Spain), by age, in the 151 provincial capitals and main cities.
+  - **Población por residencia hace un año** (same municipality, another of the province, of the
+    community, another community, abroad), by age and nationality, in the same 151 cities.
+
 ## 2026-10-26 · Age indicators, birthplace, foreign population by section
 
 - Demografía gains **Edad media** (from the five-year age groups, within 0.04 years of INE's) and

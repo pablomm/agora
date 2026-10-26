@@ -46,7 +46,15 @@
         "Y85T89": "De 85 a 89 años",
         "Y90T94": "De 90 a 94 años",
         "Y95T99": "De 95 a 99 años",
-        "Y_GE100": "100 y más años"
+        "Y_GE100": "100 y más años",
+        "Y_LT16": "Menores de 16 años",
+        "Y16T64": "De 16 a 64 años",
+        "Y_GE65": "65 años o más",
+        "Y16T24": "De 16 a 24 años",
+        "Y25T34": "De 25 a 34 años",
+        "Y35T44": "De 35 a 44 años",
+        "Y45T54": "De 45 a 54 años",
+        "Y55T64": "De 55 a 64 años"
       },
       "order": [
         "total",
@@ -70,7 +78,15 @@
         "Y85T89",
         "Y90T94",
         "Y95T99",
-        "Y_GE100"
+        "Y_GE100",
+        "Y_LT16",
+        "Y16T64",
+        "Y_GE65",
+        "Y16T24",
+        "Y25T34",
+        "Y35T44",
+        "Y45T54",
+        "Y55T64"
       ]
     },
     {
@@ -748,6 +764,136 @@
         "same_community": "born_in_spain",
         "other_community": "born_in_spain"
       }
+    },
+    {
+      "id": "arrival_spain",
+      "label": {
+        "es": "Llegada a España",
+        "en": "Arrival in Spain"
+      },
+      "values": {
+        "total": "Total",
+        "arrived": "Llegados del extranjero",
+        "after_2020": "Después de 2020",
+        "2011_2020": "Entre 2011 y 2020",
+        "2001_2010": "Entre 2001 y 2010",
+        "before_2001": "Antes de 2001",
+        "always_in_spain": "Siempre ha vivido en España"
+      },
+      "order": [
+        "total",
+        "arrived",
+        "after_2020",
+        "2011_2020",
+        "2001_2010",
+        "before_2001",
+        "always_in_spain"
+      ],
+      "parents": {
+        "after_2020": "arrived",
+        "2011_2020": "arrived",
+        "2001_2010": "arrived",
+        "before_2001": "arrived"
+      }
+    },
+    {
+      "id": "previous_residence",
+      "label": {
+        "es": "Residencia anterior",
+        "en": "Previous residence"
+      },
+      "values": {
+        "total": "Total",
+        "always_here": "Siempre ha vivido en el municipio",
+        "came_from_elsewhere": "Llegó de fuera del municipio",
+        "other_municipality": "De otro municipio",
+        "abroad": "Del extranjero",
+        "unknown": "No consta"
+      },
+      "order": [
+        "total",
+        "always_here",
+        "came_from_elsewhere",
+        "other_municipality",
+        "abroad",
+        "unknown"
+      ],
+      "parents": {
+        "other_municipality": "came_from_elsewhere",
+        "abroad": "came_from_elsewhere"
+      }
+    },
+    {
+      "id": "arrival_municipality",
+      "label": {
+        "es": "Llegada al municipio",
+        "en": "Arrival in the municipality"
+      },
+      "values": {
+        "total": "Total",
+        "from_other_municipality": "Llegó desde otro municipio",
+        "within_1_year": "En el último año",
+        "within_2_years": "En los últimos 2 años",
+        "within_3_years": "En los últimos 3 años",
+        "within_5_years": "En los últimos 5 años",
+        "more_than_5_years": "Hace más de 5 años",
+        "since_arrival_in_spain": "Desde que llegó a España",
+        "since_birth": "Desde que nació"
+      },
+      "order": [
+        "total",
+        "from_other_municipality",
+        "within_1_year",
+        "within_2_years",
+        "within_3_years",
+        "within_5_years",
+        "more_than_5_years",
+        "since_arrival_in_spain",
+        "since_birth"
+      ],
+      "parents": {
+        "within_1_year": "from_other_municipality",
+        "within_2_years": "from_other_municipality",
+        "within_3_years": "from_other_municipality",
+        "within_5_years": "from_other_municipality",
+        "more_than_5_years": "from_other_municipality"
+      }
+    },
+    {
+      "id": "residence_year_ago",
+      "label": {
+        "es": "Residencia hace un año",
+        "en": "Residence a year ago"
+      },
+      "values": {
+        "total": "Total",
+        "same_municipality": "En el mismo municipio",
+        "moved_in": "Fuera del municipio",
+        "elsewhere_in_spain": "En otro municipio de España",
+        "same_province": "En otro municipio de la provincia",
+        "same_community": "En otra provincia de la comunidad",
+        "other_community": "En otra comunidad",
+        "abroad": "En el extranjero",
+        "not_born": "No había nacido"
+      },
+      "order": [
+        "total",
+        "same_municipality",
+        "moved_in",
+        "elsewhere_in_spain",
+        "same_province",
+        "same_community",
+        "other_community",
+        "abroad",
+        "not_born"
+      ],
+      "parents": {
+        "elsewhere_in_spain": "moved_in",
+        "abroad": "moved_in",
+        "same_province": "elsewhere_in_spain",
+        "same_community": "elsewhere_in_spain",
+        "other_community": "elsewhere_in_spain"
+      }
     }
   ],
   "datasets": [
@@ -1300,6 +1446,226 @@
         "as_of": "{year}-01-01"
       },
       "output": "processed/population/population_birthplace/{level}.parquet"
+    },
+    {
+      "id": "population_arrival_spain",
+      "title": "Población por año de llegada a España (agregado) y sexo (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          70510,
+          70511,
+          70512,
+          70513,
+          70514,
+          70515,
+          70516,
+          70517,
+          70518,
+          70519,
+          70520,
+          70521,
+          70522,
+          70523,
+          70524,
+          70525,
+          70526,
+          70527,
+          70528,
+          70529,
+          70530,
+          70531,
+          70532,
+          70533,
+          70534,
+          70535,
+          70536,
+          70537,
+          70538,
+          70539,
+          70540,
+          70541,
+          70542,
+          70543,
+          70544,
+          70545,
+          70546,
+          70547,
+          70548,
+          70549,
+          70550,
+          70551,
+          70552,
+          70553,
+          70554,
+          70555,
+          70556,
+          70557,
+          70558,
+          70559,
+          70560,
+          70561
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "arrival_spain"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_arrival_spain/{level}.parquet"
+    },
+    {
+      "id": "population_previous_residence",
+      "title": "Población por residencia anterior (agregada), sexo y edad (grandes grupos), municipios de 500 habitantes o más (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          70382
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "age",
+        "previous_residence"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_previous_residence/{level}.parquet"
+    },
+    {
+      "id": "population_arrival_municipality",
+      "title": "Población por año de llegada al municipio, sexo y grupo de edad, capitales de provincia y principales ciudades (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          70371
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "age",
+        "arrival_municipality"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_arrival_municipality/{level}.parquet"
+    },
+    {
+      "id": "population_residence_year_ago",
+      "title": "Población por residencia hace un año, sexo, edad (grandes grupos) y nacionalidad, capitales de provincia y principales ciudades (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          79570
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "age",
+        "nationality",
+        "residence_year_ago"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_residence_year_ago/{level}.parquet"
     }
   ],
   "variables": [
@@ -2897,6 +3263,542 @@
           }
         }
       ]
+    },
+    {
+      "id": "population_arrival_spain",
+      "topic": "mobility",
+      "label": {
+        "es": "Población por año de llegada a España",
+        "en": "Population by arrival in Spain"
+      },
+      "description": {
+        "es": "Residentes según cuándo llegaron a vivir a España, o que siempre han vivido en España. \"Después de 2020\" son los llegados en el último año en 2021 y en los últimos cinco en 2025. Hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Residents by when they came to live in Spain, or who always lived in Spain. \"After 2020\" is the last year in 2021 and the last five in 2025. Down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "arrival_spain",
+          "values": [
+            "arrived",
+            "after_2020",
+            "2011_2020",
+            "2001_2010",
+            "before_2001",
+            "always_in_spain"
+          ],
+          "default": "after_2020"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_arrival_spain",
+          "numerator": {
+            "arrival_spain": "$arrival_spain",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_arrival_spain_share",
+      "topic": "mobility",
+      "label": {
+        "es": "Proporción de población por año de llegada a España",
+        "en": "Share of population by arrival in Spain"
+      },
+      "measure_of": "population_arrival_spain",
+      "description": {
+        "es": "Residentes llegados a España en el periodo elegido (o que siempre han vivido aquí) sobre el total de residentes del mismo sexo. \"Después de 2020\" son los llegados en el último año en 2021 y en los últimos cinco en 2025. Hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Residents who came to Spain in the chosen period (or always lived here), over all residents of the same sex. \"After 2020\" is the last year in 2021 and the last five in 2025. Down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "arrival_spain",
+          "values": [
+            "arrived",
+            "after_2020",
+            "2011_2020",
+            "2001_2010",
+            "before_2001",
+            "always_in_spain"
+          ],
+          "default": "after_2020"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_arrival_spain",
+          "numerator": {
+            "arrival_spain": "$arrival_spain",
+            "sex": "$sex"
+          },
+          "denominator": {
+            "arrival_spain": "total",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_previous_residence",
+      "topic": "mobility",
+      "label": {
+        "es": "Población por residencia anterior",
+        "en": "Population by previous residence"
+      },
+      "description": {
+        "es": "Residentes que siempre han vivido en el municipio o que llegaron de otro municipio o del extranjero. Solo municipios de 500 habitantes o más.",
+        "en": "Residents who always lived in the municipality, or who came from another municipality or from abroad. Only municipalities of 500 residents or more."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "previous_residence",
+          "values": [
+            "always_here",
+            "came_from_elsewhere",
+            "other_municipality",
+            "abroad",
+            "unknown"
+          ],
+          "default": "came_from_elsewhere"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "values": [
+            "total",
+            "Y_LT16",
+            "Y16T64",
+            "Y_GE65"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_previous_residence",
+          "numerator": {
+            "previous_residence": "$previous_residence",
+            "sex": "$sex",
+            "age": "$age"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_previous_residence_share",
+      "topic": "mobility",
+      "label": {
+        "es": "Proporción de población por residencia anterior",
+        "en": "Share of population by previous residence"
+      },
+      "measure_of": "population_previous_residence",
+      "description": {
+        "es": "Residentes que siempre han vivido en el municipio, o que llegaron de otro municipio o del extranjero, sobre el total de residentes del mismo sexo y edad. Solo municipios de 500 habitantes o más.",
+        "en": "Residents who always lived in the municipality, or who came from another municipality or from abroad, over all residents of the same sex and age. Only municipalities of 500 residents or more."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "previous_residence",
+          "values": [
+            "always_here",
+            "came_from_elsewhere",
+            "other_municipality",
+            "abroad",
+            "unknown"
+          ],
+          "default": "came_from_elsewhere"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "values": [
+            "total",
+            "Y_LT16",
+            "Y16T64",
+            "Y_GE65"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_previous_residence",
+          "numerator": {
+            "previous_residence": "$previous_residence",
+            "sex": "$sex",
+            "age": "$age"
+          },
+          "denominator": {
+            "previous_residence": "total",
+            "sex": "$sex",
+            "age": "$age"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_arrival_municipality",
+      "topic": "mobility",
+      "label": {
+        "es": "Población por llegada al municipio",
+        "en": "Population by arrival in the municipality"
+      },
+      "description": {
+        "es": "Residentes que llegaron desde otro municipio de España en el último año, los últimos 2, 3 o 5 años o antes, o que viven en el municipio desde que nacieron o desde que llegaron a España. Solo capitales de provincia y principales ciudades (151).",
+        "en": "Residents who came from another Spanish municipality within the last 1, 2, 3 or 5 years or earlier, or who have lived there since birth or since they came to Spain. Only provincial capitals and main cities (151)."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "arrival_municipality",
+          "values": [
+            "from_other_municipality",
+            "within_1_year",
+            "within_2_years",
+            "within_3_years",
+            "within_5_years",
+            "more_than_5_years",
+            "since_arrival_in_spain",
+            "since_birth"
+          ],
+          "default": "within_1_year"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "values": [
+            "total",
+            "Y_LT16",
+            "Y16T24",
+            "Y25T34",
+            "Y35T44",
+            "Y45T54",
+            "Y55T64",
+            "Y_GE65"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_arrival_municipality",
+          "numerator": {
+            "arrival_municipality": "$arrival_municipality",
+            "sex": "$sex",
+            "age": "$age"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_arrival_municipality_share",
+      "topic": "mobility",
+      "label": {
+        "es": "Proporción de población por llegada al municipio",
+        "en": "Share of population by arrival in the municipality"
+      },
+      "measure_of": "population_arrival_municipality",
+      "description": {
+        "es": "Residentes llegados desde otro municipio de España en el periodo elegido (o que viven aquí desde que nacieron o desde que llegaron a España) sobre el total de residentes del mismo sexo y edad. Solo capitales de provincia y principales ciudades (151).",
+        "en": "Residents who came from another Spanish municipality in the chosen period (or have lived here since birth or since they came to Spain), over all residents of the same sex and age. Only provincial capitals and main cities (151)."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "arrival_municipality",
+          "values": [
+            "from_other_municipality",
+            "within_1_year",
+            "within_2_years",
+            "within_3_years",
+            "within_5_years",
+            "more_than_5_years",
+            "since_arrival_in_spain",
+            "since_birth"
+          ],
+          "default": "within_1_year"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "values": [
+            "total",
+            "Y_LT16",
+            "Y16T24",
+            "Y25T34",
+            "Y35T44",
+            "Y45T54",
+            "Y55T64",
+            "Y_GE65"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_arrival_municipality",
+          "numerator": {
+            "arrival_municipality": "$arrival_municipality",
+            "sex": "$sex",
+            "age": "$age"
+          },
+          "denominator": {
+            "arrival_municipality": "total",
+            "sex": "$sex",
+            "age": "$age"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_residence_year_ago",
+      "topic": "mobility",
+      "label": {
+        "es": "Población por residencia hace un año",
+        "en": "Population by residence a year ago"
+      },
+      "description": {
+        "es": "Residentes según dónde vivían un año antes: en el mismo municipio, en otro de la provincia, de la comunidad o de otra comunidad, o en el extranjero. Solo capitales de provincia y principales ciudades (151).",
+        "en": "Residents by where they lived a year before: same municipality, another in the province, the community or another community, or abroad. Only provincial capitals and main cities (151)."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "residence_year_ago",
+          "values": [
+            "same_municipality",
+            "moved_in",
+            "elsewhere_in_spain",
+            "same_province",
+            "same_community",
+            "other_community",
+            "abroad",
+            "not_born"
+          ],
+          "default": "moved_in"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "values": [
+            "total",
+            "Y_LT16",
+            "Y16T64",
+            "Y_GE65"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "nationality",
+          "values": [
+            "total",
+            "spanish",
+            "foreign"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_residence_year_ago",
+          "numerator": {
+            "residence_year_ago": "$residence_year_ago",
+            "sex": "$sex",
+            "age": "$age",
+            "nationality": "$nationality"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_residence_year_ago_share",
+      "topic": "mobility",
+      "label": {
+        "es": "Proporción de población por residencia hace un año",
+        "en": "Share of population by residence a year ago"
+      },
+      "measure_of": "population_residence_year_ago",
+      "description": {
+        "es": "Residentes que hace un año vivían en el lugar elegido sobre el total de residentes del mismo sexo, edad y nacionalidad. \"Fuera del municipio\" mide la llegada de nuevos residentes en el último año. Solo capitales de provincia y principales ciudades (151).",
+        "en": "Residents who lived in the chosen place a year before, over all residents of the same sex, age and nationality. \"Outside the municipality\" measures newcomers in the last year. Only provincial capitals and main cities (151)."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "residence_year_ago",
+          "values": [
+            "same_municipality",
+            "moved_in",
+            "elsewhere_in_spain",
+            "same_province",
+            "same_community",
+            "other_community",
+            "abroad",
+            "not_born"
+          ],
+          "default": "moved_in"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "values": [
+            "total",
+            "Y_LT16",
+            "Y16T64",
+            "Y_GE65"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "nationality",
+          "values": [
+            "total",
+            "spanish",
+            "foreign"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_residence_year_ago",
+          "numerator": {
+            "residence_year_ago": "$residence_year_ago",
+            "sex": "$sex",
+            "age": "$age",
+            "nationality": "$nationality"
+          },
+          "denominator": {
+            "residence_year_ago": "total",
+            "sex": "$sex",
+            "age": "$age",
+            "nationality": "$nationality"
+          }
+        }
+      ]
     }
   ],
   "topics": [
@@ -2912,6 +3814,13 @@
       "label": {
         "es": "Nacionalidad y origen",
         "en": "Nationality and origin"
+      }
+    },
+    {
+      "id": "mobility",
+      "label": {
+        "es": "Migración y movilidad",
+        "en": "Migration and mobility"
       }
     }
   ]
