@@ -50,10 +50,10 @@ def dataset_path(dataset_id: str, level: str) -> str:
 def dimensions() -> dict[str, dict]:
     with catalog() as db:
         rows = db.execute("SELECT id, label_es AS label FROM dimensions").fetchall()
-        values = db.execute("SELECT dimension_id, code, label FROM dimension_values ORDER BY dimension_id, position").fetchall()
+        values = db.execute("SELECT dimension_id, code, label, parent FROM dimension_values ORDER BY dimension_id, position").fetchall()
     out = {row["id"]: {**row, "values": []} for row in rows}
     for value in values:
-        out[value["dimension_id"]]["values"].append({"code": value["code"], "label": value["label"]})
+        out[value["dimension_id"]]["values"].append({"code": value["code"], "label": value["label"], "parent": value["parent"]})
     return out
 
 
@@ -77,7 +77,7 @@ def variables() -> dict[str, dict]:
                 # As the catalogue says; None: the web picks by whether the values fit side by side.
                 "control": option.get("control"),
                 "label": dimensions()[option["dimension"]]["label"],
-                "values": [{"code": code, "label": dimension_labels(option["dimension"])[code]} for code in option["values"]],
+                "values": [{"code": code, "label": dimension_labels(option["dimension"])[code], "parent": dimension_parents(option["dimension"])[code]} for code in option["values"]],
             }
             for option in json.loads(row["options"] or "[]")
         ]
@@ -112,6 +112,10 @@ def year_of(period: int, frequency: str) -> int:
 
 def dimension_labels(dimension_id: str) -> dict[str, str]:
     return {value["code"]: value["label"] for value in dimensions()[dimension_id]["values"]}
+
+
+def dimension_parents(dimension_id: str) -> dict[str, str | None]:
+    return {value["code"]: value["parent"] for value in dimensions()[dimension_id]["values"]}
 
 
 def variable(variable_id: str) -> dict:

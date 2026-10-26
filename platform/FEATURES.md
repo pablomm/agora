@@ -2,6 +2,19 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Nationality and country of birth layers, searchable dropdown
+
+- New topic **Nacionalidad y origen** with eight layers, each as persons and as % of residents of
+  the same sex: population by nationality and by country of birth, with about twenty main countries
+  down to census sections, or a detailed list (about sixty countries and INE's country groups) down
+  to municipalities. Each list nests countries under their groups and continents (Europa › Unión
+  Europea › Francia), with the rests INE publishes ("Otros países de África"); groups are sums.
+- Población extranjera and % de población extranjera move to that topic and gain sex and age
+  options (the share is over residents of the same sex and age).
+- Options with many values (more than 12) get a dropdown with a search box: typing filters the list
+  (accents and case aside), arrows move, Enter picks, Esc closes; nested values are indented and
+  groups are in bold. Values can name a `parent` in their dimension (`parents` in `catalog.json`).
+
 ## 2026-10-26 · Dropdowns for long options
 
 - A layer's option (and its source switch) shows its values side by side only when they fit: up

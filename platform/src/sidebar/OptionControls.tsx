@@ -1,13 +1,17 @@
 import { copy } from '../app/copy'
 import { optionValue, type Choices, type VariableOption } from '../data/api'
+import { SearchSelect, type SelectItem } from './SearchSelect'
 
 /** Values side by side at most, and their labels' length: beyond them, a dropdown. */
 const MAX_SEGMENTS = 4
 const MAX_SEGMENTS_TEXT = 40
+/** Values a plain dropdown lists at most: beyond them, one with a search box. */
+const MAX_PLAIN_SELECT = 12
 
 /**
  * One of a few values, side by side (Total · Hombres · Mujeres; or the sources); one of many or
- * long ones (sectors, nationalities) from a dropdown. `control` forces either.
+ * long ones (sectors) from a dropdown, with a search box when they're many (nationalities).
+ * `control` forces side by side or a dropdown.
  */
 export function Segmented({
   label,
@@ -17,13 +21,21 @@ export function Segmented({
   control,
 }: {
   label: string
-  items: { id: string; label: string }[]
+  items: SelectItem[]
   value: string
   onChange: (id: string) => void
   control?: VariableOption['control']
 }) {
   const fits = items.length <= MAX_SEGMENTS && items.reduce((length, item) => length + item.label.length, 0) <= MAX_SEGMENTS_TEXT
   if (control === 'select' || (!control && !fits)) {
+    if (items.length > MAX_PLAIN_SELECT) {
+      return (
+        <div className="option-control">
+          <span className="option-label">{label}</span>
+          <SearchSelect label={label} items={items} value={value} onChange={onChange} />
+        </div>
+      )
+    }
     return (
       <label className="option-control">
         <span className="option-label">{label}</span>
@@ -118,7 +130,7 @@ export function OptionControls({ options, choices, onChange }: { options: Variab
       <Segmented
         key={option.dimension}
         label={option.label}
-        items={option.values.map((item) => ({ id: item.code, label: item.label }))}
+        items={option.values.map((item) => ({ id: item.code, label: item.label, parent: item.parent }))}
         value={value}
         onChange={change}
         control={option.control}

@@ -30,7 +30,8 @@ export interface VariableOption {
   label: string
   range: boolean
   control: 'segmented' | 'select' | null
-  values: { code: string; label: string }[]
+  /** In order; `parent` nests a value under another (France under the EU, under Europe). */
+  values: { code: string; label: string; parent: string | null }[]
   default: string | string[]
 }
 

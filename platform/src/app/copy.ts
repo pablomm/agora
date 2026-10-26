@@ -100,6 +100,8 @@ export const copy = {
     rangeFrom: (label: string) => `${label}: desde`,
     rangeTo: (label: string) => `${label}: hasta`,
     latestTag: 'último',
+    searchValues: (label: string) => `Buscar: ${label.toLowerCase()}`,
+    noValues: 'Ningún valor coincide.',
   },
   legend: {
     label: 'Leyenda',

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { copy } from '../app/copy'
-import { isCount } from '../app/format'
+import { fold, isCount } from '../app/format'
 import type { Catalog, Choices, Facet, Variable } from '../data/api'
 import { OptionControls, Segmented } from './OptionControls'
 import { PeriodControl } from './PeriodControl'
@@ -33,13 +33,6 @@ function loadCollapsed(): Set<string> {
     return new Set()
   }
 }
-
-/** Lower case without accents, to match "poblacion" with "Población". */
-const fold = (text: string) =>
-  text
-    .normalize('NFKD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase()
 
 /**
  * The map tab's panel: a search over the catalogue's variables, the one painted on the map (with

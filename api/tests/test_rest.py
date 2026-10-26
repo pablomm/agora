@@ -102,3 +102,17 @@ def test_census_activity_by_section(client):
     assert body["stats"]["count"] > 36_000
     spain = client.get("/entities/es:country:es/value", params={"variable": "unemployment_rate", "period": 2021}).json()
     assert 10 < spain["value"] < 20
+
+
+def test_nationality_lists(client):
+    # The foreign total from either list matches INE's Spanish/foreign table (68535) for 2025.
+    for variable, option in (("population_nationality", "nationality_main:foreign"), ("population_nationality_detail", "nationality_detail:foreign")):
+        body = client.get("/observations", params={"variable": variable, "level": "country", "period": 2025, "option": option}).json()
+        assert body["values"]["es:country:es"] == 6_911_971
+    share = client.get(
+        "/observations", params={"variable": "population_nationality_share", "level": "census_section", "period": 2025, "option": ["nationality_main:MAR", "sex:female"]}
+    ).json()
+    assert share["label"] == "% de población por nacionalidad · Marruecos · Mujeres" and share["stats"]["count"] > 36_000
+    detail = client.get("/variables/population_nationality_detail").json()
+    values = {value["code"]: value for value in detail["options"][0]["values"]}
+    assert values["FRA"]["parent"] == "eu" and values["eu"]["parent"] == "europe" and values["europe"]["parent"] == "foreign"

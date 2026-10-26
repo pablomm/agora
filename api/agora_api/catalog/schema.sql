@@ -50,6 +50,7 @@ CREATE TABLE dimension_values (
   code TEXT NOT NULL,
   label TEXT NOT NULL,
   position INTEGER NOT NULL,
+  parent TEXT,                  -- the value this one is part of (France → EU → Europe), for showing them nested
   PRIMARY KEY (dimension_id, code)
 );
 

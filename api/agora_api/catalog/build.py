@@ -133,9 +133,12 @@ def build(target: Path = CATALOG_DB) -> Path:
         for dimension in catalog.get("dimensions", []):
             db.execute("INSERT INTO dimensions VALUES (?, ?, ?)", (dimension["id"], label(dimension["label"], "es"), label(dimension["label"], "en")))
             order = dimension.get("order", list(dimension["values"]))
+            parents = dimension.get("parents", {})
+            if not set(parents) | set(parents.values()) <= set(dimension["values"]):
+                raise ValueError(f"Dimension {dimension['id']}: parents name values it doesn't have")
             db.executemany(
-                "INSERT INTO dimension_values VALUES (?, ?, ?, ?)",
-                [(dimension["id"], code, dimension["values"][code], position) for position, code in enumerate(order)],
+                "INSERT INTO dimension_values VALUES (?, ?, ?, ?, ?)",
+                [(dimension["id"], code, dimension["values"][code], position, parents.get(code)) for position, code in enumerate(order)],
             )
         # Only statistical datasets (with a measure) are queryable; geometry datasets are the tiles'.
         for dataset in catalog.get("datasets", []):

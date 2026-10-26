@@ -1,3 +1,10 @@
+/** Lower case without accents, to match "poblacion" with "Población". */
+export const fold = (text: string) =>
+  text
+    .normalize('NFKD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+
 /** Numbers as Spanish readers write them (1.234.567; 12,5 %). */
 const integer = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 })
 const decimal = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 })

@@ -89,6 +89,634 @@
         "spanish",
         "foreign"
       ]
+    },
+    {
+      "id": "nationality_main",
+      "label": {
+        "es": "Nacionalidad",
+        "en": "Nationality"
+      },
+      "values": {
+        "total": "Total",
+        "spanish": "Española",
+        "foreign": "Extranjera",
+        "europe": "Europa",
+        "FRA": "Francia",
+        "GBR": "Reino Unido",
+        "ROU": "Rumanía",
+        "UKR": "Ucrania",
+        "europe_other": "Otros países de Europa",
+        "africa": "África",
+        "MAR": "Marruecos",
+        "africa_other": "Otros países de África",
+        "america": "América",
+        "ARG": "Argentina",
+        "BOL": "Bolivia",
+        "COL": "Colombia",
+        "CUB": "Cuba",
+        "ECU": "Ecuador",
+        "PER": "Perú",
+        "DOM": "República Dominicana",
+        "VEN": "Venezuela",
+        "america_other": "Otros países de América",
+        "asia": "Asia",
+        "CHN": "China",
+        "asia_other": "Otros países de Asia",
+        "oceania": "Oceanía",
+        "stateless": "Apátridas"
+      },
+      "order": [
+        "total",
+        "spanish",
+        "foreign",
+        "europe",
+        "FRA",
+        "GBR",
+        "ROU",
+        "UKR",
+        "europe_other",
+        "africa",
+        "MAR",
+        "africa_other",
+        "america",
+        "ARG",
+        "BOL",
+        "COL",
+        "CUB",
+        "ECU",
+        "PER",
+        "DOM",
+        "VEN",
+        "america_other",
+        "asia",
+        "CHN",
+        "asia_other",
+        "oceania",
+        "stateless"
+      ],
+      "parents": {
+        "europe": "foreign",
+        "FRA": "europe",
+        "GBR": "europe",
+        "ROU": "europe",
+        "UKR": "europe",
+        "europe_other": "europe",
+        "africa": "foreign",
+        "MAR": "africa",
+        "africa_other": "africa",
+        "america": "foreign",
+        "ARG": "america",
+        "BOL": "america",
+        "COL": "america",
+        "CUB": "america",
+        "ECU": "america",
+        "PER": "america",
+        "DOM": "america",
+        "VEN": "america",
+        "america_other": "america",
+        "asia": "foreign",
+        "CHN": "asia",
+        "asia_other": "asia",
+        "oceania": "foreign",
+        "stateless": "foreign"
+      }
+    },
+    {
+      "id": "nationality_detail",
+      "label": {
+        "es": "Nacionalidad",
+        "en": "Nationality"
+      },
+      "values": {
+        "total": "Total",
+        "spanish": "Española",
+        "foreign": "Extranjera",
+        "europe": "Europa",
+        "eu": "Unión Europea (sin España)",
+        "DEU": "Alemania",
+        "BEL": "Bélgica",
+        "BGR": "Bulgaria",
+        "DNK": "Dinamarca",
+        "FIN": "Finlandia",
+        "FRA": "Francia",
+        "IRL": "Irlanda",
+        "ITA": "Italia",
+        "LTU": "Lituania",
+        "NLD": "Países Bajos",
+        "POL": "Polonia",
+        "PRT": "Portugal",
+        "ROU": "Rumanía",
+        "SWE": "Suecia",
+        "eu_other": "Otros países de la UE",
+        "europe_non_eu": "Resto de Europa",
+        "MDA": "Moldavia",
+        "NOR": "Noruega",
+        "GBR": "Reino Unido",
+        "RUS": "Rusia",
+        "CHE": "Suiza",
+        "UKR": "Ucrania",
+        "europe_non_eu_other": "Otros países del resto de Europa",
+        "africa": "África",
+        "DZA": "Argelia",
+        "GMB": "Gambia",
+        "GHA": "Ghana",
+        "GIN": "Guinea",
+        "GNQ": "Guinea Ecuatorial",
+        "MLI": "Mali",
+        "MAR": "Marruecos",
+        "MRT": "Mauritania",
+        "NGA": "Nigeria",
+        "SEN": "Senegal",
+        "africa_other": "Otros países de África",
+        "america": "América",
+        "north_america": "América del Norte",
+        "CAN": "Canadá",
+        "USA": "Estados Unidos de América",
+        "MEX": "México",
+        "central_america_caribbean": "Centroamérica y Caribe",
+        "CUB": "Cuba",
+        "HND": "Honduras",
+        "NIC": "Nicaragua",
+        "DOM": "República Dominicana",
+        "central_america_caribbean_other": "Otros países de Centroamérica y Caribe",
+        "south_america": "Sudamérica",
+        "ARG": "Argentina",
+        "BOL": "Bolivia",
+        "BRA": "Brasil",
+        "CHL": "Chile",
+        "COL": "Colombia",
+        "ECU": "Ecuador",
+        "PRY": "Paraguay",
+        "PER": "Perú",
+        "URY": "Uruguay",
+        "VEN": "Venezuela",
+        "south_america_other": "Otros países de Sudamérica",
+        "asia": "Asia",
+        "BGD": "Bangladesh",
+        "CHN": "China",
+        "PHL": "Filipinas",
+        "IND": "India",
+        "PAK": "Pakistán",
+        "asia_other": "Otros países de Asia",
+        "oceania": "Oceanía",
+        "stateless": "Apátridas"
+      },
+      "order": [
+        "total",
+        "spanish",
+        "foreign",
+        "europe",
+        "eu",
+        "DEU",
+        "BEL",
+        "BGR",
+        "DNK",
+        "FIN",
+        "FRA",
+        "IRL",
+        "ITA",
+        "LTU",
+        "NLD",
+        "POL",
+        "PRT",
+        "ROU",
+        "SWE",
+        "eu_other",
+        "europe_non_eu",
+        "MDA",
+        "NOR",
+        "GBR",
+        "RUS",
+        "CHE",
+        "UKR",
+        "europe_non_eu_other",
+        "africa",
+        "DZA",
+        "GMB",
+        "GHA",
+        "GIN",
+        "GNQ",
+        "MLI",
+        "MAR",
+        "MRT",
+        "NGA",
+        "SEN",
+        "africa_other",
+        "america",
+        "north_america",
+        "CAN",
+        "USA",
+        "MEX",
+        "central_america_caribbean",
+        "CUB",
+        "HND",
+        "NIC",
+        "DOM",
+        "central_america_caribbean_other",
+        "south_america",
+        "ARG",
+        "BOL",
+        "BRA",
+        "CHL",
+        "COL",
+        "ECU",
+        "PRY",
+        "PER",
+        "URY",
+        "VEN",
+        "south_america_other",
+        "asia",
+        "BGD",
+        "CHN",
+        "PHL",
+        "IND",
+        "PAK",
+        "asia_other",
+        "oceania",
+        "stateless"
+      ],
+      "parents": {
+        "europe": "foreign",
+        "eu": "europe",
+        "DEU": "eu",
+        "BEL": "eu",
+        "BGR": "eu",
+        "DNK": "eu",
+        "FIN": "eu",
+        "FRA": "eu",
+        "IRL": "eu",
+        "ITA": "eu",
+        "LTU": "eu",
+        "NLD": "eu",
+        "POL": "eu",
+        "PRT": "eu",
+        "ROU": "eu",
+        "SWE": "eu",
+        "eu_other": "eu",
+        "europe_non_eu": "europe",
+        "MDA": "europe_non_eu",
+        "NOR": "europe_non_eu",
+        "GBR": "europe_non_eu",
+        "RUS": "europe_non_eu",
+        "CHE": "europe_non_eu",
+        "UKR": "europe_non_eu",
+        "europe_non_eu_other": "europe_non_eu",
+        "africa": "foreign",
+        "DZA": "africa",
+        "GMB": "africa",
+        "GHA": "africa",
+        "GIN": "africa",
+        "GNQ": "africa",
+        "MLI": "africa",
+        "MAR": "africa",
+        "MRT": "africa",
+        "NGA": "africa",
+        "SEN": "africa",
+        "africa_other": "africa",
+        "america": "foreign",
+        "north_america": "america",
+        "CAN": "north_america",
+        "USA": "north_america",
+        "MEX": "north_america",
+        "central_america_caribbean": "america",
+        "CUB": "central_america_caribbean",
+        "HND": "central_america_caribbean",
+        "NIC": "central_america_caribbean",
+        "DOM": "central_america_caribbean",
+        "central_america_caribbean_other": "central_america_caribbean",
+        "south_america": "america",
+        "ARG": "south_america",
+        "BOL": "south_america",
+        "BRA": "south_america",
+        "CHL": "south_america",
+        "COL": "south_america",
+        "ECU": "south_america",
+        "PRY": "south_america",
+        "PER": "south_america",
+        "URY": "south_america",
+        "VEN": "south_america",
+        "south_america_other": "south_america",
+        "asia": "foreign",
+        "BGD": "asia",
+        "CHN": "asia",
+        "PHL": "asia",
+        "IND": "asia",
+        "PAK": "asia",
+        "asia_other": "asia",
+        "oceania": "foreign",
+        "stateless": "foreign"
+      }
+    },
+    {
+      "id": "birth_country_main",
+      "label": {
+        "es": "País de nacimiento",
+        "en": "Country of birth"
+      },
+      "values": {
+        "total": "Total",
+        "spain": "España",
+        "abroad": "Extranjero",
+        "europe": "Europa",
+        "FRA": "Francia",
+        "GBR": "Reino Unido",
+        "ROU": "Rumanía",
+        "UKR": "Ucrania",
+        "europe_other": "Otros países de Europa",
+        "africa": "África",
+        "MAR": "Marruecos",
+        "africa_other": "Otros países de África",
+        "america": "América",
+        "ARG": "Argentina",
+        "BOL": "Bolivia",
+        "COL": "Colombia",
+        "CUB": "Cuba",
+        "ECU": "Ecuador",
+        "PER": "Perú",
+        "DOM": "República Dominicana",
+        "VEN": "Venezuela",
+        "america_other": "Otros países de América",
+        "asia": "Asia",
+        "CHN": "China",
+        "asia_other": "Otros países de Asia",
+        "oceania": "Oceanía"
+      },
+      "order": [
+        "total",
+        "spain",
+        "abroad",
+        "europe",
+        "FRA",
+        "GBR",
+        "ROU",
+        "UKR",
+        "europe_other",
+        "africa",
+        "MAR",
+        "africa_other",
+        "america",
+        "ARG",
+        "BOL",
+        "COL",
+        "CUB",
+        "ECU",
+        "PER",
+        "DOM",
+        "VEN",
+        "america_other",
+        "asia",
+        "CHN",
+        "asia_other",
+        "oceania"
+      ],
+      "parents": {
+        "europe": "abroad",
+        "FRA": "europe",
+        "GBR": "europe",
+        "ROU": "europe",
+        "UKR": "europe",
+        "europe_other": "europe",
+        "africa": "abroad",
+        "MAR": "africa",
+        "africa_other": "africa",
+        "america": "abroad",
+        "ARG": "america",
+        "BOL": "america",
+        "COL": "america",
+        "CUB": "america",
+        "ECU": "america",
+        "PER": "america",
+        "DOM": "america",
+        "VEN": "america",
+        "america_other": "america",
+        "asia": "abroad",
+        "CHN": "asia",
+        "asia_other": "asia",
+        "oceania": "abroad"
+      }
+    },
+    {
+      "id": "birth_country_detail",
+      "label": {
+        "es": "País de nacimiento",
+        "en": "Country of birth"
+      },
+      "values": {
+        "total": "Total",
+        "spain": "España",
+        "abroad": "Extranjero",
+        "europe": "Europa",
+        "eu": "Unión Europea (sin España)",
+        "DEU": "Alemania",
+        "BEL": "Bélgica",
+        "BGR": "Bulgaria",
+        "DNK": "Dinamarca",
+        "FIN": "Finlandia",
+        "FRA": "Francia",
+        "IRL": "Irlanda",
+        "ITA": "Italia",
+        "LTU": "Lituania",
+        "NLD": "Países Bajos",
+        "POL": "Polonia",
+        "PRT": "Portugal",
+        "ROU": "Rumanía",
+        "SWE": "Suecia",
+        "eu_other": "Otros países de la UE",
+        "europe_non_eu": "Resto de Europa",
+        "MDA": "Moldavia",
+        "NOR": "Noruega",
+        "GBR": "Reino Unido",
+        "RUS": "Rusia",
+        "CHE": "Suiza",
+        "UKR": "Ucrania",
+        "europe_non_eu_other": "Otros países del resto de Europa",
+        "africa": "África",
+        "DZA": "Argelia",
+        "GMB": "Gambia",
+        "GHA": "Ghana",
+        "GIN": "Guinea",
+        "GNQ": "Guinea Ecuatorial",
+        "MLI": "Mali",
+        "MAR": "Marruecos",
+        "MRT": "Mauritania",
+        "NGA": "Nigeria",
+        "SEN": "Senegal",
+        "africa_other": "Otros países de África",
+        "america": "América",
+        "north_america": "América del Norte",
+        "CAN": "Canadá",
+        "USA": "Estados Unidos de América",
+        "MEX": "México",
+        "central_america_caribbean": "Centroamérica y Caribe",
+        "CUB": "Cuba",
+        "HND": "Honduras",
+        "NIC": "Nicaragua",
+        "DOM": "República Dominicana",
+        "central_america_caribbean_other": "Otros países de Centroamérica y Caribe",
+        "south_america": "Sudamérica",
+        "ARG": "Argentina",
+        "BOL": "Bolivia",
+        "BRA": "Brasil",
+        "CHL": "Chile",
+        "COL": "Colombia",
+        "ECU": "Ecuador",
+        "PRY": "Paraguay",
+        "PER": "Perú",
+        "URY": "Uruguay",
+        "VEN": "Venezuela",
+        "south_america_other": "Otros países de Sudamérica",
+        "asia": "Asia",
+        "BGD": "Bangladesh",
+        "CHN": "China",
+        "PHL": "Filipinas",
+        "IND": "India",
+        "PAK": "Pakistán",
+        "asia_other": "Otros países de Asia",
+        "oceania": "Oceanía"
+      },
+      "order": [
+        "total",
+        "spain",
+        "abroad",
+        "europe",
+        "eu",
+        "DEU",
+        "BEL",
+        "BGR",
+        "DNK",
+        "FIN",
+        "FRA",
+        "IRL",
+        "ITA",
+        "LTU",
+        "NLD",
+        "POL",
+        "PRT",
+        "ROU",
+        "SWE",
+        "eu_other",
+        "europe_non_eu",
+        "MDA",
+        "NOR",
+        "GBR",
+        "RUS",
+        "CHE",
+        "UKR",
+        "europe_non_eu_other",
+        "africa",
+        "DZA",
+        "GMB",
+        "GHA",
+        "GIN",
+        "GNQ",
+        "MLI",
+        "MAR",
+        "MRT",
+        "NGA",
+        "SEN",
+        "africa_other",
+        "america",
+        "north_america",
+        "CAN",
+        "USA",
+        "MEX",
+        "central_america_caribbean",
+        "CUB",
+        "HND",
+        "NIC",
+        "DOM",
+        "central_america_caribbean_other",
+        "south_america",
+        "ARG",
+        "BOL",
+        "BRA",
+        "CHL",
+        "COL",
+        "ECU",
+        "PRY",
+        "PER",
+        "URY",
+        "VEN",
+        "south_america_other",
+        "asia",
+        "BGD",
+        "CHN",
+        "PHL",
+        "IND",
+        "PAK",
+        "asia_other",
+        "oceania"
+      ],
+      "parents": {
+        "europe": "abroad",
+        "eu": "europe",
+        "DEU": "eu",
+        "BEL": "eu",
+        "BGR": "eu",
+        "DNK": "eu",
+        "FIN": "eu",
+        "FRA": "eu",
+        "IRL": "eu",
+        "ITA": "eu",
+        "LTU": "eu",
+        "NLD": "eu",
+        "POL": "eu",
+        "PRT": "eu",
+        "ROU": "eu",
+        "SWE": "eu",
+        "eu_other": "eu",
+        "europe_non_eu": "europe",
+        "MDA": "europe_non_eu",
+        "NOR": "europe_non_eu",
+        "GBR": "europe_non_eu",
+        "RUS": "europe_non_eu",
+        "CHE": "europe_non_eu",
+        "UKR": "europe_non_eu",
+        "europe_non_eu_other": "europe_non_eu",
+        "africa": "abroad",
+        "DZA": "africa",
+        "GMB": "africa",
+        "GHA": "africa",
+        "GIN": "africa",
+        "GNQ": "africa",
+        "MLI": "africa",
+        "MAR": "africa",
+        "MRT": "africa",
+        "NGA": "africa",
+        "SEN": "africa",
+        "africa_other": "africa",
+        "america": "abroad",
+        "north_america": "america",
+        "CAN": "north_america",
+        "USA": "north_america",
+        "MEX": "north_america",
+        "central_america_caribbean": "america",
+        "CUB": "central_america_caribbean",
+        "HND": "central_america_caribbean",
+        "NIC": "central_america_caribbean",
+        "DOM": "central_america_caribbean",
+        "central_america_caribbean_other": "central_america_caribbean",
+        "south_america": "america",
+        "ARG": "south_america",
+        "BOL": "south_america",
+        "BRA": "south_america",
+        "CHL": "south_america",
+        "COL": "south_america",
+        "ECU": "south_america",
+        "PRY": "south_america",
+        "PER": "south_america",
+        "URY": "south_america",
+        "VEN": "south_america",
+        "south_america_other": "south_america",
+        "asia": "abroad",
+        "BGD": "asia",
+        "CHN": "asia",
+        "PHL": "asia",
+        "IND": "asia",
+        "PAK": "asia",
+        "asia_other": "asia",
+        "oceania": "abroad"
+      }
     }
   ],
   "datasets": [
@@ -223,6 +851,286 @@
         "as_of": "{year}-01-01"
       },
       "output": "processed/population/population_sex_age_nationality/{level}.parquet"
+    },
+    {
+      "id": "population_nationality",
+      "title": "Población por sexo y país de nacionalidad (principales países) (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          65040,
+          66375,
+          66377,
+          66379,
+          66381,
+          66383,
+          66385,
+          66387,
+          66389,
+          66391,
+          66393,
+          66395,
+          66397,
+          66399,
+          66401,
+          66403,
+          66405,
+          66407,
+          66409,
+          66411,
+          66413,
+          66415,
+          66417,
+          66419,
+          66421,
+          66423,
+          66425,
+          66427,
+          66429,
+          66431,
+          66433,
+          66435,
+          66437,
+          66439,
+          66441,
+          66443,
+          66445,
+          66447,
+          66449,
+          66451,
+          66453,
+          66455,
+          66457,
+          66459,
+          66461,
+          66463,
+          66465,
+          66467,
+          66469,
+          66471,
+          66473,
+          66475
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "nationality_main"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_nationality/{level}.parquet"
+    },
+    {
+      "id": "population_nationality_detail",
+      "title": "Población por sexo y país de nacionalidad (principales nacionalidades y grandes grupos) (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          66323,
+          68537
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "nationality_detail"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_nationality_detail/{level}.parquet"
+    },
+    {
+      "id": "population_birth_country",
+      "title": "Población por sexo y país de nacimiento (principales países) (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          65038,
+          66374,
+          66376,
+          66378,
+          66380,
+          66382,
+          66384,
+          66386,
+          66388,
+          66390,
+          66392,
+          66394,
+          66396,
+          66398,
+          66400,
+          66402,
+          66404,
+          66406,
+          66408,
+          66410,
+          66412,
+          66414,
+          66416,
+          66418,
+          66420,
+          66422,
+          66424,
+          66426,
+          66428,
+          66430,
+          66432,
+          66434,
+          66436,
+          66438,
+          66440,
+          66442,
+          66444,
+          66446,
+          66448,
+          66450,
+          66452,
+          66454,
+          66456,
+          66458,
+          66460,
+          66462,
+          66464,
+          66466,
+          66468,
+          66470,
+          66472,
+          66474
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "birth_country_main"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_birth_country/{level}.parquet"
+    },
+    {
+      "id": "population_birth_country_detail",
+      "title": "Población por sexo y país de nacimiento (principales países y grandes grupos) (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          66322,
+          68538
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "birth_country_detail"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_birth_country_detail/{level}.parquet"
     }
   ],
   "variables": [
@@ -533,17 +1441,59 @@
     },
     {
       "id": "population_foreign",
-      "topic": "demography",
+      "topic": "origin",
       "label": {
         "es": "Población extranjera",
         "en": "Foreign population"
       },
       "description": {
-        "es": "Residentes de nacionalidad extranjera.",
-        "en": "Residents with a foreign nationality."
+        "es": "Residentes de nacionalidad extranjera, en total o por sexo y edad.",
+        "en": "Residents with a foreign nationality, in total or by sex and age."
       },
       "unit": "personas",
       "kind": "count",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "range": true,
+          "values": [
+            "Y0T4",
+            "Y5T9",
+            "Y10T14",
+            "Y15T19",
+            "Y20T24",
+            "Y25T29",
+            "Y30T34",
+            "Y35T39",
+            "Y40T44",
+            "Y45T49",
+            "Y50T54",
+            "Y55T59",
+            "Y60T64",
+            "Y65T69",
+            "Y70T74",
+            "Y75T79",
+            "Y80T84",
+            "Y85T89",
+            "Y90T94",
+            "Y95T99",
+            "Y_GE100"
+          ],
+          "default": [
+            "Y0T4",
+            "Y_GE100"
+          ]
+        }
+      ],
       "facets": [
         {
           "id": "census",
@@ -553,8 +1503,8 @@
           },
           "dataset": "population_sex_age_nationality",
           "numerator": {
-            "sex": "total",
-            "age": "total",
+            "sex": "$sex",
+            "age": "$age",
             "nationality": "foreign"
           }
         }
@@ -562,18 +1512,60 @@
     },
     {
       "id": "population_foreign_share",
-      "topic": "demography",
+      "topic": "origin",
       "label": {
         "es": "% de población extranjera",
         "en": "% foreign population"
       },
       "description": {
-        "es": "Residentes de nacionalidad extranjera sobre el total.",
-        "en": "Residents with a foreign nationality, over all residents."
+        "es": "Residentes de nacionalidad extranjera sobre el total de residentes del mismo sexo y edad.",
+        "en": "Residents with a foreign nationality, over all residents of the same sex and age."
       },
       "unit": "%",
       "kind": "ratio",
       "scale": 100,
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "range": true,
+          "values": [
+            "Y0T4",
+            "Y5T9",
+            "Y10T14",
+            "Y15T19",
+            "Y20T24",
+            "Y25T29",
+            "Y30T34",
+            "Y35T39",
+            "Y40T44",
+            "Y45T49",
+            "Y50T54",
+            "Y55T59",
+            "Y60T64",
+            "Y65T69",
+            "Y70T74",
+            "Y75T79",
+            "Y80T84",
+            "Y85T89",
+            "Y90T94",
+            "Y95T99",
+            "Y_GE100"
+          ],
+          "default": [
+            "Y0T4",
+            "Y_GE100"
+          ]
+        }
+      ],
       "facets": [
         {
           "id": "census",
@@ -583,14 +1575,778 @@
           },
           "dataset": "population_sex_age_nationality",
           "numerator": {
-            "sex": "total",
-            "age": "total",
+            "sex": "$sex",
+            "age": "$age",
             "nationality": "foreign"
           },
           "denominator": {
-            "sex": "total",
-            "age": "total",
+            "sex": "$sex",
+            "age": "$age",
             "nationality": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_nationality",
+      "topic": "origin",
+      "label": {
+        "es": "Población por nacionalidad",
+        "en": "Population by nationality"
+      },
+      "description": {
+        "es": "Residentes con la nacionalidad elegida, en total o por sexo. Principales países; hasta sección censal.",
+        "en": "Residents with the chosen nationality, in total or by sex. Main countries; down to census sections."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "nationality_main",
+          "values": [
+            "spanish",
+            "foreign",
+            "europe",
+            "FRA",
+            "GBR",
+            "ROU",
+            "UKR",
+            "europe_other",
+            "africa",
+            "MAR",
+            "africa_other",
+            "america",
+            "ARG",
+            "BOL",
+            "COL",
+            "CUB",
+            "ECU",
+            "PER",
+            "DOM",
+            "VEN",
+            "america_other",
+            "asia",
+            "CHN",
+            "asia_other",
+            "oceania",
+            "stateless"
+          ],
+          "default": "foreign"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_nationality",
+          "numerator": {
+            "sex": "$sex",
+            "nationality_main": "$nationality_main"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_nationality_share",
+      "topic": "origin",
+      "label": {
+        "es": "% de población por nacionalidad",
+        "en": "% of population by nationality"
+      },
+      "description": {
+        "es": "Residentes con la nacionalidad elegida sobre el total de residentes del mismo sexo. Principales países; hasta sección censal.",
+        "en": "Residents with the chosen nationality, over all residents of the same sex. Main countries; down to census sections."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "nationality_main",
+          "values": [
+            "spanish",
+            "foreign",
+            "europe",
+            "FRA",
+            "GBR",
+            "ROU",
+            "UKR",
+            "europe_other",
+            "africa",
+            "MAR",
+            "africa_other",
+            "america",
+            "ARG",
+            "BOL",
+            "COL",
+            "CUB",
+            "ECU",
+            "PER",
+            "DOM",
+            "VEN",
+            "america_other",
+            "asia",
+            "CHN",
+            "asia_other",
+            "oceania",
+            "stateless"
+          ],
+          "default": "foreign"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_nationality",
+          "numerator": {
+            "sex": "$sex",
+            "nationality_main": "$nationality_main"
+          },
+          "denominator": {
+            "sex": "$sex",
+            "nationality_main": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_nationality_detail",
+      "topic": "origin",
+      "label": {
+        "es": "Población por nacionalidad (detalle)",
+        "en": "Population by nationality (detail)"
+      },
+      "description": {
+        "es": "Residentes con la nacionalidad elegida, en total o por sexo. Unas sesenta nacionalidades y los grandes grupos; hasta municipio.",
+        "en": "Residents with the chosen nationality, in total or by sex. About sixty nationalities and country groups; down to municipalities."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "nationality_detail",
+          "values": [
+            "spanish",
+            "foreign",
+            "europe",
+            "eu",
+            "DEU",
+            "BEL",
+            "BGR",
+            "DNK",
+            "FIN",
+            "FRA",
+            "IRL",
+            "ITA",
+            "LTU",
+            "NLD",
+            "POL",
+            "PRT",
+            "ROU",
+            "SWE",
+            "eu_other",
+            "europe_non_eu",
+            "MDA",
+            "NOR",
+            "GBR",
+            "RUS",
+            "CHE",
+            "UKR",
+            "europe_non_eu_other",
+            "africa",
+            "DZA",
+            "GMB",
+            "GHA",
+            "GIN",
+            "GNQ",
+            "MLI",
+            "MAR",
+            "MRT",
+            "NGA",
+            "SEN",
+            "africa_other",
+            "america",
+            "north_america",
+            "CAN",
+            "USA",
+            "MEX",
+            "central_america_caribbean",
+            "CUB",
+            "HND",
+            "NIC",
+            "DOM",
+            "central_america_caribbean_other",
+            "south_america",
+            "ARG",
+            "BOL",
+            "BRA",
+            "CHL",
+            "COL",
+            "ECU",
+            "PRY",
+            "PER",
+            "URY",
+            "VEN",
+            "south_america_other",
+            "asia",
+            "BGD",
+            "CHN",
+            "PHL",
+            "IND",
+            "PAK",
+            "asia_other",
+            "oceania",
+            "stateless"
+          ],
+          "default": "foreign"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_nationality_detail",
+          "numerator": {
+            "sex": "$sex",
+            "nationality_detail": "$nationality_detail"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_nationality_detail_share",
+      "topic": "origin",
+      "label": {
+        "es": "% de población por nacionalidad (detalle)",
+        "en": "% of population by nationality (detail)"
+      },
+      "description": {
+        "es": "Residentes con la nacionalidad elegida sobre el total de residentes del mismo sexo. Unas sesenta nacionalidades y los grandes grupos; hasta municipio.",
+        "en": "Residents with the chosen nationality, over all residents of the same sex. About sixty nationalities and country groups; down to municipalities."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "nationality_detail",
+          "values": [
+            "spanish",
+            "foreign",
+            "europe",
+            "eu",
+            "DEU",
+            "BEL",
+            "BGR",
+            "DNK",
+            "FIN",
+            "FRA",
+            "IRL",
+            "ITA",
+            "LTU",
+            "NLD",
+            "POL",
+            "PRT",
+            "ROU",
+            "SWE",
+            "eu_other",
+            "europe_non_eu",
+            "MDA",
+            "NOR",
+            "GBR",
+            "RUS",
+            "CHE",
+            "UKR",
+            "europe_non_eu_other",
+            "africa",
+            "DZA",
+            "GMB",
+            "GHA",
+            "GIN",
+            "GNQ",
+            "MLI",
+            "MAR",
+            "MRT",
+            "NGA",
+            "SEN",
+            "africa_other",
+            "america",
+            "north_america",
+            "CAN",
+            "USA",
+            "MEX",
+            "central_america_caribbean",
+            "CUB",
+            "HND",
+            "NIC",
+            "DOM",
+            "central_america_caribbean_other",
+            "south_america",
+            "ARG",
+            "BOL",
+            "BRA",
+            "CHL",
+            "COL",
+            "ECU",
+            "PRY",
+            "PER",
+            "URY",
+            "VEN",
+            "south_america_other",
+            "asia",
+            "BGD",
+            "CHN",
+            "PHL",
+            "IND",
+            "PAK",
+            "asia_other",
+            "oceania",
+            "stateless"
+          ],
+          "default": "foreign"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_nationality_detail",
+          "numerator": {
+            "sex": "$sex",
+            "nationality_detail": "$nationality_detail"
+          },
+          "denominator": {
+            "sex": "$sex",
+            "nationality_detail": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_birth_country",
+      "topic": "origin",
+      "label": {
+        "es": "Población por país de nacimiento",
+        "en": "Population by country of birth"
+      },
+      "description": {
+        "es": "Residentes nacidos en el país elegido, en total o por sexo. Principales países; hasta sección censal.",
+        "en": "Residents born in the chosen country, in total or by sex. Main countries; down to census sections."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "birth_country_main",
+          "values": [
+            "spain",
+            "abroad",
+            "europe",
+            "FRA",
+            "GBR",
+            "ROU",
+            "UKR",
+            "europe_other",
+            "africa",
+            "MAR",
+            "africa_other",
+            "america",
+            "ARG",
+            "BOL",
+            "COL",
+            "CUB",
+            "ECU",
+            "PER",
+            "DOM",
+            "VEN",
+            "america_other",
+            "asia",
+            "CHN",
+            "asia_other",
+            "oceania"
+          ],
+          "default": "abroad"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_birth_country",
+          "numerator": {
+            "sex": "$sex",
+            "birth_country_main": "$birth_country_main"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_birth_country_share",
+      "topic": "origin",
+      "label": {
+        "es": "% de población por país de nacimiento",
+        "en": "% of population by country of birth"
+      },
+      "description": {
+        "es": "Residentes nacidos en el país elegido sobre el total de residentes del mismo sexo. Principales países; hasta sección censal.",
+        "en": "Residents born in the chosen country, over all residents of the same sex. Main countries; down to census sections."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "birth_country_main",
+          "values": [
+            "spain",
+            "abroad",
+            "europe",
+            "FRA",
+            "GBR",
+            "ROU",
+            "UKR",
+            "europe_other",
+            "africa",
+            "MAR",
+            "africa_other",
+            "america",
+            "ARG",
+            "BOL",
+            "COL",
+            "CUB",
+            "ECU",
+            "PER",
+            "DOM",
+            "VEN",
+            "america_other",
+            "asia",
+            "CHN",
+            "asia_other",
+            "oceania"
+          ],
+          "default": "abroad"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_birth_country",
+          "numerator": {
+            "sex": "$sex",
+            "birth_country_main": "$birth_country_main"
+          },
+          "denominator": {
+            "sex": "$sex",
+            "birth_country_main": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_birth_country_detail",
+      "topic": "origin",
+      "label": {
+        "es": "Población por país de nacimiento (detalle)",
+        "en": "Population by country of birth (detail)"
+      },
+      "description": {
+        "es": "Residentes nacidos en el país elegido, en total o por sexo. Unos sesenta países y los grandes grupos; hasta municipio.",
+        "en": "Residents born in the chosen country, in total or by sex. About sixty countries and country groups; down to municipalities."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "birth_country_detail",
+          "values": [
+            "spain",
+            "abroad",
+            "europe",
+            "eu",
+            "DEU",
+            "BEL",
+            "BGR",
+            "DNK",
+            "FIN",
+            "FRA",
+            "IRL",
+            "ITA",
+            "LTU",
+            "NLD",
+            "POL",
+            "PRT",
+            "ROU",
+            "SWE",
+            "eu_other",
+            "europe_non_eu",
+            "MDA",
+            "NOR",
+            "GBR",
+            "RUS",
+            "CHE",
+            "UKR",
+            "europe_non_eu_other",
+            "africa",
+            "DZA",
+            "GMB",
+            "GHA",
+            "GIN",
+            "GNQ",
+            "MLI",
+            "MAR",
+            "MRT",
+            "NGA",
+            "SEN",
+            "africa_other",
+            "america",
+            "north_america",
+            "CAN",
+            "USA",
+            "MEX",
+            "central_america_caribbean",
+            "CUB",
+            "HND",
+            "NIC",
+            "DOM",
+            "central_america_caribbean_other",
+            "south_america",
+            "ARG",
+            "BOL",
+            "BRA",
+            "CHL",
+            "COL",
+            "ECU",
+            "PRY",
+            "PER",
+            "URY",
+            "VEN",
+            "south_america_other",
+            "asia",
+            "BGD",
+            "CHN",
+            "PHL",
+            "IND",
+            "PAK",
+            "asia_other",
+            "oceania"
+          ],
+          "default": "abroad"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_birth_country_detail",
+          "numerator": {
+            "sex": "$sex",
+            "birth_country_detail": "$birth_country_detail"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_birth_country_detail_share",
+      "topic": "origin",
+      "label": {
+        "es": "% de población por país de nacimiento (detalle)",
+        "en": "% of population by country of birth (detail)"
+      },
+      "description": {
+        "es": "Residentes nacidos en el país elegido sobre el total de residentes del mismo sexo. Unos sesenta países y los grandes grupos; hasta municipio.",
+        "en": "Residents born in the chosen country, over all residents of the same sex. About sixty countries and country groups; down to municipalities."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "birth_country_detail",
+          "values": [
+            "spain",
+            "abroad",
+            "europe",
+            "eu",
+            "DEU",
+            "BEL",
+            "BGR",
+            "DNK",
+            "FIN",
+            "FRA",
+            "IRL",
+            "ITA",
+            "LTU",
+            "NLD",
+            "POL",
+            "PRT",
+            "ROU",
+            "SWE",
+            "eu_other",
+            "europe_non_eu",
+            "MDA",
+            "NOR",
+            "GBR",
+            "RUS",
+            "CHE",
+            "UKR",
+            "europe_non_eu_other",
+            "africa",
+            "DZA",
+            "GMB",
+            "GHA",
+            "GIN",
+            "GNQ",
+            "MLI",
+            "MAR",
+            "MRT",
+            "NGA",
+            "SEN",
+            "africa_other",
+            "america",
+            "north_america",
+            "CAN",
+            "USA",
+            "MEX",
+            "central_america_caribbean",
+            "CUB",
+            "HND",
+            "NIC",
+            "DOM",
+            "central_america_caribbean_other",
+            "south_america",
+            "ARG",
+            "BOL",
+            "BRA",
+            "CHL",
+            "COL",
+            "ECU",
+            "PRY",
+            "PER",
+            "URY",
+            "VEN",
+            "south_america_other",
+            "asia",
+            "BGD",
+            "CHN",
+            "PHL",
+            "IND",
+            "PAK",
+            "asia_other",
+            "oceania"
+          ],
+          "default": "abroad"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_birth_country_detail",
+          "numerator": {
+            "sex": "$sex",
+            "birth_country_detail": "$birth_country_detail"
+          },
+          "denominator": {
+            "sex": "$sex",
+            "birth_country_detail": "total"
           }
         }
       ]
@@ -602,6 +2358,13 @@
       "label": {
         "es": "Demografía",
         "en": "Demography"
+      }
+    },
+    {
+      "id": "origin",
+      "label": {
+        "es": "Nacionalidad y origen",
+        "en": "Nationality and origin"
       }
     }
   ]
