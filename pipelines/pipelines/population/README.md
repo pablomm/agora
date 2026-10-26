@@ -6,8 +6,8 @@ detailed level and aggregated up the territorial hierarchy (`common/rollup.py`).
 ```sh
 python pipelines/population/official_figures.py   # ~1 min
 python pipelines/population/census_annual.py      # ~10 min (54 downloads, one of 690 MB)
-python pipelines/population/census_origin.py      # ~4 min, plus ~4.2 GB of downloads (212 tables)
-python pipelines/population/census_mobility.py    # ~1 min (3 tables)
+python pipelines/population/census_origin.py      # ~5 min, plus ~5.4 GB of downloads (316 tables)
+python pipelines/population/census_municipal.py   # ~1 min (8 tables), after census_origin
 ```
 
 Needs the provinces pipeline (provinces → autonomous communities).
@@ -28,6 +28,12 @@ Needs the provinces pipeline (provinces → autonomous communities).
 | `population_previous_residence` | Censo de Población anual, table 70382 | municipality (500 residents or more: 4,144) | municipality only | 2021–2025 | sex, age (<16, 16–64, 65+), previous residence |
 | `population_arrival_municipality` | Censo de Población anual, table 70371 | municipality (151 provincial capitals and main cities) | municipality only | 2021–2025 | sex, age (8 groups), arrival in the municipality (years before the census) |
 | `population_residence_year_ago` | Censo de Población anual, table 79570 | municipality (the same 151) | municipality only | 2021–2025 | sex, age (<16, 16–64, 65+), nationality (Spanish/foreign), residence a year before |
+| `population_education` | Censo de Población anual, "Población de 15 y más años por sexo y nivel de estudios (agrupado)", one table per province (52) | census section | section → … → Spain | 2021–2024 | sex, level of education (`education_level`, grouped) |
+| `population_education_born` | Censo de Población anual, "… por país de nacimiento (España/extranjero) y nivel de estudios (agrupado)", one table per province (52) | census section | section → … → Spain | 2021–2024 | born in Spain/abroad, level of education (grouped) |
+| `population_education_gender_gap` | Derived from `population_education` | every level | section → … → Spain | 2021–2024 | level of education; the value is the share of women with it minus the share of men, in points |
+| `population_education_detail` | Censo de Población anual, tables 66621 and 66622 | municipality (500 residents or more) | municipality only | 2021–2024 | sex, birthplace or nationality (`birth_nationality`), level of education (detail, nested in the groups) |
+| `population_studying` | Censo de Población anual, tables 66627 and 66628 | municipality (500 residents or more) | municipality only | 2021–2024 | sex, birthplace or nationality, studies in progress |
+| `population_education_age` | Censo de Población anual, table 66620 | municipality (500 residents or more) | municipality only | 2021–2024 | sex, age (11 groups), level of education (grouped) |
 | `population_mean_age` | Derived from `population_sex_age` (no download but table 68527, to check) | every level of `population_sex_age` | section → … → Spain | 2021–2025 | sex; the value is a mean age, in years (not a sum) |
 
 - **Official figures** are each municipality's legal population on 1 January (the Padrón). The
@@ -58,6 +64,16 @@ Needs the provinces pipeline (provinces → autonomous communities).
   aggregated up. Arrival in the municipality only dates those who came from another Spanish
   municipality (those who came straight from abroad are "since they came to Spain"); its calendar
   years become years before each census (within the last 1, 2, 3, 5 years, always exact).
+- **Education** (residents aged 15 and over, 2021–2024). By census section INE publishes four
+  groups (primary or less, lower secondary, upper secondary, tertiary), by sex or by birthplace;
+  hidden units are imputed like arrival in Spain, weighed by residents aged 15 and over (imputed
+  sections are 0.5 people off their census population of that age, on average). Here INE leaves
+  hidden municipalities empty rather than ".": an empty municipality with sections that year is
+  hidden. In municipalities of 500 residents or more the levels come in detail (no schooling,
+  primary, upper secondary general or vocational, higher vocational, four university levels),
+  nested in the same groups, which match the sections summed up exactly. Birthplace and
+  nationality come from two tables and share one dimension, `birth_nationality`. The gender gap is
+  the share of women with a level minus the share of men, at every level.
 - **Mean age** counts each five-year group at its midpoint (2.5 for 0–4… 102.5 for 100+), at every
   level from the aggregated groups. Against INE's mean age by province, sex and year (table
   68527, 780 values) it's at most 0.034 years off; the run fails beyond 0.1. Other age indicators
@@ -87,6 +103,10 @@ Needs the provinces pipeline (provinces → autonomous communities).
 | `arrival_spain` | `total`, `arrived`, `after_2020`, `2011_2020`, `2001_2010`, `before_2001`, `always_in_spain` |
 | `previous_residence` | `total`, `always_here`, `came_from_elsewhere` (= `other_municipality` + `abroad`), `unknown` |
 | `arrival_municipality` | `total`, `from_other_municipality`, `within_1_year`, `within_2_years`, `within_3_years`, `within_5_years` (cumulative), `more_than_5_years`, `since_arrival_in_spain`, `since_birth` |
+| `education_level` | `total`; `primary_or_less` (`no_schooling`, `primary`), `lower_secondary`, `upper_secondary` (`upper_secondary_general`, `upper_secondary_vocational`), `tertiary` (`vocational_higher`, `university`: `bachelor`, `bachelor_long`, `master`, `doctorate`); by section, only the four groups |
+| `born` | `total`, `spain`, `abroad` |
+| `birth_nationality` | `total`, `born_spain`, `born_abroad`, `spanish`, `foreign` (two breakdowns of the same total) |
+| `studying` | `total`, `studying` (by level: `studying_primary_or_less` … `studying_tertiary`, `studying_unknown`), `not_studying` |
 | `residence_year_ago` | `total`, `same_municipality`, `moved_in` (= `elsewhere_in_spain` + `abroad`), `same_province`, `same_community`, `other_community`, `not_born` |
 | `value` | Persons |
 | `origin` | `published` (the base level, as INE publishes it) or `aggregated` (summed from the level below) |
@@ -109,7 +129,11 @@ stops the run, except the ones listed in the pipeline as known (with why):
   rows of the same table.
 - `population_arrival_spain`: like `population_birthplace`, with the imputed units filling exactly
   what each province and municipality publishes.
-- The mobility datasets: every breakdown (categories, sexes, age groups, nationalities) adds up to
+- `population_education`, `population_education_born`: the total from its parts, and every level
+  above against the same tables, with imputed units filling exactly what's published.
+- `population_education_detail`: its groups by sex against `population_education` summed up to
+  municipalities (248,385 values, the ones without imputed sections): exact.
+- The mobility and education datasets by municipality: every breakdown (categories, sexes, age groups, nationalities) adds up to
   the totals INE publishes.
 - `population_birthplace`: the total from its parts against INE's, and the levels above against
   the same tables' rows. Gipuzkoa's table (69172) comes in English format ("Period", 733,149):
@@ -141,6 +165,10 @@ left out, so a unit only has rows for the years it existed.
 | `population_previous_residence` | municipality 1,491,840 |
 | `population_arrival_municipality` | municipality 163,080 |
 | `population_residence_year_ago` | municipality 244,620 |
+| `population_education` | section 2,184,810 · district 628,155 · municipality 487,875 · province 3,120 · autonomous community 1,140 · Spain 60 |
+| `population_education_detail` | municipality 3,729,600 |
+| `population_studying` | municipality 2,237,760 |
+| `population_education_age` | municipality 2,983,680 |
 | `population_mean_age` | section 546,616 · district 156,998 · municipality 121,967 · province 780 · autonomous community 285 · Spain 15 |
 
 ## Code lists

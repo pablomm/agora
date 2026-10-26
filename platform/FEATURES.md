@@ -2,6 +2,24 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Education
+
+- New topic **Educación** (residents aged 15 and over, 2021–2024), layers nº · %:
+  - **Población por nivel de estudios** (primary or less, lower secondary, upper secondary,
+    tertiary) by sex, and **… y lugar de nacimiento**, down to census sections (hidden units imputed).
+  - **Población por nivel de estudios (detalle)**: no schooling, primary, ESO, bachillerato, FP
+    medio and superior, university (degree, long degree, master, doctorate), nested in the four
+    groups, by sex and by birthplace or nationality, in municipalities of 500 residents or more.
+  - **Población por nivel de estudios y edad**, with an age range (25–59 by default, to compare
+    without the age structure weighing in), same municipalities.
+  - **Población que estudia** (and at which level), by sex and birthplace or nationality.
+  - **Brecha de género en estudios**: share of women with a level minus share of men, in points,
+    down to census sections.
+- Variables above or below zero (`"palette": "diverging"` in the catalogue, like the gender gap) get
+  a diverging scale: red below zero, gray around it, blue above, with breaks symmetric around zero
+  (the outer ones leave a fifth of the units beyond them, the inner ones a third as far), in light
+  and dark themes.
+
 ## 2026-10-26 · Header: new logo, folding search
 
 - The header shows the app's logo (`public/favicon.svg`) instead of the old bars.

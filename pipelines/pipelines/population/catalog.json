@@ -54,7 +54,13 @@
         "Y25T34": "De 25 a 34 años",
         "Y35T44": "De 35 a 44 años",
         "Y45T54": "De 45 a 54 años",
-        "Y55T64": "De 55 a 64 años"
+        "Y55T64": "De 55 a 64 años",
+        "Y40T49": "De 40 a 49 años",
+        "Y50T59": "De 50 a 59 años",
+        "Y60T69": "De 60 a 69 años",
+        "Y70T79": "De 70 a 79 años",
+        "Y80T89": "De 80 a 89 años",
+        "Y_GE90": "90 años o más"
       },
       "order": [
         "total",
@@ -86,7 +92,13 @@
         "Y25T34",
         "Y35T44",
         "Y45T54",
-        "Y55T64"
+        "Y55T64",
+        "Y40T49",
+        "Y50T59",
+        "Y60T69",
+        "Y70T79",
+        "Y80T89",
+        "Y_GE90"
       ]
     },
     {
@@ -894,6 +906,136 @@
         "same_community": "elsewhere_in_spain",
         "other_community": "elsewhere_in_spain"
       }
+    },
+    {
+      "id": "education_level",
+      "label": {
+        "es": "Nivel de estudios",
+        "en": "Level of education"
+      },
+      "values": {
+        "total": "Total",
+        "primary_or_less": "Primaria o inferior",
+        "no_schooling": "Sin estudios",
+        "primary": "Educación primaria",
+        "lower_secondary": "Secundaria obligatoria (ESO)",
+        "upper_secondary": "Bachillerato o FP de grado medio",
+        "upper_secondary_general": "Bachillerato",
+        "upper_secondary_vocational": "FP de grado medio",
+        "tertiary": "Educación superior",
+        "vocational_higher": "FP de grado superior",
+        "university": "Universidad",
+        "bachelor": "Grado (hasta 240 créditos) o diplomatura",
+        "bachelor_long": "Grado (más de 240 créditos) o licenciatura",
+        "master": "Máster",
+        "doctorate": "Doctorado"
+      },
+      "order": [
+        "total",
+        "primary_or_less",
+        "no_schooling",
+        "primary",
+        "lower_secondary",
+        "upper_secondary",
+        "upper_secondary_general",
+        "upper_secondary_vocational",
+        "tertiary",
+        "vocational_higher",
+        "university",
+        "bachelor",
+        "bachelor_long",
+        "master",
+        "doctorate"
+      ],
+      "parents": {
+        "no_schooling": "primary_or_less",
+        "primary": "primary_or_less",
+        "upper_secondary_general": "upper_secondary",
+        "upper_secondary_vocational": "upper_secondary",
+        "vocational_higher": "tertiary",
+        "university": "tertiary",
+        "bachelor": "university",
+        "bachelor_long": "university",
+        "master": "university",
+        "doctorate": "university"
+      }
+    },
+    {
+      "id": "born",
+      "label": {
+        "es": "Lugar de nacimiento",
+        "en": "Born in"
+      },
+      "values": {
+        "total": "Total",
+        "spain": "Nacidos en España",
+        "abroad": "Nacidos en el extranjero"
+      },
+      "order": [
+        "total",
+        "spain",
+        "abroad"
+      ],
+      "parents": {}
+    },
+    {
+      "id": "birth_nationality",
+      "label": {
+        "es": "Origen",
+        "en": "Origin"
+      },
+      "values": {
+        "total": "Todos",
+        "born_spain": "Nacidos en España",
+        "born_abroad": "Nacidos en el extranjero",
+        "spanish": "Nacionalidad española",
+        "foreign": "Nacionalidad extranjera"
+      },
+      "order": [
+        "total",
+        "born_spain",
+        "born_abroad",
+        "spanish",
+        "foreign"
+      ],
+      "parents": {}
+    },
+    {
+      "id": "studying",
+      "label": {
+        "es": "Estudios en curso",
+        "en": "Studies in progress"
+      },
+      "values": {
+        "total": "Total",
+        "studying": "Estudia actualmente",
+        "studying_primary_or_less": "Primaria o inferior",
+        "studying_lower_secondary": "Secundaria obligatoria (ESO)",
+        "studying_upper_secondary_general": "Bachillerato",
+        "studying_upper_secondary_vocational": "FP de grado medio",
+        "studying_tertiary": "Educación superior",
+        "studying_unknown": "Nivel no consta",
+        "not_studying": "No estudia"
+      },
+      "order": [
+        "total",
+        "studying",
+        "studying_primary_or_less",
+        "studying_lower_secondary",
+        "studying_upper_secondary_general",
+        "studying_upper_secondary_vocational",
+        "studying_tertiary",
+        "studying_unknown",
+        "not_studying"
+      ],
+      "parents": {
+        "studying_primary_or_less": "studying",
+        "studying_lower_secondary": "studying",
+        "studying_upper_secondary_general": "studying",
+        "studying_upper_secondary_vocational": "studying",
+        "studying_tertiary": "studying",
+        "studying_unknown": "studying"
+      }
     }
   ],
   "datasets": [
@@ -1666,6 +1808,365 @@
         "as_of": "{year}-01-01"
       },
       "output": "processed/population/population_residence_year_ago/{level}.parquet"
+    },
+    {
+      "id": "population_education",
+      "title": "Población de 15 y más años por sexo y nivel de estudios (agrupado) (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          66637,
+          66641,
+          66645,
+          66649,
+          66653,
+          66657,
+          66661,
+          66665,
+          66669,
+          66673,
+          66677,
+          66681,
+          66685,
+          66689,
+          66693,
+          66697,
+          66701,
+          66705,
+          66709,
+          66713,
+          66717,
+          66721,
+          66725,
+          66729,
+          66733,
+          66737,
+          66741,
+          66745,
+          66749,
+          66753,
+          66757,
+          66761,
+          66765,
+          66769,
+          66773,
+          66777,
+          66781,
+          66785,
+          66789,
+          66793,
+          66797,
+          66801,
+          66805,
+          66809,
+          66813,
+          66817,
+          66821,
+          66825,
+          66829,
+          66833,
+          66837,
+          66841
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "education_level"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_education/{level}.parquet"
+    },
+    {
+      "id": "population_education_born",
+      "title": "Población de 15 y más años por país de nacimiento (España/extranjero) y nivel de estudios (agrupado) (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          66638,
+          66642,
+          66646,
+          66650,
+          66654,
+          66658,
+          66662,
+          66666,
+          66670,
+          66674,
+          66678,
+          66682,
+          66686,
+          66690,
+          66694,
+          66698,
+          66702,
+          66706,
+          66710,
+          66714,
+          66718,
+          66722,
+          66726,
+          66730,
+          66734,
+          66738,
+          66742,
+          66746,
+          66750,
+          66754,
+          66758,
+          66762,
+          66766,
+          66770,
+          66774,
+          66778,
+          66782,
+          66786,
+          66790,
+          66794,
+          66798,
+          66802,
+          66806,
+          66810,
+          66814,
+          66818,
+          66822,
+          66826,
+          66830,
+          66834,
+          66838,
+          66842
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "born",
+        "education_level"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_education_born/{level}.parquet"
+    },
+    {
+      "id": "population_education_gender_gap",
+      "title": "Brecha de género en nivel de estudios (a partir del Censo de Población anual por sección)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "derived",
+        "from": "population_education",
+        "method": "share of women aged 15 and over with each level minus the share of men, in percentage points"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "education_gender_gap",
+        "unit": "puntos",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "education_level"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_education_gender_gap/{level}.parquet"
+    },
+    {
+      "id": "population_education_detail",
+      "title": "Población de 15 y más años por sexo, lugar de nacimiento o nacionalidad y nivel de estudios (detalle), municipios de 500 habitantes o más (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          66621,
+          66622
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "birth_nationality",
+        "education_level"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_education_detail/{level}.parquet"
+    },
+    {
+      "id": "population_studying",
+      "title": "Población de 15 y más años por sexo, lugar de nacimiento o nacionalidad y nivel de estudios en curso, municipios de 500 habitantes o más (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          66627,
+          66628
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "birth_nationality",
+        "studying"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_studying/{level}.parquet"
+    },
+    {
+      "id": "population_education_age",
+      "title": "Población de 15 y más años por sexo, edad y nivel de estudios (agrupado), municipios de 500 habitantes o más (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          66620
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "age",
+        "education_level"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_education_age/{level}.parquet"
     }
   ],
   "variables": [
@@ -3799,6 +4300,689 @@
           }
         }
       ]
+    },
+    {
+      "id": "population_education",
+      "topic": "education",
+      "label": {
+        "es": "Población por nivel de estudios",
+        "en": "Population by level of education"
+      },
+      "description": {
+        "es": "Residentes de 15 años o más según el nivel de estudios más alto que han terminado. Hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Residents aged 15 and over by the highest level of education they completed. Down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "education_level",
+          "values": [
+            "primary_or_less",
+            "lower_secondary",
+            "upper_secondary",
+            "tertiary"
+          ],
+          "default": "tertiary"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_education",
+          "numerator": {
+            "education_level": "$education_level",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_education_share",
+      "topic": "education",
+      "label": {
+        "es": "Proporción de población por nivel de estudios",
+        "en": "Share of population by level of education"
+      },
+      "measure_of": "population_education",
+      "description": {
+        "es": "Residentes de 15 años o más según el nivel de estudios más alto que han terminado, sobre el total de residentes de 15 años o más del mismo sexo. Hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Residents aged 15 and over by the highest level of education they completed, over all residents aged 15 and over of the same sex. Down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "education_level",
+          "values": [
+            "primary_or_less",
+            "lower_secondary",
+            "upper_secondary",
+            "tertiary"
+          ],
+          "default": "tertiary"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_education",
+          "numerator": {
+            "education_level": "$education_level",
+            "sex": "$sex"
+          },
+          "denominator": {
+            "education_level": "total",
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_education_born",
+      "topic": "education",
+      "label": {
+        "es": "Población por nivel de estudios y lugar de nacimiento",
+        "en": "Population by level of education and birthplace"
+      },
+      "description": {
+        "es": "Residentes de 15 años o más según el nivel de estudios más alto que han terminado, nacidos en España o en el extranjero. Hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Residents aged 15 and over by the highest level of education they completed, born in Spain or abroad. Down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "education_level",
+          "values": [
+            "primary_or_less",
+            "lower_secondary",
+            "upper_secondary",
+            "tertiary"
+          ],
+          "default": "tertiary"
+        },
+        {
+          "dimension": "born",
+          "values": [
+            "total",
+            "spain",
+            "abroad"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_education_born",
+          "numerator": {
+            "education_level": "$education_level",
+            "born": "$born"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_education_born_share",
+      "topic": "education",
+      "label": {
+        "es": "Proporción de población por nivel de estudios y lugar de nacimiento",
+        "en": "Share of population by level of education and birthplace"
+      },
+      "measure_of": "population_education_born",
+      "description": {
+        "es": "Residentes de 15 años o más según el nivel de estudios más alto que han terminado, nacidos en España o en el extranjero, sobre el total de residentes de 15 años o más nacidos en el mismo sitio. Hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Residents aged 15 and over by the highest level of education they completed, born in Spain or abroad, over all residents aged 15 and over born in the same place. Down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "education_level",
+          "values": [
+            "primary_or_less",
+            "lower_secondary",
+            "upper_secondary",
+            "tertiary"
+          ],
+          "default": "tertiary"
+        },
+        {
+          "dimension": "born",
+          "values": [
+            "total",
+            "spain",
+            "abroad"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_education_born",
+          "numerator": {
+            "education_level": "$education_level",
+            "born": "$born"
+          },
+          "denominator": {
+            "education_level": "total",
+            "born": "$born"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_education_detail",
+      "topic": "education",
+      "label": {
+        "es": "Población por nivel de estudios (detalle)",
+        "en": "Population by level of education (detail)"
+      },
+      "description": {
+        "es": "Residentes de 15 años o más según el nivel de estudios más alto que han terminado, en detalle (sin estudios, bachillerato, FP, universidad, máster, doctorado…), por sexo y por lugar de nacimiento o nacionalidad. Solo municipios de 500 habitantes o más.",
+        "en": "Residents aged 15 and over by the highest level of education they completed, in detail (no schooling, upper secondary, vocational, university, master, doctorate…), by sex and by birthplace or nationality. Only municipalities of 500 residents or more."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "education_level",
+          "values": [
+            "primary_or_less",
+            "no_schooling",
+            "primary",
+            "lower_secondary",
+            "upper_secondary",
+            "upper_secondary_general",
+            "upper_secondary_vocational",
+            "tertiary",
+            "vocational_higher",
+            "university",
+            "bachelor",
+            "bachelor_long",
+            "master",
+            "doctorate"
+          ],
+          "default": "university"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "birth_nationality",
+          "values": [
+            "total",
+            "born_spain",
+            "born_abroad",
+            "spanish",
+            "foreign"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_education_detail",
+          "numerator": {
+            "education_level": "$education_level",
+            "sex": "$sex",
+            "birth_nationality": "$birth_nationality"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_education_detail_share",
+      "topic": "education",
+      "label": {
+        "es": "Proporción de población por nivel de estudios (detalle)",
+        "en": "Share of population by level of education (detail)"
+      },
+      "measure_of": "population_education_detail",
+      "description": {
+        "es": "Residentes de 15 años o más según el nivel de estudios más alto que han terminado, en detalle (sin estudios, bachillerato, FP, universidad, máster, doctorado…), por sexo y por lugar de nacimiento o nacionalidad, sobre el total de residentes de 15 años o más del mismo sexo y origen. Solo municipios de 500 habitantes o más.",
+        "en": "Residents aged 15 and over by the highest level of education they completed, in detail (no schooling, upper secondary, vocational, university, master, doctorate…), by sex and by birthplace or nationality, over all residents aged 15 and over of the same sex and origin. Only municipalities of 500 residents or more."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "education_level",
+          "values": [
+            "primary_or_less",
+            "no_schooling",
+            "primary",
+            "lower_secondary",
+            "upper_secondary",
+            "upper_secondary_general",
+            "upper_secondary_vocational",
+            "tertiary",
+            "vocational_higher",
+            "university",
+            "bachelor",
+            "bachelor_long",
+            "master",
+            "doctorate"
+          ],
+          "default": "university"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "birth_nationality",
+          "values": [
+            "total",
+            "born_spain",
+            "born_abroad",
+            "spanish",
+            "foreign"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_education_detail",
+          "numerator": {
+            "education_level": "$education_level",
+            "sex": "$sex",
+            "birth_nationality": "$birth_nationality"
+          },
+          "denominator": {
+            "education_level": "total",
+            "sex": "$sex",
+            "birth_nationality": "$birth_nationality"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_education_age",
+      "topic": "education",
+      "label": {
+        "es": "Población por nivel de estudios y edad",
+        "en": "Population by level of education and age"
+      },
+      "description": {
+        "es": "Residentes según el nivel de estudios más alto que han terminado, en el tramo de edad elegido (por defecto de 25 a 59 años, para comparar sin que pese la estructura de edad). Solo municipios de 500 habitantes o más.",
+        "en": "Residents by the highest level of education they completed, in the chosen age band (25 to 59 by default, to compare regardless of age structure). Only municipalities of 500 residents or more."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "education_level",
+          "values": [
+            "primary_or_less",
+            "lower_secondary",
+            "upper_secondary",
+            "tertiary"
+          ],
+          "default": "tertiary"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "range": true,
+          "values": [
+            "Y15T19",
+            "Y20T24",
+            "Y25T29",
+            "Y30T34",
+            "Y35T39",
+            "Y40T49",
+            "Y50T59",
+            "Y60T69",
+            "Y70T79",
+            "Y80T89",
+            "Y_GE90"
+          ],
+          "default": [
+            "Y25T29",
+            "Y50T59"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_education_age",
+          "numerator": {
+            "education_level": "$education_level",
+            "sex": "$sex",
+            "age": "$age"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_education_age_share",
+      "topic": "education",
+      "label": {
+        "es": "Proporción de población por nivel de estudios y edad",
+        "en": "Share of population by level of education and age"
+      },
+      "measure_of": "population_education_age",
+      "description": {
+        "es": "Residentes según el nivel de estudios más alto que han terminado, en el tramo de edad elegido (por defecto de 25 a 59 años, para comparar sin que pese la estructura de edad), sobre el total de residentes de 15 años o más del mismo sexo y edad. Solo municipios de 500 habitantes o más.",
+        "en": "Residents by the highest level of education they completed, in the chosen age band (25 to 59 by default, to compare regardless of age structure), over all residents aged 15 and over of the same sex and age. Only municipalities of 500 residents or more."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "education_level",
+          "values": [
+            "primary_or_less",
+            "lower_secondary",
+            "upper_secondary",
+            "tertiary"
+          ],
+          "default": "tertiary"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "age",
+          "range": true,
+          "values": [
+            "Y15T19",
+            "Y20T24",
+            "Y25T29",
+            "Y30T34",
+            "Y35T39",
+            "Y40T49",
+            "Y50T59",
+            "Y60T69",
+            "Y70T79",
+            "Y80T89",
+            "Y_GE90"
+          ],
+          "default": [
+            "Y25T29",
+            "Y50T59"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_education_age",
+          "numerator": {
+            "education_level": "$education_level",
+            "sex": "$sex",
+            "age": "$age"
+          },
+          "denominator": {
+            "education_level": "total",
+            "sex": "$sex",
+            "age": "$age"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_studying",
+      "topic": "education",
+      "label": {
+        "es": "Población que estudia",
+        "en": "Population in education"
+      },
+      "description": {
+        "es": "Residentes de 15 años o más que cursan estudios (y cuáles) o que no estudian, por sexo y por lugar de nacimiento o nacionalidad. Solo municipios de 500 habitantes o más.",
+        "en": "Residents aged 15 and over in education (and at which level) or not, by sex and by birthplace or nationality. Only municipalities of 500 residents or more."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "studying",
+          "values": [
+            "studying",
+            "studying_primary_or_less",
+            "studying_lower_secondary",
+            "studying_upper_secondary_general",
+            "studying_upper_secondary_vocational",
+            "studying_tertiary",
+            "studying_unknown",
+            "not_studying"
+          ],
+          "default": "studying"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "birth_nationality",
+          "values": [
+            "total",
+            "born_spain",
+            "born_abroad",
+            "spanish",
+            "foreign"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_studying",
+          "numerator": {
+            "studying": "$studying",
+            "sex": "$sex",
+            "birth_nationality": "$birth_nationality"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_studying_share",
+      "topic": "education",
+      "label": {
+        "es": "Proporción de población que estudia",
+        "en": "Share of population in education"
+      },
+      "measure_of": "population_studying",
+      "description": {
+        "es": "Residentes de 15 años o más que cursan estudios (y cuáles) o que no estudian, por sexo y por lugar de nacimiento o nacionalidad, sobre el total de residentes de 15 años o más del mismo sexo y origen. Solo municipios de 500 habitantes o más.",
+        "en": "Residents aged 15 and over in education (and at which level) or not, by sex and by birthplace or nationality, over all residents aged 15 and over of the same sex and origin. Only municipalities of 500 residents or more."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "studying",
+          "values": [
+            "studying",
+            "studying_primary_or_less",
+            "studying_lower_secondary",
+            "studying_upper_secondary_general",
+            "studying_upper_secondary_vocational",
+            "studying_tertiary",
+            "studying_unknown",
+            "not_studying"
+          ],
+          "default": "studying"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "birth_nationality",
+          "values": [
+            "total",
+            "born_spain",
+            "born_abroad",
+            "spanish",
+            "foreign"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_studying",
+          "numerator": {
+            "studying": "$studying",
+            "sex": "$sex",
+            "birth_nationality": "$birth_nationality"
+          },
+          "denominator": {
+            "studying": "total",
+            "sex": "$sex",
+            "birth_nationality": "$birth_nationality"
+          }
+        }
+      ]
+    },
+    {
+      "id": "education_gender_gap",
+      "topic": "education",
+      "label": {
+        "es": "Brecha de género en estudios",
+        "en": "Gender gap in education"
+      },
+      "description": {
+        "es": "Porcentaje de mujeres de 15 años o más con el nivel de estudios elegido menos el de hombres, en puntos: positivo si hay más mujeres con ese nivel. Hasta sección censal; las secciones y municipios muy pequeños que el INE oculta están imputados.",
+        "en": "Share of women aged 15 and over with the chosen level of education minus the share of men, in points: positive when more women have it. Down to census sections; very small sections and municipalities INE hides are imputed."
+      },
+      "unit": "puntos",
+      "kind": "ratio",
+      "palette": "diverging",
+      "options": [
+        {
+          "dimension": "education_level",
+          "values": [
+            "primary_or_less",
+            "lower_secondary",
+            "upper_secondary",
+            "tertiary"
+          ],
+          "default": "tertiary"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_education_gender_gap",
+          "numerator": {
+            "education_level": "$education_level"
+          }
+        }
+      ]
     }
   ],
   "topics": [
@@ -3821,6 +5005,13 @@
       "label": {
         "es": "Migración y movilidad",
         "en": "Migration and mobility"
+      }
+    },
+    {
+      "id": "education",
+      "label": {
+        "es": "Educación",
+        "en": "Education"
       }
     }
   ]

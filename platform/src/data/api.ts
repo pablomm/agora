@@ -69,6 +69,8 @@ export interface Variable {
   options: VariableOption[]
   /** The variable this one is another measure of (its share): both show as one layer. */
   measure_of: string | null
+  /** Colored by magnitude, or above and below zero (a gap between two groups). */
+  palette: 'sequential' | 'diverging'
 }
 
 export interface Dimension {

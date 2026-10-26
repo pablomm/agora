@@ -10,6 +10,12 @@ Annual Population Census (INE, since 2021) by sex and nationality or country of 
 - population_arrival_spain: when residents came to live in Spain (after 2020, 2011–2020,
   2001–2010, before 2001) or that they always lived here, from census sections up. INE hides
   small sections and municipalities whole: they're imputed (see `impute_hidden`).
+- population_education, population_education_born: residents aged 15 and over by highest level of
+  education completed (primary or less, lower secondary, upper secondary, tertiary), by sex, or
+  born in Spain or abroad, from census sections up (2021 on). Hidden units are imputed, weighed by
+  residents aged 15 and over.
+- population_education_gender_gap: derived from population_education at every level, the share of
+  women with each level of education minus the share of men, in percentage points.
 
 INE's lists of main countries close each continent or country group with its rest ("Otros países de
 África"), so the countries add up to their groups. Each dataset nests them in one dimension
@@ -31,7 +37,7 @@ import pandas as pd
 from common import codelists, ine
 from common.imputation import share_out
 from common.paths import output_dir, raw_dir
-from common.rollup import check_against, rollup, write_levels
+from common.rollup import LEVELS, check_against, rollup, write_levels
 
 log = logging.getLogger(__name__)
 
@@ -73,6 +79,15 @@ BIRTHPLACE_SECTION_TABLES = [65041, 69096, *range(69104, 69297, 4), 69344]
 
 #: "Población por año de llegada a España (agregado) y sexo", one table per province (national: 70384).
 ARRIVAL_SECTION_TABLES = list(range(70510, 70562))
+
+
+#: "Población de 15 y más años por sexo y nivel de estudios (agrupado)", one table per province
+#: (national: 66592); and "por país de nacimiento (España/extranjero)" (national: 66593).
+EDUCATION_SEX_TABLES = list(range(66637, 66842, 4))
+EDUCATION_BORN_TABLES = list(range(66638, 66843, 4))
+#: Residents aged 15 and over: the universe of the education tables.
+ADULT_AGES = ["Y15T19", "Y20T24", "Y25T29", "Y30T34", "Y35T39", "Y40T44", "Y45T49", "Y50T54", "Y55T59", "Y60T64", "Y65T69", "Y70T74", "Y75T79", "Y80T84", "Y85T89", "Y90T94", "Y95T99", "Y_GE100"]
+EDUCATION_LEVELS = ["primary_or_less", "lower_secondary", "upper_secondary", "tertiary"]
 
 
 def rooted(tree: dict[str, list[str]], top: str, leave_out: str | None = None) -> dict[str, list[str]]:
@@ -150,14 +165,40 @@ DATASETS = {
         "level": "census_section",
         "dimension": "arrival_spain",
     },
+    "population_education": {
+        "raw": "population_education",
+        "tables": EDUCATION_SEX_TABLES,
+        "column": "Nivel de formación alcanzado",
+        "codes": codelists.EDUCATION_GROUPED,
+        "tree": {},
+        "parts": EDUCATION_LEVELS,
+        "level": "census_section",
+        "dimension": "education_level",
+        "weight_ages": ADULT_AGES,
+    },
+    "population_education_born": {
+        "raw": "population_education",
+        "tables": EDUCATION_BORN_TABLES,
+        "column": "Nivel de formación alcanzado",
+        "codes": codelists.EDUCATION_GROUPED,
+        "by": ("País de nacimiento", codelists.BORN, "born"),
+        "tree": {},
+        "parts": EDUCATION_LEVELS,
+        "level": "census_section",
+        "dimension": "education_level",
+        "weight_ages": ADULT_AGES,
+    },
 }
+
+#: The tables' other breakdown: its column, code list and dimension (by sex, unless a dataset says).
+SEX = ("Sexo", codelists.SEX, "sex")
 
 #: The geography columns of INE's tables, from the most detailed, with the level each names.
 GEOGRAPHY = [("Secciones", "census_section"), ("Municipios", "municipality"), ("Provincias", "province")]
 
 
-def tidy(table: pd.DataFrame, column: str, codes: dict[str, str], dimension: str) -> dict[str, pd.DataFrame]:
-    """The table's rows by level (sections, municipalities, provinces), each with code, period, sex, the country and value."""
+def tidy(table: pd.DataFrame, column: str, codes: dict[str, str], dimension: str, by: tuple = SEX) -> dict[str, pd.DataFrame]:
+    """The table's rows by level (sections, municipalities, provinces), each with code, period, `by` (sex), the dimension and value."""
     present = [(name, level) for name, level in GEOGRAPHY if name in table]
     out = {}
     for index, (name, level) in enumerate(present):
@@ -170,33 +211,47 @@ def tidy(table: pd.DataFrame, column: str, codes: dict[str, str], dimension: str
             {
                 "code": ine.codes(part[name]),
                 "period": part["Periodo"].astype(int),
-                "sex": codelists.mapped(part["Sexo"], codelists.SEX, "sex"),
+                by[2]: codelists.mapped(part[by[0]], by[1], by[0]),
                 dimension: codelists.mapped(part[column], codes, column),
                 "value": ine.values(part["Total"]),
                 # ".": hidden by INE; empty: the unit didn't exist that year.
                 "hidden": part["Total"].str.strip() == ".",
             }
         )
+    # A municipality left empty is hidden too (not missing) when its sections exist that year.
+    if "census_section" in out and "municipality" in out:
+        sections, municipalities = out["census_section"], out["municipality"]
+        present = set(zip(sections.loc[sections["value"].notna() | sections["hidden"], "code"].str[:5], sections.loc[sections["value"].notna() | sections["hidden"], "period"]))
+        empty = municipalities["value"].isna() & ~municipalities["hidden"]
+        if empty.any():
+            municipalities.loc[empty, "hidden"] = [unit in present for unit in zip(municipalities.loc[empty, "code"], municipalities.loc[empty, "period"])]
     return out
 
 
-def population(level: str) -> pd.Series:
-    """Residents by unit code, period and sex (annual census): the weight of each hidden unit."""
+def population(level: str, by: str, ages: list[str] | None) -> pd.Series:
+    """
+    Residents by unit code, period and `by` (annual census), of some ages or all: the weight of each
+    hidden unit. Not by sex, every value of `by` weighs the unit's residents.
+    """
     frame = pd.read_parquet(
-        output_dir(PIPELINE) / f"population_sex_age/{level}.parquet", columns=["code", "period", "sex", "value"], filters=[("age", "==", "total"), ("sex", "in", ["male", "female"])]
+        output_dir(PIPELINE) / f"population_sex_age/{level}.parquet",
+        columns=["code", "period", "sex", "age", "value"],
+        filters=[("age", "in", ages or ["total"]), ("sex", "in", ["male", "female"] if by == "sex" else ["total"])],
     )
-    return frame.set_index(["code", "period", "sex"])["value"]
+    weights = frame.groupby(["code", "period", "sex"], observed=True)["value"].sum()
+    return weights.rename_axis(["code", "period", by]) if by == "sex" else weights.droplevel("sex")
 
 
-def impute_hidden(base: pd.DataFrame, tables: dict[str, pd.DataFrame], dimension: str) -> tuple[pd.DataFrame, dict]:
+def impute_hidden(base: pd.DataFrame, tables: dict[str, pd.DataFrame], dimension: str, by: str, ages: list[str] | None) -> pd.DataFrame:
     """
     Units INE hides whole (every cell "."): hidden municipalities share what their province has left
     over (the province minus its known municipalities), then hidden sections what their municipality
-    (published or imputed) has, in proportion to each unit's residents of each sex. Only the cells of
-    each sex and category are imputed; their totals are sums. Returns the base level with values.
+    (published or imputed) has, in proportion to each unit's residents (of each sex, and of `ages`
+    if given). Only the cells of each value of `by` and category are imputed; their totals are sums.
+    Returns the base level with values.
     """
-    keys = ["period", "sex", dimension]
-    leaves = lambda frame: frame[(frame["sex"] != "total") & (frame[dimension] != "total")]
+    keys = ["period", by, dimension]
+    leaves = lambda frame: frame[(frame[by] != "total") & (frame[dimension] != "total")]
 
     def fill(units: pd.DataFrame, parents: pd.DataFrame, parent: str, weights: pd.Series) -> pd.DataFrame:
         units = units.assign(**{parent: units["code"].str[: 2 if parent == "province" else 5]})
@@ -206,20 +261,23 @@ def impute_hidden(base: pd.DataFrame, tables: dict[str, pd.DataFrame], dimension
         known = leaves(units[~units["hidden"]]).groupby([parent, *keys], observed=True)["value"].sum()
         target = leaves(parents[parents["value"].notna()]).set_index(["code", *keys])["value"].rename_axis([parent, *keys])
         residual = (target - known.reindex(target.index, fill_value=0)).rename("residual").reset_index()
-        units.loc[hidden.index, "value"] = share_out(residual, hidden, weights, parent, ["sex", dimension])
-        # A hidden unit's totals by sex: the sum of its sexes.
+        if by != "sex":
+            # The same weight for every value of `by`: the unit's residents.
+            weights = pd.concat({value: weights for value in hidden[by].unique()}, names=[by]).reorder_levels(["code", "period", by])
+        units.loc[hidden.index, "value"] = share_out(residual, hidden, weights, parent, [by, dimension], by)
+        # A hidden unit's totals over `by`: the sum of its values.
         is_hidden = units["hidden"]
-        sexes = units[is_hidden & (units["sex"] != "total")].groupby(["code", "period", dimension], as_index=False, observed=True)["value"].sum()
-        totals = units[is_hidden & (units["sex"] == "total")].drop(columns="value").merge(sexes, on=["code", "period", dimension])
-        return pd.concat([units[~(is_hidden & (units["sex"] == "total"))], totals], ignore_index=True)
+        parts = units[is_hidden & (units[by] != "total")].groupby(["code", "period", dimension], as_index=False, observed=True)["value"].sum()
+        totals = units[is_hidden & (units[by] == "total")].drop(columns="value").merge(parts, on=["code", "period", dimension])
+        return pd.concat([units[~(is_hidden & (units[by] == "total"))], totals], ignore_index=True)
 
-    municipalities = fill(tables["municipality"], tables["province"], "province", population("municipality"))
-    return fill(base, municipalities, "municipality", population("census_section")).drop(columns="municipality")
+    municipalities = fill(tables["municipality"], tables["province"], "province", population("municipality", by, ages))
+    return fill(base, municipalities, "municipality", population("census_section", by, ages)).drop(columns="municipality")
 
 
-def nest(frame: pd.DataFrame, tree: dict[str, list[str]], dimension: str, parts: list[str]) -> pd.DataFrame:
+def nest(frame: pd.DataFrame, tree: dict[str, list[str]], dimension: str, parts: list[str], by: str = "sex") -> pd.DataFrame:
     """Adds every group of `tree` as the sum of what it holds (the deepest first), and the total as the sum of `parts`."""
-    keys = ["code", "period", "sex"]
+    keys = ["code", "period", by]
     frame = frame[frame[dimension] != "total"].copy() if "total" in set(frame[dimension]) else frame
     added = []
     known = frame
@@ -246,11 +304,14 @@ def build(name: str, refresh: bool) -> None:
 
     # Spain is "España" or "Española" depending on the table.
     codes = {**spec["codes"], "España": spec["home"], "Española": spec["home"]} if "home" in spec else spec["codes"]
+    by = spec.get("by", SEX)
     by_level: dict[str, list[pd.DataFrame]] = {}
     for path in paths:
-        for level, frame in tidy(ine.read_table(path), spec["column"], codes, dimension).items():
+        for level, frame in tidy(ine.read_table(path), spec["column"], codes, dimension, by).items():
             by_level.setdefault(level, []).append(frame)
-    keys = ["code", "period", "sex", dimension]
+    by = by[2]
+    dimensions = [by, dimension]
+    keys = ["code", "period", *dimensions]
     # A province's table has its municipalities and sections; keep each row once all the same.
     tables = {level: pd.concat(frames).drop_duplicates(keys).reset_index(drop=True) for level, frames in by_level.items()}
     base = tables.pop(spec["level"])
@@ -268,24 +329,24 @@ def build(name: str, refresh: bool) -> None:
     stats = {level: int(frame.loc[frame["hidden"], ["code", "period"]].drop_duplicates().shape[0]) for level, frame in {spec["level"]: base, **tables}.items()}
     if imputed:
         log.info("%s: hidden unit-years, imputed: %s", name, stats)
-        base = impute_hidden(base, tables, dimension)
-    base = nest(base.drop(columns="hidden"), spec["tree"], dimension, spec["parts"])
+        base = impute_hidden(base, tables, dimension, by, spec.get("weight_ages"))
+    base = nest(base.drop(columns="hidden"), spec["tree"], dimension, spec["parts"], by)
 
     # The total from the parts, against INE's (Spanish and foreign make up everyone).
-    checks = [check_against(published_total, base[base[dimension] == "total"], spec["level"], ["sex", dimension])]
-    levels = rollup(base, spec["level"], ["sex", dimension])
+    checks = [check_against(published_total, base[base[dimension] == "total"], spec["level"], dimensions)]
+    levels = rollup(base, spec["level"], dimensions)
     if imputed:
         frame = levels[spec["level"]]
         frame.loc[[unit in imputed for unit in zip(frame["code"], frame["period"])], "origin"] = "imputed"
     for level, published in tables.items():
-        checks.append(check_against(published[published["value"].notna()], levels[level], level, ["sex", dimension]))
+        checks.append(check_against(published[published["value"].notna()], levels[level], level, dimensions))
     if "groups_table" in spec:
         path = ine.fetch_table(spec["groups_table"], folder / f"{spec['groups_table']}.csv", refresh)
         groups = ine.read_table(path)
         column = next(column for column in groups.columns if column not in ("Total Nacional", "Provincias", "Municipios", "Sexo", "Periodo", "Total"))
         for level, published in tidy(groups, column, codes, dimension).items():
             published = published[published["value"].notna()]
-            checks.append(check_against(published, levels[level], f"{level} (groups, table {spec['groups_table']})", ["sex", dimension]))
+            checks.append(check_against(published, levels[level], f"{level} (groups, table {spec['groups_table']})", dimensions))
     failed = [check for check in checks if check["mismatches"]]
     if failed:
         raise ValueError(f"{name}: sums don't match INE's: {failed}")
@@ -306,11 +367,40 @@ def build(name: str, refresh: bool) -> None:
     log.info("Wrote %s: %s", out, rows)
 
 
+def gender_gap() -> None:
+    """The share of women aged 15 and over with each level of education minus the share of men, in points, at every level."""
+    source = output_dir(PIPELINE) / "population_education"
+    levels = {}
+    for level in LEVELS:
+        frame = pd.read_parquet(source / f"{level}.parquet", columns=["entity_id", "code", "period", "sex", "education_level", "value"])
+        frame = frame[frame["sex"] != "total"]
+        totals = frame[frame["education_level"] == "total"].set_index(["entity_id", "code", "period", "sex"])["value"]
+        shares = frame[frame["education_level"] != "total"].join(totals.rename("total"), on=["entity_id", "code", "period", "sex"])
+        shares = shares[shares["total"] > 0].assign(share=lambda part: part["value"] / part["total"] * 100)
+        wide = shares.pivot_table(index=["entity_id", "code", "period", "education_level"], columns="sex", values="share", observed=True).dropna()
+        levels[level] = (wide["female"] - wide["male"]).rename("value").reset_index().assign(origin="derived")
+    out = output_dir(PIPELINE) / "population_education_gender_gap"
+    rows = write_levels(levels, out)
+    metadata = {
+        "dataset": "population_education_gender_gap",
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "source": {"derived_from": "population_education"},
+        "method": "share of women aged 15 and over with each level minus the share of men, in percentage points (units with no men or no women left out)",
+        "periods": sorted(int(period) for period in levels["country"]["period"].unique()),
+        "rows_by_level": rows,
+    }
+    (out / "meta.json").write_text(json.dumps(metadata, indent=2) + "\n")
+    log.info("Wrote %s: %s", out, rows)
+
+
+#: Datasets computed from others' output (run after them).
+DERIVED = {"population_education_gender_gap": gender_gap}
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Annual Population Census by sex and nationality or country of birth, aggregated up.")
-    parser.add_argument("datasets", nargs="*", help=f"datasets to build (default: all): {', '.join(DATASETS)}")
+    parser.add_argument("datasets", nargs="*", help=f"datasets to build (default: all): {', '.join([*DATASETS, *DERIVED])}")
     parser.add_argument("--refresh", action="store_true", help="download again even if today's copy exists")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    for name in args.datasets or DATASETS:
-        build(name, args.refresh)
+    for name in args.datasets or [*DATASETS, *DERIVED]:
+        DERIVED[name]() if name in DERIVED else build(name, args.refresh)

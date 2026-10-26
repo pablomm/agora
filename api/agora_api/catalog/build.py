@@ -81,6 +81,9 @@ def coverage(con: duckdb.DuckDBPyConnection, dataset: str, template: str) -> lis
     return out
 
 
+#: How the web colors a variable: by magnitude, or above and below zero (a gap between two groups).
+PALETTES = ("sequential", "diverging")
+
 #: How the web shows an option with one value to pick: side by side, or a dropdown for long or many values.
 CONTROLS = ("segmented", "select")
 
@@ -178,7 +181,7 @@ def build(target: Path = CATALOG_DB) -> Path:
             log.info("%s: %d level-periods on disk", dataset["id"], len(rows))
         for variable in catalog.get("variables", []):
             db.execute(
-                "INSERT INTO variables VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO variables VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     variable["id"],
                     variable.get("topic"),
@@ -192,8 +195,11 @@ def build(target: Path = CATALOG_DB) -> Path:
                     json.dumps(variable.get("default_facet", {})),
                     json.dumps(variable.get("options", [])),
                     variable.get("measure_of"),
+                    variable.get("palette", "sequential"),
                 ),
             )
+            if variable.get("palette", "sequential") not in PALETTES:
+                raise ValueError(f"{variable['id']}: palette {variable['palette']!r}, not one of {PALETTES}")
             check_options(variable)
             db.executemany(
                 "INSERT INTO variable_facets VALUES (?, ?, ?, ?, ?, ?, ?, ?)",

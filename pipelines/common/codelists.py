@@ -122,3 +122,43 @@ RESIDENCE_YEAR_AGO = {
     "Residía en el extranjero": "abroad",
     "No había nacido": "not_born",
 }
+
+#: Born in Spain or abroad (INE's "país/lugar de nacimiento (España/extranjero)").
+BORN = {"Total": "total", "España": "spain", "Extranjero": "abroad"}
+
+#: Highest level of education completed, grouped (as published by census section): the groups of
+#: EDUCATION_DETAIL.
+EDUCATION_GROUPED = {
+    "Total": "total",
+    "Educación primaria e inferior": "primary_or_less",
+    "Primera etapa de Educación Secundaria y similar": "lower_secondary",
+    "Segunda etapa de Educación Secundaria y Educación Postsecundaria no Superior": "upper_secondary",
+    "Educación superior": "tertiary",
+}
+
+#: Highest level of education completed, in detail (municipalities of 500 residents or more).
+EDUCATION_DETAIL = {
+    "Total": "total",
+    "Sin estudios": "no_schooling",
+    "Educación primaria": "primary",
+    "Primera etapa de Educación Secundaria y similar": "lower_secondary",
+    "Segunda etapa de educación secundaria, con orientación general": "upper_secondary_general",
+    "Segunda etapa de educación secundaria con orientación profesional, Educación postsecundaria no superior": "upper_secondary_vocational",
+    "Enseñanzas de formación profesional, artes plásticas y diseño y deportivas de grado superior y equivalentes": "vocational_higher",
+    "Grados universitarios de hasta 240 créditos ECTS, diplomados universitarios y equivalentes": "bachelor",
+    "Grados universitarios de más de 240 créditos ECTS, licenciados y equivalentes": "bachelor_long",
+    "Másteres, especialidades en Ciencias de la Salud por el sistema de residencia y similares": "master",
+    "Doctorado universitario": "doctorate",
+}
+
+#: Studies in progress, grouped (municipalities of 500 residents or more).
+STUDYING = {
+    "Total": "total",
+    "Educación primaria e inferior": "studying_primary_or_less",
+    "Primera etapa de Educación Secundaria y similar": "studying_lower_secondary",
+    "Segunda etapa de educación secundaria, con orientación general": "studying_upper_secondary_general",
+    "Segunda etapa de Educación Secundaria, con orientación profesional (con y sin continuidad en la educación superior), Educación postsecundaria no superior": "studying_upper_secondary_vocational",
+    "Educación superior": "studying_tertiary",
+    "Cursa estudios pero no hay información sobre los mismos": "studying_unknown",
+    "No cursa estudios": "not_studying",
+}

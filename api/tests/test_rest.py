@@ -147,3 +147,15 @@ def test_mobility(client):
     assert len(cities["values"]) == 151 and 0 < cities["values"][MADRID] < 100
     assert cities["label"] == "Proporción de población por residencia hace un año · Fuera del municipio · De 16 a 64 años · Extranjera"
     assert client.get("/observations", params={"variable": "population_previous_residence", "level": "province"}).status_code == 404
+
+
+def test_education(client):
+    tertiary = client.get("/observations", params={"variable": "population_education_share", "level": "census_section", "period": 2024, "option": "sex:female"}).json()
+    assert tertiary["label"] == "Proporción de población por nivel de estudios · Educación superior · Mujeres" and tertiary["stats"]["count"] > 36_000
+    madrid = {
+        variable: client.get(f"/entities/{MADRID}/value", params={"variable": variable, "period": 2024, "option": option}).json()["value"]
+        for variable, option in (("population_education_detail_share", "education_level:university"), ("population_studying_share", "studying:studying"), ("education_gender_gap", "education_level:tertiary"))
+    }
+    assert 30 < madrid["population_education_detail_share"] < 50 and 5 < madrid["population_studying_share"] < 25 and -10 < madrid["education_gender_gap"] < 10
+    ages = client.get("/observations", params={"variable": "population_education_age_share", "level": "municipality", "period": 2024}).json()
+    assert ages["label"] == "Proporción de población por nivel de estudios y edad · Educación superior · De 25 a 59 años" and len(ages["values"]) == 4144

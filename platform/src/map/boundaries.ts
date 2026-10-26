@@ -77,11 +77,41 @@ const sequential: Record<BoundaryBasemap, string[]> = {
   dark: ['#184f95', '#256abf', '#3987e5', '#6da7ec', '#b7d3f6'],
 }
 
-/** A variable painted on a layer: each unit's value, and the class breaks (quantiles) of its legend. */
+/**
+ * Diverging ramp, for values above or below zero (a gap between two groups): red below, gray around
+ * zero, blue above (dataviz reference pair), the strong ends away from the surface in either theme.
+ */
+const diverging: Record<BoundaryBasemap, string[]> = {
+  light: ['#b8302f', '#ec8a86', '#f0efec', '#6da7ec', '#1c5cab'],
+  satellite: ['#b8302f', '#ec8a86', '#f0efec', '#6da7ec', '#1c5cab'],
+  dark: ['#e66767', '#8f2e2d', '#383835', '#1c5cab', '#6da7ec'],
+}
+
+/** How a variable is colored: by magnitude, or above and below zero. */
+export type Palette = 'sequential' | 'diverging'
+
+/** The share of units beyond the outer breaks of a diverging scale, on each side together. */
+const DIVERGING_TAIL = 0.2
+
+/**
+ * A choropleth's class breaks: the quantiles; for a diverging palette, symmetric around zero, the
+ * outer ones with a fifth of the units beyond them and the inner ones a third as far (gray between).
+ */
+export function classBreaks(values: number[], quantiles: number[], palette: Palette): number[] {
+  if (palette !== 'diverging') return quantiles
+  const magnitudes = values.map(Math.abs).sort((a, b) => a - b)
+  const outer = Number((magnitudes[Math.floor(magnitudes.length * (1 - DIVERGING_TAIL))] ?? 0).toPrecision(2))
+  if (!outer) return [0]
+  const inner = Number((outer / 3).toPrecision(2))
+  return [-outer, -inner, inner, outer]
+}
+
+/** A variable painted on a layer: each unit's value, and the class breaks of its legend. */
 export interface Choropleth {
   layer: BoundaryLayer
   values: Record<string, number>
   breaks: number[]
+  palette: Palette
   /** What the values are, for the hover label: the variable with its options, unit and year. */
   label: string
   unit: string
@@ -89,18 +119,23 @@ export interface Choropleth {
 }
 
 /** The color a value gets: its class's. */
-export function choroplethColor(value: number, breaks: number[], basemap: BoundaryBasemap): string {
-  const classes = choroplethClasses(breaks, basemap)
+export function choroplethColor(value: number, breaks: number[], basemap: BoundaryBasemap, palette: Palette = 'sequential'): string {
+  const classes = choroplethClasses(breaks, basemap, palette)
   const index = classes.breaks.filter((limit) => value >= limit).length
   return classes.colors[index]
 }
 
 /**
  * The legend's classes: the distinct breaks, and one color per class taken evenly from the ramp
- * (fewer classes when quantiles repeat, as when most units share a value).
+ * (fewer classes when quantiles repeat, as when most units share a value). Diverging: its five
+ * colors, or just below and above zero when every value is zero or near it.
  */
-export function choroplethClasses(breaks: number[], basemap: BoundaryBasemap): { breaks: number[]; colors: string[] } {
+export function choroplethClasses(breaks: number[], basemap: BoundaryBasemap, palette: Palette = 'sequential'): { breaks: number[]; colors: string[] } {
   const distinct = [...new Set(breaks)].sort((a, b) => a - b)
+  if (palette === 'diverging') {
+    const ramp = diverging[basemap]
+    return { breaks: distinct, colors: distinct.length === 4 ? ramp : [ramp[1], ramp[3]] }
+  }
   const ramp = sequential[basemap]
   const count = distinct.length + 1
   const colors = Array.from({ length: count }, (_, index) => ramp[count === 1 ? ramp.length - 1 : Math.round((index * (ramp.length - 1)) / (count - 1))])
@@ -242,7 +277,7 @@ export function withBoundaries(style: StyleSpecification, mode: BoundaryMode, ba
 export function paintChoropleth(map: MaplibreMap, basemap: BoundaryBasemap, choropleth: Choropleth | undefined) {
   for (const layer of boundaryLayers) {
     if (!map.getLayer(fillId(layer))) continue
-    const paint = fillPaint(basemap, choropleth?.layer === layer ? choroplethClasses(choropleth.breaks, basemap) : undefined)
+    const paint = fillPaint(basemap, choropleth?.layer === layer ? choroplethClasses(choropleth.breaks, basemap, choropleth.palette) : undefined)
     map.setPaintProperty(fillId(layer), 'fill-color', paint['fill-color'])
     map.setPaintProperty(fillId(layer), 'fill-opacity', paint['fill-opacity'])
   }
@@ -372,7 +407,7 @@ function dataLine(choropleth: Choropleth, value: number | undefined, basemap: Bo
     swatch.classList.add('is-empty')
     amount.textContent = copy.boundaries.noValue
   } else {
-    swatch.style.background = choroplethColor(value, choropleth.breaks, basemap)
+    swatch.style.background = choroplethColor(value, choropleth.breaks, basemap, choropleth.palette)
     amount.textContent = formatValue(value, choropleth.unit)
   }
   const what = document.createElement('small')

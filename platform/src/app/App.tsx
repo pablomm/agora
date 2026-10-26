@@ -8,7 +8,7 @@ import { Legend } from '../components/Legend'
 import { SettingsMenu } from '../components/SettingsMenu'
 import { Sidebar } from '../components/Sidebar'
 import { api, facetFor, facetsAt, periodFor, type Catalog, type Choices, type Observations, type Place, type Variable } from '../data/api'
-import { activeLevel, LAYER_LEVEL, minZoomFor, unitFromPlace, type Choropleth, type SelectedUnit } from '../map/boundaries'
+import { activeLevel, classBreaks, LAYER_LEVEL, minZoomFor, unitFromPlace, type Choropleth, type SelectedUnit } from '../map/boundaries'
 import { MainMap } from '../map/MainMap'
 import { MapControls } from '../map/MapControls'
 import { useZoom } from '../map/useZoom'
@@ -89,9 +89,17 @@ export default function App() {
   const choropleth = useMemo<Choropleth | undefined>(
     () =>
       layer && ready?.data
-        ? { layer, values: ready.data.values, breaks: ready.data.stats.quantiles, label: ready.data.label, unit: ready.data.unit, period: ready.data.period }
+        ? {
+            layer,
+            values: ready.data.values,
+            breaks: classBreaks(Object.values(ready.data.values), ready.data.stats.quantiles, variable?.palette ?? 'sequential'),
+            palette: variable?.palette ?? 'sequential',
+            label: ready.data.label,
+            unit: ready.data.unit,
+            period: ready.data.period,
+          }
         : undefined,
-    [layer, ready],
+    [layer, ready, variable],
   )
   const theme = useTheme()
   const basemap = settings.basemap === 'satellite' ? 'satellite' : theme

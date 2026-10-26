@@ -66,7 +66,8 @@ CREATE TABLE variables (
   scale REAL NOT NULL DEFAULT 1,
   default_facet TEXT,           -- JSON: level → facet id
   options TEXT,                 -- JSON: dimensions the user picks ({dimension, values, default, range?, control?}); facets say "$dimension"
-  measure_of TEXT               -- another measure (a share) of this variable: the web shows both as one layer
+  measure_of TEXT,              -- another measure (a share) of this variable: the web shows both as one layer
+  palette TEXT NOT NULL DEFAULT 'sequential'  -- sequential (magnitude) | diverging (above or below zero)
 );
 
 CREATE TABLE variable_facets (

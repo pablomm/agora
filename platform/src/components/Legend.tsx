@@ -1,7 +1,7 @@
 import { copy } from '../app/copy'
 import { formatCompact, formatPeriod, isCount } from '../app/format'
 import type { Observations, Variable } from '../data/api'
-import { choroplethClasses, type BoundaryBasemap } from '../map/boundaries'
+import { choroplethClasses, classBreaks, type BoundaryBasemap } from '../map/boundaries'
 
 interface Props {
   variable: Variable
@@ -20,7 +20,11 @@ export function Legend({ variable, basemap, levelLabel, observations, status }: 
   else if (status === 'failed') body = <p className="legend-note">{copy.legend.failed}</p>
   else if (status === 'loading' || !observations) body = <p className="legend-note">{copy.legend.loading}</p>
   else {
-    const { breaks, colors } = choroplethClasses(observations.stats.quantiles, basemap)
+    const { breaks, colors } = choroplethClasses(
+      classBreaks(Object.values(observations.values), observations.stats.quantiles, variable.palette),
+      basemap,
+      variable.palette,
+    )
     const unit = observations.unit
     const rows = colors.map((color, index) => {
       const from = breaks[index - 1]
