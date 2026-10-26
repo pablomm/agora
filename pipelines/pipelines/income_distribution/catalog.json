@@ -1,0 +1,53 @@
+{
+  "$comment": "Income distributions fitted to the ADRH. A dataset without a variable: not a map layer (a distribution's parameters say nothing on a map), but what a unit's detail draws its distribution from.",
+  "dimensions": [
+    {
+      "id": "distribution_parameter",
+      "label": {
+        "es": "Parámetro",
+        "en": "Parameter"
+      },
+      "values": {
+        "a": "a (forma, cola alta)",
+        "b": "b (escala, €)",
+        "p": "p (forma, cola baja)"
+      },
+      "order": ["a", "b", "p"]
+    }
+  ],
+  "datasets": [
+    {
+      "id": "income_distribution",
+      "title": "Distribución de la renta por unidad de consumo, ajustada a una Dagum (a partir del Atlas de distribución de renta de los hogares)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "derived",
+        "from": ["income_relative", "income_fixed", "income_levels", "income_inequality", "income_demographics"],
+        "method": "Dagum distribution F(x) = (1 + (x/b)^-a)^-p of the population by net income per consumption unit, fitted by weighted least squares to each unit's published shares below and above nine thresholds, median, mean, Gini index and P80/P20 ratio (INE's top and bottom codes as soft bounds, a weak prior on the shape); units with too few published figures inherit the nearest unit above's fit, else their own in the nearest year"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "income_distribution",
+        "unit": "parámetro",
+        "aggregation": "none"
+      },
+      "dimensions": ["distribution_parameter"],
+      "base_level": "census_section",
+      "levels": ["census_section", "census_district", "municipality", "province", "autonomous_community", "country"],
+      "periods": "2015–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}"
+      },
+      "output": "processed/income_distribution/income_distribution/{level}.parquet"
+    }
+  ]
+}

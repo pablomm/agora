@@ -6,11 +6,15 @@ Log of what the platform does, newest first. Add an entry with every feature tha
 
 - Every census section's income distribution (2015–2024), a Dagum fitted to INE's published
   shares, median, mean, Gini and P80/P20; it adds up to districts, municipalities and Spain within
-  a point or so of INE's figures. Not in the platform yet: meant for a neighbourhood's detail view.
+  a point or so of INE's figures. Its parameters are the `income_distribution` dataset (API:
+  `/entities/{id}/breakdown?dataset=income_distribution`), without a map layer: meant for a
+  neighbourhood's detail view.
 - Plots a unit's fit against INE's figures (`income_distribution/plot.py`).
 - Income fixes: hidden ADRH populations (2015–2019) are now what their parent has beyond its
   published units, not the parent's whole population; six sections and a district in 2015 whose
   "above the median" shares came reversed are imputed instead.
+- Imputed poverty and high-income shares stay in order along their thresholds (below 40 ≤ 50 ≤
+  60% of the median, above 140 ≥ 160 ≥ 200%, below 5,000 ≤ 7,500 ≤ 10,000 €).
 
 ## 2026-10-26 · Income (ADRH)
 

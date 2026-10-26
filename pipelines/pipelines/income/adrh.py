@@ -25,6 +25,9 @@ filled from the top down (province, municipality, district, section):
   ones by their size in the years they're published.
 - With nothing above (foral municipalities before 2020, when their province and Spain aren't
   available): the same unit's value in the nearest year.
+- Imputed shares are then kept in order along their thresholds (below 40 ≤ 50 ≤ 60% of the median,
+  above 140 ≥ 160 ≥ 200%, below 5,000 ≤ 7,500 ≤ 10,000 €): each is imputed from its own ratio, and
+  they can cross by a few tenths.
 
 A few units in 2015 have the shares above 140, 160 and 200% of the median rising (likely their
 complement, published by mistake): taken as hidden.
@@ -366,6 +369,44 @@ def nearest_year(frame: pd.DataFrame, dimension: str) -> pd.DataFrame:
     return frame
 
 
+#: Thresholds in the order their shares can only rise: the share below 40% of the median is at most
+#: the share below 50%, the share above 200% at most the share above 160%…
+CHAINS = {
+    "income_threshold": [["below_40", "below_50", "below_60"], ["above_200", "above_160", "above_140"]],
+    "income_threshold_fixed": [["below_5000", "below_7500", "below_10000"]],
+}
+
+
+def ordered(frame: pd.DataFrame, dimension: str) -> pd.DataFrame:
+    """An imputed share out of order along its chain of thresholds takes its neighbour's value; published ones stay as INE has them."""
+    step = {name: position for chain in CHAINS.get(dimension, []) for position, name in enumerate(chain)}
+    if not step:
+        return frame
+    chain = {name: number for number, names in enumerate(CHAINS[dimension]) for name in names}
+    names = frame[dimension].astype(str)
+    part = frame[names.isin(step)].assign(chain=names.map(chain), step=names.map(step))
+    keys = ["level", "code", "period", "sex", "group", "chain"]
+    part = part.sort_values([*keys, "step"])
+    group = part.groupby(keys, sort=False, observed=True).ngroup().to_numpy()
+    value = part["value"].to_numpy(dtype=float)
+    imputed = (part["origin"] == "imputed").to_numpy()
+    same_previous = np.r_[False, group[1:] == group[:-1]]
+    same_next = np.r_[group[:-1] == group[1:], False]
+    before = value.copy()
+    # Up the chain (an imputed share at least the one before it), then down (at most the one after).
+    for _ in range(len(max(CHAINS[dimension], key=len)) - 1):
+        previous = np.r_[np.nan, value[:-1]]
+        value = np.where(same_previous & imputed & (previous > value), previous, value)
+    for _ in range(len(max(CHAINS[dimension], key=len)) - 1):
+        following = np.r_[value[1:], np.nan]
+        value = np.where(same_next & imputed & (following < value), following, value)
+    changed = int((value != before).sum())
+    if changed:
+        log.info("%d imputed shares put back in order", changed)
+        frame.loc[part.index, "value"] = value
+    return frame
+
+
 def build(name: str, refresh: bool) -> None:
     spec = DATASETS[name]
     dimension = spec["dimension"]
@@ -414,10 +455,10 @@ def build(name: str, refresh: bool) -> None:
 
     upper = impute(prepare(national), dimension, breakdown, shares)
     upper["hidden"] = False
-    keep(nearest_year(upper.copy(), dimension))
+    keep(ordered(nearest_year(upper.copy(), dimension), dimension))
     for province, group in sorted(by_province.items()):
         local = impute(pd.concat([upper, prepare(group)], ignore_index=True), dimension, breakdown, shares)
-        keep(nearest_year(local[local["level"].isin(["municipality", "census_district", "census_section"])].copy(), dimension))
+        keep(ordered(nearest_year(local[local["level"].isin(["municipality", "census_district", "census_section"])].copy(), dimension), dimension))
         log.info("%s: province %s done", name, province)
 
     out = output_dir(PIPELINE) / name

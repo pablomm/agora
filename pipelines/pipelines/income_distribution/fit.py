@@ -14,12 +14,16 @@ The fit is a weighted least squares on those figures (`SIGMA`), batched over all
 (Levenberg–Marquardt). Hidden and imputed figures aren't used. Figures at INE's top or bottom cap
 (many sections share the same extreme value each year) are a bound: going past the cap costs ten
 times less than falling short of it (the true value is beyond it, likely not far). A weak prior
-keeps the shape near a typical section's where the figures don't pin it down. Sections with too few
-figures inherit the fit of the nearest unit above.
+keeps the shape near a typical section's where the figures don't pin it down. Units with too few
+figures inherit the fit of the nearest unit above, else (nothing above: foral units before 2020)
+their own in the nearest year.
 
 Districts, municipalities and every level up are fitted the same way and, separately, built as the
 population-weighted mixture of their sections' distributions: compared with what INE publishes for
 them, that measures how well the sections' distributions add up.
+
+The Dagum's parameters are the `income_distribution` dataset (a, b, p for every unit and year, from
+census sections to Spain): not a map layer, but what a unit's detail draws its distribution from.
 
     python pipelines/income_distribution/fit.py [--holdout 5000]
 """
@@ -362,20 +366,30 @@ def summary(long: pd.DataFrame) -> dict:
     return out
 
 
-def inherit(sections: pd.DataFrame, fits: dict[str, pd.DataFrame], ccaa: pd.Series) -> pd.DataFrame:
-    """Sections without a fit take their district's, else their municipality's… (same year)."""
-    out = fits["census_section"].copy()
+def inherit(fits: dict[str, pd.DataFrame], level: str, ccaa: pd.Series) -> pd.DataFrame:
+    """A level's units without a fit take the nearest unit above's (same year), else their own in the nearest year."""
+    out = fits[level].copy()
     columns = [column for column in out.columns if "_theta" in column]
     codes = pd.Series(out.index.get_level_values("code"), index=out.index)
-    for level in LEVELS[1:]:
+    for parent_level in LEVELS[LEVELS.index(level) + 1 :]:
         todo = out[columns[0]].isna()
         if not todo.any():
             break
-        parent = parent_codes(codes[todo], level, ccaa)
+        parent = parent_codes(codes[todo], parent_level, ccaa)
         keys = pd.MultiIndex.from_arrays([parent.to_numpy(), out.index[todo].get_level_values("period")])
-        source = fits[level][columns].reindex(keys).to_numpy()
+        source = fits[parent_level][columns].reindex(keys).to_numpy()
         out.loc[todo, columns] = source
         out.loc[out.index[todo][np.isfinite(source[:, 0])], "origin"] = "inherited"
+    todo = out[columns[0]].isna()
+    if todo.any():
+        known = out[~todo].reset_index()[["code", "period", *columns]].rename(columns={"period": "near"})
+        nearest = out[todo].reset_index()[["code", "period"]].merge(known, on="code")
+        # The later year on a tie.
+        nearest["distance"] = (nearest["near"] - nearest["period"]).abs() * 2 - (nearest["near"] > nearest["period"])
+        nearest = nearest.sort_values("distance").drop_duplicates(["code", "period"]).set_index(["code", "period"])
+        found = nearest.index
+        out.loc[found, columns] = nearest[columns].to_numpy()
+        out.loc[found, "origin"] = "nearest_year"
     return out
 
 
@@ -465,7 +479,9 @@ def main(holdout_size: int) -> None:
     for level in LEVELS:
         fits[level] = fit_level(data[level], medians, codes)
         log.info("%s: %d units fitted, %d not", level, (fits[level]["origin"] == "fitted").sum(), (fits[level]["origin"] == "unfitted").sum())
-    fits["census_section"] = inherit(data["census_section"], fits, ccaa)
+    # From the top down, so each level inherits from one that's already complete.
+    for level in LEVELS[-2::-1]:
+        fits[level] = inherit(fits, level, ccaa)
 
     for model in MODELS.values():
         columns = [f"{model.name}_theta{j}" for j in range(len(model.params))]
@@ -501,16 +517,35 @@ def main(holdout_size: int) -> None:
     table = pd.concat(rows, ignore_index=True)
     table["population"] = pd.concat([data[level]["population"] for level in LEVELS]).to_numpy()
     table.to_parquet(out / "fits.parquet", index=False)
+    rows = write_dataset(table, out / "income_distribution")
     metadata = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "source": "processed/income (INE ADRH, operation 353)",
         "national_median": {"estimated": medians, "published": published},
         "caps": {f"{period}:{figure}": [value for value in pair if np.isfinite(value)] for (period, figure), pair in codes.items() if np.isfinite(pair).any()},
+        "dataset": {"rows_by_level": rows, "parameters": list(Dagum.params)},
         "units": {level: {origin: int(count) for origin, count in fits[level]["origin"].value_counts().items()} for level in LEVELS},
         "metrics": metrics,
     }
     (out / "meta.json").write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n")
     log.info("Wrote %s", out)
+
+
+def write_dataset(table: pd.DataFrame, out) -> dict[str, int]:
+    """The Dagum's parameters by level: entity_id, code, period, distribution_parameter (a, b, p), value, origin."""
+    out.mkdir(parents=True, exist_ok=True)
+    rows = {}
+    for level, frame in table.groupby("level", sort=False):
+        frame = frame.dropna(subset=["dagum_a"])
+        long = frame.melt(id_vars=["entity_id", "code", "period", "origin"], value_vars=[f"dagum_{name}" for name in Dagum.params], var_name="distribution_parameter")
+        long["distribution_parameter"] = long["distribution_parameter"].str.removeprefix("dagum_")
+        long = long[["entity_id", "code", "period", "distribution_parameter", "value", "origin"]].sort_values(["code", "period", "distribution_parameter"])
+        long.to_parquet(out / f"{level}.parquet", index=False)
+        rows[level] = len(long)
+        left = (table["level"] == level).sum() - len(frame)
+        if left:
+            log.warning("%s: %d units and years without a distribution", level, left)
+    return rows
 
 
 if __name__ == "__main__":

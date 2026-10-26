@@ -216,3 +216,16 @@ def test_income(client):
     assert all(0 <= value <= 100 for value in poverty["values"].values()) and poverty["stats"]["count"] > 36_000
     change = client.get("/observations", params={"variable": "income", "level": "province", "period": 2024, "change": True}).json()
     assert change["unit"] == "%" and all(-5 < value < 20 for value in change["values"].values())
+
+
+def test_income_distribution(client):
+    # A dataset without a layer: the Dagum's parameters, for a unit's detail.
+    body = client.get(f"/entities/{MADRID}/breakdown", params={"dataset": "income_distribution", "period": 2023}).json()
+    parameters = {row["distribution_parameter"]: row["value"] for row in body["rows"]}
+    assert set(parameters) == {"a", "b", "p"} and parameters["a"] > 2
+    a, b, p = parameters["a"], parameters["b"], parameters["p"]
+    median = b * (2 ** (1 / p) - 1) ** (-1 / a)
+    assert abs(median / 22_750 - 1) < 0.05  # INE's median per consumption unit in Madrid, 2023
+    catalog = client.get("/catalog").json()
+    assert any(dataset["id"] == "income_distribution" for dataset in catalog["datasets"])
+    assert not any("income_distribution" in (facet["dataset"] for facet in variable["facets"]) for variable in catalog["variables"])
