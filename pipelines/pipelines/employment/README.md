@@ -57,6 +57,6 @@ municipality INE publishes and municipalities to every province (checked: 0 mism
 
 Registered unemployment (by sex and age; by sector; share by sector; over population aged 15–64,
 which divides each month by the census population of its year, from 2021, the latest census year
-for later months), job seekers (by sex and age; by sector), contracts (by sex and type; by
-sector; share of permanent contracts), and from the census: unemployment, activity and employment
+for later months), job seekers (by sex and age; by sector), contracts (by sex and type, and each
+type's share of all contracts; by sector, and each sector's share; share of permanent contracts), and from the census: unemployment, activity and employment
 rates, and population 16+ by relation with activity (count and share), all by sex.

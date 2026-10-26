@@ -607,6 +607,63 @@
       ]
     },
     {
+      "id": "contracts_share",
+      "topic": "employment",
+      "measure_of": "contracts",
+      "label": {
+        "es": "Proporción de contratos por tipo",
+        "en": "Share of contracts by type"
+      },
+      "description": {
+        "es": "Contratos registrados en el mes del tipo elegido sobre el total de contratos del mes (del mismo sexo).",
+        "en": "Contracts of the chosen type registered in the month, over all contracts of the month (of the same sex)."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "contract_type",
+          "control": "select",
+          "values": [
+            "permanent_initial",
+            "temporary_initial",
+            "converted_permanent"
+          ],
+          "default": "temporary_initial"
+        }
+      ],
+      "facets": [
+        {
+          "id": "sepe",
+          "label": {
+            "es": "SEPE (registros)",
+            "en": "SEPE (registers)"
+          },
+          "dataset": "contracts",
+          "numerator": {
+            "sex": "$sex",
+            "contract_type": "$contract_type",
+            "sector": "total"
+          },
+          "denominator": {
+            "sex": "$sex",
+            "contract_type": "total",
+            "sector": "total"
+          }
+        }
+      ]
+    },
+    {
       "id": "contracts_by_sector",
       "topic": "employment",
       "label": {
@@ -644,6 +701,55 @@
             "sex": "total",
             "contract_type": "total",
             "sector": "$sector"
+          }
+        }
+      ]
+    },
+    {
+      "id": "contracts_sector_share",
+      "topic": "employment",
+      "measure_of": "contracts_by_sector",
+      "label": {
+        "es": "Proporción de contratos por sector",
+        "en": "Share of contracts by sector"
+      },
+      "description": {
+        "es": "Contratos registrados en el mes en el sector elegido sobre el total de contratos del mes.",
+        "en": "Contracts registered in the month in the chosen sector, over all contracts of the month."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "sector",
+          "control": "select",
+          "values": [
+            "agriculture",
+            "industry",
+            "construction",
+            "services"
+          ],
+          "default": "services"
+        }
+      ],
+      "facets": [
+        {
+          "id": "sepe",
+          "label": {
+            "es": "SEPE (registros)",
+            "en": "SEPE (registers)"
+          },
+          "dataset": "contracts",
+          "numerator": {
+            "sex": "total",
+            "contract_type": "total",
+            "sector": "$sector"
+          },
+          "denominator": {
+            "sex": "total",
+            "contract_type": "total",
+            "sector": "total"
           }
         }
       ]

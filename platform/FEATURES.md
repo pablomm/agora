@@ -2,6 +2,11 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Contract shares
+
+- Contratos registrados and Contratos registrados por sector gain a % measure: each contract type's
+  share of the month's contracts (of the same sex), and each sector's share.
+
 ## 2026-10-26 · Number and share as one layer
 
 - A layer with a number and a share (Población por edad, Paro registrado por sector, the
