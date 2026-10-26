@@ -2,6 +2,22 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Income (ADRH)
+
+- New topic **Renta**, from INE's household income atlas (2015–2024, income year), down to census
+  sections, with communities, provinces and Spain as INE publishes them:
+  - **Renta**: net or gross mean per person or per household, mean or median per consumption unit (€).
+  - **Composición de la renta**: share of gross income from wages, pensions, unemployment benefits,
+    other benefits or other income.
+  - **Población bajo o sobre umbrales de renta**: below 40, 50, 60% of the median (at risk of
+    poverty) or above 140, 160, 200%, by sex and by age band or nationality; and **bajo umbrales
+    fijos** (5,000, 7,500, 10,000 €).
+  - **Índice de Gini**, **Ratio P80/P20**, **Tamaño medio del hogar**, **Hogares unipersonales**.
+- Nothing hidden is left blank: hidden units inherit their parent's value, or (breakdowns) scale
+  their own total by the parent's ratio; flagged as imputed.
+- Euros show as whole numbers (19.632 €); a change of an amount in euros is a %.
+- Plain dropdowns no longer widen the card with a long option either.
+
 ## 2026-10-26 · Layers open on their share
 
 - A layer with a number and a share (nº · %) opens on the share; Medida switches to the number.

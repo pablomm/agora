@@ -192,7 +192,7 @@ export function MapView({ catalog, catalogFailed, variableId, onVariable, onMeas
                   <span className="layer-row-label">{variable.label}</span>
                   <span className="layer-row-unit">
                     {(measures.get(variable.id) ?? [variable])
-                      .map((item) => (isCount(item.unit) ? 'nº' : item.unit === '%' ? '%' : ''))
+                      .map((item) => (isCount(item.unit) ? 'nº' : item.unit === '%' || item.unit === '€' ? item.unit : ''))
                       .filter(Boolean)
                       .join(' · ')}
                   </span>

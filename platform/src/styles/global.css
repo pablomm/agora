@@ -949,6 +949,12 @@ body {
   border-top: 1px solid var(--border);
 }
 
+.option-control select {
+  width: 100%;
+  min-width: 0;
+  text-overflow: ellipsis;
+}
+
 .period-control select,
 .option-control select {
   height: 26px;
@@ -1030,8 +1036,10 @@ body {
 }
 
 /* A layer's options (sex, age range, source), like the year: label above, control below. */
+/* min-width 0 here and on its select: a long option is cut instead of widening the card. */
 .option-control {
   display: grid;
+  min-width: 0;
   gap: 3px;
   margin-top: 4px;
   padding-top: 7px;

@@ -16,6 +16,7 @@ const COUNT_UNITS = new Set(['personas', 'contratos'])
 /** A variable's value with its unit's precision: counts as integers, the rest with one decimal. */
 export function formatValue(value: number, unit: string): string {
   if (unit === '%') return `${decimal.format(value)} %`
+  if (unit === '€') return `${integer.format(value)} €`
   if (COUNT_UNITS.has(unit)) return integer.format(value)
   return decimal.format(value)
 }
@@ -23,6 +24,7 @@ export function formatValue(value: number, unit: string): string {
 /** Short form for axes and legends (1,2 mil; 3,5 M). */
 export function formatCompact(value: number, unit: string): string {
   if (unit === '%') return `${decimal.format(value)} %`
+  if (unit === '€') return `${integer.format(value)} €`
   if (COUNT_UNITS.has(unit)) return Math.abs(value) < 1000 ? integer.format(Math.round(value)) : compact.format(value)
   return decimal.format(value)
 }

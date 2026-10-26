@@ -249,10 +249,11 @@ def _previous(facet: dict, level: str, period: int) -> int:
 
 def _changes(current: dict[str, float], previous: dict[str, float], spec: dict) -> tuple[dict[str, float], str, str]:
     """
-    Each unit's change against the year before: counts as a percentage (units with none the year
-    before left out), the rest as a difference in their unit (a rate in % becomes points).
+    Each unit's change against the year before: counts and amounts in euros as a percentage (units
+    with none the year before left out), the rest as a difference in their unit (a rate in % becomes
+    points).
     """
-    if spec["kind"] == "count":
+    if spec["kind"] == "count" or spec["unit"] == "€":
         values = {key: (value / previous[key] - 1) * 100 for key, value in current.items() if previous.get(key)}
         return values, "%", "percent"
     values = {key: value - previous[key] for key, value in current.items() if key in previous}

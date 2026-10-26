@@ -205,3 +205,14 @@ def test_professional_status_and_activity_groups(client):
     public = client.get(f"/entities/{MADRID}/value", params={"variable": "employed_by_cnae2009_share", "period": 2023, "option": "cnae2009:public_services"}).json()
     parts = [client.get(f"/entities/{MADRID}/value", params={"variable": "employed_by_cnae2009_share", "period": 2023, "option": f"cnae2009:{code}"}).json()["value"] for code in "OPQ"]
     assert abs(public["value"] - sum(parts)) < 1e-9
+
+
+def test_income(client):
+    income = client.get("/observations", params={"variable": "income", "level": "census_section", "period": 2023}).json()
+    assert income["label"] == "Renta · Neta media por persona" and income["unit"] == "€" and income["stats"]["count"] > 36_000
+    madrid = client.get(f"/entities/{MADRID}/value", params={"variable": "income", "period": 2023}).json()["value"]
+    assert madrid == 19_632
+    poverty = client.get("/observations", params={"variable": "income_thresholds", "level": "census_section", "period": 2023, "option": ["sex:female", "income_group:under_18"]}).json()
+    assert all(0 <= value <= 100 for value in poverty["values"].values()) and poverty["stats"]["count"] > 36_000
+    change = client.get("/observations", params={"variable": "income", "level": "province", "period": 2024, "change": True}).json()
+    assert change["unit"] == "%" and all(-5 < value < 20 for value in change["values"].values())

@@ -1,0 +1,733 @@
+{
+  "$comment": "Catalogue entries this pipeline provides (INE's household income atlas, ADRH). Run details are in each dataset's meta.json. Values are means, medians and shares as INE publishes them at every level; hidden ones are filled (origin = imputed).",
+  "topics": [
+    {
+      "id": "income",
+      "label": {
+        "es": "Renta",
+        "en": "Income"
+      }
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "income_indicator",
+      "label": {
+        "es": "Indicador",
+        "en": "Indicator"
+      },
+      "values": {
+        "net_per_person": "Neta media por persona",
+        "net_per_household": "Neta media por hogar",
+        "mean_per_consumption_unit": "Media por unidad de consumo",
+        "median_per_consumption_unit": "Mediana por unidad de consumo",
+        "gross_per_person": "Bruta media por persona",
+        "gross_per_household": "Bruta media por hogar"
+      },
+      "order": [
+        "net_per_person",
+        "net_per_household",
+        "mean_per_consumption_unit",
+        "median_per_consumption_unit",
+        "gross_per_person",
+        "gross_per_household"
+      ]
+    },
+    {
+      "id": "income_source",
+      "label": {
+        "es": "Fuente de ingresos",
+        "en": "Source of income"
+      },
+      "values": {
+        "wages": "Salarios",
+        "pensions": "Pensiones",
+        "unemployment_benefits": "Prestaciones por desempleo",
+        "other_benefits": "Otras prestaciones",
+        "other_income": "Otros ingresos"
+      },
+      "order": [
+        "wages",
+        "pensions",
+        "unemployment_benefits",
+        "other_benefits",
+        "other_income"
+      ]
+    },
+    {
+      "id": "inequality_indicator",
+      "label": {
+        "es": "Indicador",
+        "en": "Indicator"
+      },
+      "values": {
+        "gini": "Índice de Gini",
+        "p80_p20": "Ratio P80/P20"
+      },
+      "order": [
+        "gini",
+        "p80_p20"
+      ]
+    },
+    {
+      "id": "household_indicator",
+      "label": {
+        "es": "Indicador",
+        "en": "Indicator"
+      },
+      "values": {
+        "household_size": "Tamaño medio del hogar",
+        "single_person_households": "Hogares unipersonales",
+        "population": "Población",
+        "mean_age": "Edad media",
+        "share_under_18": "Población menor de 18 años",
+        "share_65_plus": "Población de 65 años o más",
+        "share_spanish": "Población española"
+      },
+      "order": [
+        "household_size",
+        "single_person_households",
+        "population",
+        "mean_age",
+        "share_under_18",
+        "share_65_plus",
+        "share_spanish"
+      ]
+    },
+    {
+      "id": "income_threshold",
+      "label": {
+        "es": "Umbral",
+        "en": "Threshold"
+      },
+      "values": {
+        "below_40": "Menos del 40 % de la mediana",
+        "below_50": "Menos del 50 % de la mediana",
+        "below_60": "Menos del 60 % de la mediana (riesgo de pobreza)",
+        "above_140": "Más del 140 % de la mediana",
+        "above_160": "Más del 160 % de la mediana",
+        "above_200": "Más del 200 % de la mediana"
+      },
+      "order": [
+        "below_40",
+        "below_50",
+        "below_60",
+        "above_140",
+        "above_160",
+        "above_200"
+      ]
+    },
+    {
+      "id": "income_threshold_fixed",
+      "label": {
+        "es": "Umbral",
+        "en": "Threshold"
+      },
+      "values": {
+        "below_5000": "Menos de 5.000 €",
+        "below_7500": "Menos de 7.500 €",
+        "below_10000": "Menos de 10.000 €"
+      },
+      "order": [
+        "below_5000",
+        "below_7500",
+        "below_10000"
+      ]
+    },
+    {
+      "id": "income_group",
+      "label": {
+        "es": "Grupo",
+        "en": "Group"
+      },
+      "values": {
+        "total": "Todos",
+        "under_18": "Menores de 18 años",
+        "18_64": "De 18 a 64 años",
+        "65_plus": "65 años o más",
+        "spanish": "Nacionalidad española",
+        "foreign": "Nacionalidad extranjera"
+      },
+      "order": [
+        "total",
+        "under_18",
+        "18_64",
+        "65_plus",
+        "spanish",
+        "foreign"
+      ]
+    }
+  ],
+  "datasets": [
+    {
+      "id": "income_levels",
+      "title": "Indicadores de renta media y mediana (Atlas de distribución de renta de los hogares)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Atlas de distribución de renta de los hogares (353)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "income_levels",
+        "unit": "euros",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "income_indicator"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2015–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}"
+      },
+      "output": "processed/income/income_levels/{level}.parquet"
+    },
+    {
+      "id": "income_sources",
+      "title": "Distribución de la renta por fuente de ingresos (Atlas de distribución de renta de los hogares)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Atlas de distribución de renta de los hogares (353)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "income_sources",
+        "unit": "%",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "income_source"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2015–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}"
+      },
+      "output": "processed/income/income_sources/{level}.parquet"
+    },
+    {
+      "id": "income_inequality",
+      "title": "Índice de Gini y distribución de la renta P80/P20 (Atlas de distribución de renta de los hogares)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Atlas de distribución de renta de los hogares (353)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "income_inequality",
+        "unit": "índice",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "inequality_indicator"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2015–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}"
+      },
+      "output": "processed/income/income_inequality/{level}.parquet"
+    },
+    {
+      "id": "income_demographics",
+      "title": "Indicadores demográficos (Atlas de distribución de renta de los hogares)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Atlas de distribución de renta de los hogares (353)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "income_demographics",
+        "unit": "varios",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "household_indicator"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2015–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}"
+      },
+      "output": "processed/income/income_demographics/{level}.parquet"
+    },
+    {
+      "id": "income_relative",
+      "title": "Población con ingresos por unidad de consumo por debajo o encima de umbrales relativos, por sexo, edad o nacionalidad (Atlas de distribución de renta de los hogares)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Atlas de distribución de renta de los hogares (353)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "income_relative",
+        "unit": "%",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "sex",
+        "income_group",
+        "income_threshold"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2015–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}"
+      },
+      "output": "processed/income/income_relative/{level}.parquet"
+    },
+    {
+      "id": "income_fixed",
+      "title": "Población con ingresos por unidad de consumo por debajo de umbrales fijos, por sexo, edad o nacionalidad (Atlas de distribución de renta de los hogares)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Atlas de distribución de renta de los hogares (353)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "income_fixed",
+        "unit": "%",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "sex",
+        "income_group",
+        "income_threshold_fixed"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2015–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}"
+      },
+      "output": "processed/income/income_fixed/{level}.parquet"
+    }
+  ],
+  "variables": [
+    {
+      "id": "income",
+      "topic": "income",
+      "label": {
+        "es": "Renta",
+        "en": "Income"
+      },
+      "description": {
+        "es": "Renta de los hogares: neta o bruta, media por persona o por hogar, y media o mediana por unidad de consumo. Año de los ingresos; hasta sección censal. Las unidades que el INE oculta heredan o imputan el valor de su unidad superior, y el INE limita los valores más altos (unas 170 secciones por año comparten el máximo).",
+        "en": "Household income: net or gross, mean per person or per household, and mean or median per consumption unit. Income year; down to census sections. Units INE hides inherit or impute their parent's value, and INE caps the highest values (some 170 sections a year share the top one)."
+      },
+      "unit": "€",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "income_indicator",
+          "values": [
+            "net_per_person",
+            "net_per_household",
+            "mean_per_consumption_unit",
+            "median_per_consumption_unit",
+            "gross_per_person",
+            "gross_per_household"
+          ],
+          "default": "net_per_person"
+        }
+      ],
+      "facets": [
+        {
+          "id": "adrh",
+          "label": {
+            "es": "ADRH (INE)",
+            "en": "ADRH (INE)"
+          },
+          "dataset": "income_levels",
+          "numerator": {
+            "income_indicator": "$income_indicator"
+          }
+        }
+      ]
+    },
+    {
+      "id": "income_sources",
+      "topic": "income",
+      "label": {
+        "es": "Composición de la renta",
+        "en": "Income composition"
+      },
+      "description": {
+        "es": "Porcentaje de la renta bruta que procede de cada fuente: salarios, pensiones, prestaciones por desempleo, otras prestaciones u otros ingresos. Año de los ingresos; hasta sección censal. Las unidades que el INE oculta heredan o imputan el valor de su unidad superior, y el INE limita los valores más altos (unas 170 secciones por año comparten el máximo).",
+        "en": "Share of gross income from each source: wages, pensions, unemployment benefits, other benefits or other income. Income year; down to census sections. Units INE hides inherit or impute their parent's value, and INE caps the highest values (some 170 sections a year share the top one)."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "income_source",
+          "values": [
+            "wages",
+            "pensions",
+            "unemployment_benefits",
+            "other_benefits",
+            "other_income"
+          ],
+          "default": "wages"
+        }
+      ],
+      "facets": [
+        {
+          "id": "adrh",
+          "label": {
+            "es": "ADRH (INE)",
+            "en": "ADRH (INE)"
+          },
+          "dataset": "income_sources",
+          "numerator": {
+            "income_source": "$income_source"
+          }
+        }
+      ]
+    },
+    {
+      "id": "income_thresholds",
+      "topic": "income",
+      "label": {
+        "es": "Población bajo o sobre umbrales de renta",
+        "en": "Population below or above income thresholds"
+      },
+      "description": {
+        "es": "Porcentaje de la población con ingresos por unidad de consumo por debajo o por encima de un porcentaje de la mediana nacional (por debajo del 60 %: riesgo de pobreza), en total, por sexo y por edad o nacionalidad. Año de los ingresos; hasta sección censal. Las unidades que el INE oculta heredan o imputan el valor de su unidad superior, y el INE limita los valores más altos (unas 170 secciones por año comparten el máximo).",
+        "en": "Share of the population with income per consumption unit below or above a share of the national median (below 60%: at risk of poverty), in total, by sex and by age or nationality. Income year; down to census sections. Units INE hides inherit or impute their parent's value, and INE caps the highest values (some 170 sections a year share the top one)."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "income_threshold",
+          "values": [
+            "below_40",
+            "below_50",
+            "below_60",
+            "above_140",
+            "above_160",
+            "above_200"
+          ],
+          "default": "below_60"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "income_group",
+          "values": [
+            "total",
+            "under_18",
+            "18_64",
+            "65_plus",
+            "spanish",
+            "foreign"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "adrh",
+          "label": {
+            "es": "ADRH (INE)",
+            "en": "ADRH (INE)"
+          },
+          "dataset": "income_relative",
+          "numerator": {
+            "sex": "$sex",
+            "income_group": "$income_group",
+            "income_threshold": "$income_threshold"
+          }
+        }
+      ]
+    },
+    {
+      "id": "income_fixed_thresholds",
+      "topic": "income",
+      "label": {
+        "es": "Población bajo umbrales fijos de renta",
+        "en": "Population below fixed income thresholds"
+      },
+      "description": {
+        "es": "Porcentaje de la población con ingresos por unidad de consumo por debajo de 5.000, 7.500 o 10.000 € al año, en total, por sexo y por edad o nacionalidad. Año de los ingresos; hasta sección censal. Las unidades que el INE oculta heredan o imputan el valor de su unidad superior, y el INE limita los valores más altos (unas 170 secciones por año comparten el máximo).",
+        "en": "Share of the population with income per consumption unit below 5,000, 7,500 or 10,000 euros a year, in total, by sex and by age or nationality. Income year; down to census sections. Units INE hides inherit or impute their parent's value, and INE caps the highest values (some 170 sections a year share the top one)."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "income_threshold_fixed",
+          "values": [
+            "below_5000",
+            "below_7500",
+            "below_10000"
+          ],
+          "default": "below_10000"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        },
+        {
+          "dimension": "income_group",
+          "values": [
+            "total",
+            "under_18",
+            "18_64",
+            "65_plus",
+            "spanish",
+            "foreign"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "adrh",
+          "label": {
+            "es": "ADRH (INE)",
+            "en": "ADRH (INE)"
+          },
+          "dataset": "income_fixed",
+          "numerator": {
+            "sex": "$sex",
+            "income_group": "$income_group",
+            "income_threshold_fixed": "$income_threshold_fixed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "income_gini",
+      "topic": "income",
+      "label": {
+        "es": "Índice de Gini",
+        "en": "Gini index"
+      },
+      "description": {
+        "es": "Desigualdad de la renta por unidad de consumo: 0 si todos tienen la misma, 100 si una persona lo tiene todo. Año de los ingresos; hasta sección censal. Las unidades que el INE oculta heredan o imputan el valor de su unidad superior, y el INE limita los valores más altos (unas 170 secciones por año comparten el máximo).",
+        "en": "Inequality of income per consumption unit: 0 when everyone has the same, 100 when one person has it all. Income year; down to census sections. Units INE hides inherit or impute their parent's value, and INE caps the highest values (some 170 sections a year share the top one)."
+      },
+      "unit": "índice",
+      "kind": "ratio",
+      "options": [],
+      "facets": [
+        {
+          "id": "adrh",
+          "label": {
+            "es": "ADRH (INE)",
+            "en": "ADRH (INE)"
+          },
+          "dataset": "income_inequality",
+          "numerator": {
+            "inequality_indicator": "gini"
+          }
+        }
+      ]
+    },
+    {
+      "id": "income_p80_p20",
+      "topic": "income",
+      "label": {
+        "es": "Ratio P80/P20",
+        "en": "P80/P20 ratio"
+      },
+      "description": {
+        "es": "Cuántas veces la renta por unidad de consumo del percentil 80 supera a la del percentil 20. Año de los ingresos; hasta sección censal. Las unidades que el INE oculta heredan o imputan el valor de su unidad superior, y el INE limita los valores más altos (unas 170 secciones por año comparten el máximo).",
+        "en": "How many times income per consumption unit at the 80th percentile exceeds the 20th's. Income year; down to census sections. Units INE hides inherit or impute their parent's value, and INE caps the highest values (some 170 sections a year share the top one)."
+      },
+      "unit": "veces",
+      "kind": "ratio",
+      "options": [],
+      "facets": [
+        {
+          "id": "adrh",
+          "label": {
+            "es": "ADRH (INE)",
+            "en": "ADRH (INE)"
+          },
+          "dataset": "income_inequality",
+          "numerator": {
+            "inequality_indicator": "p80_p20"
+          }
+        }
+      ]
+    },
+    {
+      "id": "household_size",
+      "topic": "income",
+      "label": {
+        "es": "Tamaño medio del hogar",
+        "en": "Mean household size"
+      },
+      "description": {
+        "es": "Personas por hogar, en promedio. Año de los ingresos; hasta sección censal. Las unidades que el INE oculta heredan o imputan el valor de su unidad superior, y el INE limita los valores más altos (unas 170 secciones por año comparten el máximo).",
+        "en": "Persons per household, on average. Income year; down to census sections. Units INE hides inherit or impute their parent's value, and INE caps the highest values (some 170 sections a year share the top one)."
+      },
+      "unit": "personas por hogar",
+      "kind": "ratio",
+      "options": [],
+      "facets": [
+        {
+          "id": "adrh",
+          "label": {
+            "es": "ADRH (INE)",
+            "en": "ADRH (INE)"
+          },
+          "dataset": "income_demographics",
+          "numerator": {
+            "household_indicator": "household_size"
+          }
+        }
+      ]
+    },
+    {
+      "id": "single_person_households",
+      "topic": "income",
+      "label": {
+        "es": "Hogares unipersonales",
+        "en": "Single-person households"
+      },
+      "description": {
+        "es": "Porcentaje de hogares de una sola persona. Año de los ingresos; hasta sección censal. Las unidades que el INE oculta heredan o imputan el valor de su unidad superior, y el INE limita los valores más altos (unas 170 secciones por año comparten el máximo).",
+        "en": "Share of households of one person. Income year; down to census sections. Units INE hides inherit or impute their parent's value, and INE caps the highest values (some 170 sections a year share the top one)."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "options": [],
+      "facets": [
+        {
+          "id": "adrh",
+          "label": {
+            "es": "ADRH (INE)",
+            "en": "ADRH (INE)"
+          },
+          "dataset": "income_demographics",
+          "numerator": {
+            "household_indicator": "single_person_households"
+          }
+        }
+      ]
+    }
+  ]
+}
