@@ -2,6 +2,14 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Statistical classifications (API)
+
+- INE's classifications as tables for later joins, in the API (`/classifications`) and the MCP
+  server (`classification` tool): CNAE-2025 and CNAE-2009, CNO-11, CNED-2014 (levels and fields of
+  study) and CPA 2.2, with their hierarchy, text search, and correspondences (CNAE-2009 ↔ 2025,
+  CNO-11 → ISCO-08, CNED-A → ISCED-A, and the census education levels → CNED-A). Not in the web
+  yet.
+
 ## 2026-10-26 · Labour market by group, gaps, year-on-year change
 
 - Tasa de actividad, de empleo, de paro and Población por relación con la actividad take a

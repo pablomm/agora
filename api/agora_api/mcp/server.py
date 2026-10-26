@@ -9,7 +9,7 @@ import functools
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
-from agora_api.services import catalog, data, entities
+from agora_api.services import catalog, classifications, data, entities
 
 INSTRUCTIONS = """\
 Agora: Spanish statistics by territory (autonomous communities, provinces, municipalities, census
@@ -173,6 +173,19 @@ def rank(
         **_source(result["facet"]),
         "items": [{"rank": item["rank"], "id": item["entity_id"], "name": item["name"], "value": round(item["value"], 2)} for item in result["items"]],
     }
+
+
+@tool
+def classification(classification_id: str, code: str | None = None, query: str | None = None, level: int | None = None) -> dict:
+    """Spanish statistical classifications: cnae2025 and cnae2009 (economic activities), cno11
+    (occupations), cned2014_a (education levels), cned2014_f (fields of study), cpa22 (products).
+    With `code`, that item with its ancestors, children and correspondences (CNAE-2009 <-> 2025,
+    CNO-11 -> ISCO-08, CNED-A -> ISCED-A); otherwise items matching `query` and/or of a `level`
+    (1 = the top), up to 50."""
+    if code:
+        return classifications.item(classification_id, code)
+    result = classifications.items(classification_id, level, None, query, 50)
+    return {"classification": result["classification"]["title"], "total": result["total"], "items": result["items"]}
 
 
 @tool

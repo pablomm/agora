@@ -167,3 +167,18 @@ def test_change_against_the_year_before(client):
     people = client.get("/observations", params={"variable": "registered_unemployment", "level": "country", "period": 202412, "change": True}).json()
     assert people["unit"] == "%" and people["change"]["from"] == 202312 and -20 < people["values"]["es:country:es"] < 20
     assert client.get("/observations", params={"variable": "unemployment_rate", "level": "province", "period": 2021, "change": True}).status_code == 404
+
+
+def test_classifications(client):
+    listing = {entry["id"]: entry for entry in client.get("/classifications").json()}
+    assert {"cnae2025", "cnae2009", "cno11", "cned2014_a", "cned2014_f", "cpa22"} <= set(listing) and listing["cno11"]["items"] == 761
+    doctors = client.get("/classifications/cno11", params={"q": "medicos", "level": 5}).json()
+    assert any(item["code"] == "2111" for item in doctors["items"])
+    item = client.get("/classifications/cno11/2111").json()
+    assert [ancestor["code"] for ancestor in item["ancestors"]] == ["2", "B", "21", "211"]
+    assert any(pair["classification"] == "ciuo08" for pair in item["correspondences"]["to"])
+    # Dots are optional; both CNAE versions answer for each other.
+    cnae = client.get("/classifications/cnae2009/01.11").json()
+    assert cnae["code"] == "0111" and any(pair["classification"] == "cnae2025" and pair["label"] for pair in cnae["correspondences"]["to"])
+    education = client.get("/classifications/cned2014_a/CM").json()
+    assert {"classification": "education_level", "code": "doctorate", "note": None, "label": None} in education["correspondences"]["from"]

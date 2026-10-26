@@ -93,3 +93,39 @@ CREATE TABLE coverage (
 );
 
 CREATE TABLE build (key TEXT PRIMARY KEY, value TEXT);
+
+-- Statistical classifications (not geographic): occupations, activities, education, products.
+CREATE TABLE classifications (
+  id TEXT PRIMARY KEY,          -- cnae2025, cno11, cned2014_a, …
+  title_es TEXT NOT NULL,
+  title_en TEXT NOT NULL,
+  version TEXT,
+  levels TEXT NOT NULL,         -- JSON: the level names, from the top
+  publisher TEXT,               -- JSON
+  license TEXT,                 -- JSON
+  source_url TEXT
+);
+
+CREATE TABLE classification_items (
+  classification_id TEXT NOT NULL REFERENCES classifications(id),
+  code TEXT NOT NULL,
+  label TEXT NOT NULL,
+  level INTEGER NOT NULL,       -- 1 = the top
+  level_name TEXT NOT NULL,
+  parent TEXT,                  -- the code of the item it belongs to
+  position INTEGER NOT NULL,    -- the publisher's order
+  PRIMARY KEY (classification_id, code)
+);
+
+-- Correspondences between classifications (or from the platform's own codes, like education_level):
+-- one row per pair, as the publisher gives them (an item can match several).
+CREATE TABLE classification_correspondences (
+  from_classification TEXT NOT NULL,
+  from_code TEXT NOT NULL,
+  to_classification TEXT NOT NULL,
+  to_code TEXT NOT NULL,
+  to_label TEXT,                -- for classifications not in the catalogue (CIUO-08, CINE-2011)
+  note TEXT
+);
+CREATE INDEX classification_correspondences_from ON classification_correspondences (from_classification, from_code);
+CREATE INDEX classification_correspondences_to ON classification_correspondences (to_classification, to_code);

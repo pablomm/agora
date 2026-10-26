@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Query
 
-from agora_api.services import catalog, data, entities
+from agora_api.services import catalog, classifications, data, entities
 
 router = APIRouter()
 
@@ -28,6 +28,29 @@ def health() -> dict:
 def get_catalog() -> dict:
     """Levels, topics, variables (with their facets' coverage), datasets and dimensions."""
     return catalog.summary()
+
+
+@router.get("/classifications")
+def get_classifications() -> list[dict]:
+    """Statistical classifications (CNAE-2025, CNAE-2009, CNO-11, CNED-2014, CPA 2.2): ids, levels, sizes."""
+    return classifications.listing()
+
+
+@router.get("/classifications/{classification_id}")
+def get_classification_items(
+    classification_id: str,
+    level: int | None = Query(None, description="Only this level (1 = the top)"),
+    parent: str | None = Query(None, description="Only the items under this code"),
+    q: str | None = Query(None, description="Only items whose code or label has every word (accents don't matter)"),
+    limit: int = Query(500, le=10000),
+) -> dict:
+    return classifications.items(classification_id, level, parent, q, limit)
+
+
+@router.get("/classifications/{classification_id}/{code}")
+def get_classification_item(classification_id: str, code: str) -> dict:
+    """One code: its label, ancestors, children and correspondences to and from other classifications."""
+    return classifications.item(classification_id, code)
 
 
 @router.get("/variables/{variable_id}")

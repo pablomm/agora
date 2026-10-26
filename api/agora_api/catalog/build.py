@@ -118,6 +118,30 @@ def check_measures(db: sqlite3.Connection) -> None:
             raise ValueError(f"{id_}: another measure of {measure_of} must have its topic and options")
 
 
+def load_classifications(db: sqlite3.Connection, con: duckdb.DuckDBPyConnection) -> None:
+    """Classifications declared in catalog.json files, with their items and correspondences from the classifications pipeline."""
+    declared = [entry for path in sorted(PIPELINES_DIR.glob("*/catalog.json")) for entry in json.loads(path.read_text()).get("classifications", [])]
+    if not declared:
+        return
+    db.executemany(
+        "INSERT INTO classifications VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            (entry["id"], label(entry["title"], "es"), label(entry["title"], "en"), entry.get("version"), json.dumps(entry["levels"], ensure_ascii=False),
+             json.dumps(entry.get("publisher")), json.dumps(entry.get("license")), entry.get("source", {}).get("url"))
+            for entry in declared
+        ],
+    )
+    folder = PROCESSED_DIR / "classifications"
+    ids = [entry["id"] for entry in declared]
+    rows = con.execute(
+        "SELECT classification, code, label, level, level_name, parent, position FROM read_parquet(?) WHERE list_contains(?, classification)", [str(folder / "items.parquet"), ids]
+    ).fetchall()
+    db.executemany("INSERT INTO classification_items VALUES (?, ?, ?, ?, ?, ?, ?)", rows)
+    pairs = con.execute("SELECT from_classification, from_code, to_classification, to_code, to_label, note FROM read_parquet(?)", [str(folder / "correspondences.parquet")]).fetchall()
+    db.executemany("INSERT INTO classification_correspondences VALUES (?, ?, ?, ?, ?, ?)", pairs)
+    log.info("%d classifications, %d items, %d correspondences", len(declared), len(rows), len(pairs))
+
+
 def label(value: dict | str | None, lang: str) -> str | None:
     if value is None or isinstance(value, str):
         return value
@@ -219,6 +243,7 @@ def build(target: Path = CATALOG_DB) -> Path:
             )
 
     check_measures(db)
+    load_classifications(db, con)
     db.execute("INSERT INTO build VALUES ('built_at', ?)", (datetime.now(timezone.utc).isoformat(timespec="seconds"),))
     db.commit()
     db.close()

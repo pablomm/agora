@@ -61,6 +61,9 @@ A variable whose values are above or below zero (a gap between two groups) says
 | `GET /variables/{id}` | One variable |
 | `GET /observations?variable&level&period&facet&within&option&change` | `{entity_id: value}` for every unit of a level, plus quantiles for a legend; `within` limits it to the units inside another (e.g. `es:ine:prov:28`); `change=true` gives each unit's change against the year before (the same month for monthly data): % for counts, a difference for the rest (points for rates) |
 | `GET /rank?variable&level&period&within&top&ascending&change` | Highest (or lowest) units, or changes |
+| `GET /classifications` | Statistical classifications (CNAE-2025, CNAE-2009, CNO-11, CNED-2014 A and F, CPA 2.2): ids, levels, sizes |
+| `GET /classifications/{id}?level&parent&q&limit` | A classification's items: of a level, under a code, or matching text (accents don't matter) |
+| `GET /classifications/{id}/{code}` | One code: label, ancestors, children, and correspondences to and from other classifications (CNAE-2009 ↔ 2025, CNO-11 → ISCO-08, CNED-A → ISCED-A, census education levels → CNED-A) |
 | `GET /search?q&level` | Places by name, accents ignored (autonomous communities, provinces, municipalities) |
 | `GET /entities/{id}` | A unit, its ancestors and children |
 | `GET /entities/{id}/value?variable&period` | One value |

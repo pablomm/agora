@@ -1,0 +1,169 @@
+{
+  "$comment": "Statistical classifications this pipeline provides (not geographic): items in processed/classifications/items.parquet, correspondences in correspondences.parquet. Run details in meta.json.",
+  "classifications": [
+    {
+      "id": "cnae2025",
+      "title": {
+        "es": "Clasificación Nacional de Actividades Económicas (CNAE-2025)",
+        "en": "National Classification of Economic Activities (CNAE-2025)"
+      },
+      "version": "2025",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "levels": [
+        "Sección",
+        "División",
+        "Grupo",
+        "Clase"
+      ],
+      "source": {
+        "url": "https://www.ine.es/daco/daco42/clasificaciones/cnae25/Estructura_CNAE2025.xlsx"
+      }
+    },
+    {
+      "id": "cnae2009",
+      "title": {
+        "es": "Clasificación Nacional de Actividades Económicas (CNAE-2009)",
+        "en": "National Classification of Economic Activities (CNAE-2009)"
+      },
+      "version": "2009",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "levels": [
+        "Sección",
+        "División",
+        "Grupo",
+        "Clase"
+      ],
+      "source": {
+        "url": "https://www.ine.es/daco/daco42/clasificaciones/cnae09/estructura_cnae2009.xls"
+      }
+    },
+    {
+      "id": "cno11",
+      "title": {
+        "es": "Clasificación Nacional de Ocupaciones (CNO-11)",
+        "en": "National Classification of Occupations (CNO-11)"
+      },
+      "version": "2011",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "levels": [
+        "Gran grupo",
+        "Grupo principal",
+        "Subgrupo principal",
+        "Subgrupo",
+        "Grupo primario"
+      ],
+      "source": {
+        "url": "https://www.ine.es/daco/daco42/clasificaciones/cno11_estructura.xls"
+      }
+    },
+    {
+      "id": "cned2014_a",
+      "title": {
+        "es": "Clasificación Nacional de Educación: niveles de formación alcanzados (CNED-A 2014)",
+        "en": "National Classification of Education: levels attained (CNED-A 2014)"
+      },
+      "version": "2014",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "levels": [
+        "Agregado",
+        "Nivel de formación",
+        "Grupo",
+        "Nivel detallado"
+      ],
+      "source": {
+        "url": "https://www.ine.es/daco/daco42/clasificaciones/cned14/CNED14_A_estr.xls"
+      }
+    },
+    {
+      "id": "cned2014_f",
+      "title": {
+        "es": "Clasificación Nacional de Educación: sectores de estudio (CNED-F 2014)",
+        "en": "National Classification of Education: fields of study (CNED-F 2014)"
+      },
+      "version": "2014",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "levels": [
+        "Sector amplio",
+        "Sector específico",
+        "Sector detallado"
+      ],
+      "source": {
+        "url": "https://www.ine.es/daco/daco42/clasificaciones/cned14/CNED_F_estr.xlsx"
+      }
+    },
+    {
+      "id": "cpa22",
+      "title": {
+        "es": "Clasificación de Productos por Actividades (CPA 2.2)",
+        "en": "Statistical Classification of Products by Activity (CPA 2.2)"
+      },
+      "version": "2.2",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "levels": [
+        "Sección",
+        "División",
+        "Grupo",
+        "Clase",
+        "Categoría",
+        "Subcategoría"
+      ],
+      "source": {
+        "url": "https://www.ine.es/clasifi/CPA_22_estructura.xlsx"
+      }
+    }
+  ]
+}
