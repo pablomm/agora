@@ -7,7 +7,7 @@ const DEBOUNCE_MS = 200
 
 /**
  * Search for an autonomous community, province or municipality by name; picking one goes there.
- * Folded to its icon until it's clicked to type, then as wide as a search box; it folds again on blur.
+ * Narrow ("Buscar…") until it's clicked to type, then wider; it narrows again on blur.
  */
 export function SearchBox({ onPick }: { onPick: (place: Place) => void }) {
   const [query, setQuery] = useState('')
@@ -79,7 +79,7 @@ export function SearchBox({ onPick }: { onPick: (place: Place) => void }) {
       <input
         type="search"
         aria-label={copy.search.label}
-        placeholder={copy.search.placeholder}
+        placeholder={expanded ? copy.search.placeholder : copy.search.folded}
         autoComplete="off"
         role="combobox"
         aria-expanded={showList}

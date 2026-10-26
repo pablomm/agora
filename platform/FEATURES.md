@@ -5,8 +5,9 @@ Log of what the platform does, newest first. Add an entry with every feature tha
 ## 2026-10-26 · Header: new logo, folding search
 
 - The header shows the app's logo (`public/favicon.svg`) instead of the old bars.
-- The place search folds to its icon; clicking it to type widens it to a full search box, and it
-  folds again when focus leaves it (or with Esc once its list is closed).
+- The place search is narrow ("Buscar…") until it's clicked to type, then widens to a full search
+  box ("Busca tu ciudad"); it narrows again when focus leaves it (or with Esc once its list is
+  closed).
 
 ## 2026-10-26 · Migration and mobility
 

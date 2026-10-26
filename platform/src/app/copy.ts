@@ -117,6 +117,8 @@ export const copy = {
   search: {
     label: 'Busca tu ciudad',
     placeholder: 'Busca tu ciudad',
+    /** While folded, before it's clicked. */
+    folded: 'Buscar…',
     noResults: 'Sin resultados',
     levels: {
       autonomous_community: 'Comunidad autónoma',

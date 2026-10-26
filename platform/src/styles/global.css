@@ -233,14 +233,15 @@ body {
   pointer-events: none;
 }
 
-/* Folded to its icon until clicked to type; then it widens to a full search box. */
+/* Narrow ("Buscar…") until clicked to type; then it widens to a full search box. */
 .search input {
-  width: 34px;
+  width: 116px;
   height: 34px;
-  padding: 0 0 0 30px;
+  padding: 0 10px 0 30px;
   font: inherit;
   font-size: 0.88rem;
-  color: transparent;
+  color: var(--text);
+  text-overflow: ellipsis;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--field);
@@ -249,18 +250,12 @@ body {
 }
 
 .search input::placeholder {
-  color: transparent;
+  color: var(--muted);
 }
 
 .search.is-expanded input {
   width: 220px;
-  padding-right: 10px;
-  color: var(--text);
   cursor: text;
-}
-
-.search.is-expanded input::placeholder {
-  color: var(--muted);
 }
 
 .search:not(.is-expanded) input::-webkit-search-cancel-button {
