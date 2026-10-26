@@ -157,10 +157,12 @@ def rank(
     top: int = 10,
     ascending: bool = False,
     options: dict[str, str] | None = None,
+    change: bool = False,
 ) -> dict:
     """The places of a level (municipality, census_section…) with the highest values of a variable
-    (lowest with ascending=true), optionally only inside another place (`within`, an id)."""
-    result = data.rank(variable, level, period, within, min(top, 50), ascending, options=options)
+    (lowest with ascending=true), optionally only inside another place (`within`, an id). With
+    change=true, ranked by change against the year before (% for counts, points for rates)."""
+    result = data.rank(variable, level, period, within, min(top, 50), ascending, options=options, change=change)
     return {
         "variable": result["label"],
         "unit": result["unit"],

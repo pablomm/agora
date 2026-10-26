@@ -159,3 +159,11 @@ def test_education(client):
     assert 30 < madrid["population_education_detail_share"] < 50 and 5 < madrid["population_studying_share"] < 25 and -10 < madrid["education_gender_gap"] < 10
     ages = client.get("/observations", params={"variable": "population_education_age_share", "level": "municipality", "period": 2024}).json()
     assert ages["label"] == "Proporción de población por nivel de estudios y edad · Educación superior · De 25 a 59 años" and len(ages["values"]) == 4144
+
+
+def test_change_against_the_year_before(client):
+    rate = client.get("/observations", params={"variable": "unemployment_rate", "level": "province", "period": 2024, "change": True}).json()
+    assert rate["unit"] == "puntos" and rate["change"] == {"from": 2023, "as": "difference"} and rate["label"] == "Tasa de paro · variación interanual"
+    people = client.get("/observations", params={"variable": "registered_unemployment", "level": "country", "period": 202412, "change": True}).json()
+    assert people["unit"] == "%" and people["change"]["from"] == 202312 and -20 < people["values"]["es:country:es"] < 20
+    assert client.get("/observations", params={"variable": "unemployment_rate", "level": "province", "period": 2021, "change": True}).status_code == 404

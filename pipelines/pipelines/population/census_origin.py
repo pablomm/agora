@@ -14,6 +14,9 @@ Annual Population Census (INE, since 2021) by sex and nationality or country of 
   education completed (primary or less, lower secondary, upper secondary, tertiary), by sex, or
   born in Spain or abroad, from census sections up (2021 on). Hidden units are imputed, weighed by
   residents aged 15 and over.
+- census_activity_born (employment pipeline): residents aged 16 and over by relation with activity,
+  born in Spain or abroad, from census sections up (2021 on); hidden units imputed. Its sibling by
+  sex, census_activity, is built by employment/census_activity.py.
 - population_education_gender_gap: derived from population_education at every level, the share of
   women with each level of education minus the share of men, in percentage points.
 
@@ -88,6 +91,11 @@ EDUCATION_BORN_TABLES = list(range(66638, 66843, 4))
 #: Residents aged 15 and over: the universe of the education tables.
 ADULT_AGES = ["Y15T19", "Y20T24", "Y25T29", "Y30T34", "Y35T39", "Y40T44", "Y45T49", "Y50T54", "Y55T59", "Y60T64", "Y65T69", "Y70T74", "Y75T79", "Y80T84", "Y85T89", "Y90T94", "Y95T99", "Y_GE100"]
 EDUCATION_LEVELS = ["primary_or_less", "lower_secondary", "upper_secondary", "tertiary"]
+
+
+#: "Población de 16 y más años por país de nacimiento (España/extranjero) y relación con la actividad
+#: (agrupado)", one table per province (national: 66595).
+ACTIVITY_BORN_TABLES = list(range(66640, 66845, 4))
 
 
 def rooted(tree: dict[str, list[str]], top: str, leave_out: str | None = None) -> dict[str, list[str]]:
@@ -186,6 +194,19 @@ DATASETS = {
         "parts": EDUCATION_LEVELS,
         "level": "census_section",
         "dimension": "education_level",
+        "weight_ages": ADULT_AGES,
+    },
+    "census_activity_born": {
+        "pipeline": "employment",
+        "raw": "employment_census",
+        "tables": ACTIVITY_BORN_TABLES,
+        "column": "Relación con la actividad",
+        "codes": codelists.ACTIVITY,
+        "by": ("País de nacimiento", codelists.BORN, "born"),
+        "tree": {},
+        "parts": ["employed", "unemployed", "pensioner", "student", "other_inactive"],
+        "level": "census_section",
+        "dimension": "activity",
         "weight_ages": ADULT_AGES,
     },
 }
@@ -351,7 +372,7 @@ def build(name: str, refresh: bool) -> None:
     if failed:
         raise ValueError(f"{name}: sums don't match INE's: {failed}")
 
-    out = output_dir(PIPELINE) / name
+    out = output_dir(spec.get("pipeline", PIPELINE)) / name
     rows = write_levels(levels, out)
     metadata = {
         "dataset": name,

@@ -43,9 +43,10 @@ def get_observations(
     facet: str | None = None,
     within: str | None = Query(None, description="Only units inside this one (e.g. es:ine:prov:28)"),
     option: list[str] | None = OPTION,
+    change: bool = Query(False, description="Each unit's change against the year before: % for counts, a difference (points for rates) for the rest"),
 ) -> dict:
     """A variable for every unit of a level in a year ({entity_id: value}), with quantiles for a legend."""
-    return data.observations(variable, level, period, facet, within, _options(option))
+    return data.observations(variable, level, period, facet, within, _options(option), change)
 
 
 @router.get("/rank")
@@ -58,8 +59,9 @@ def get_rank(
     ascending: bool = False,
     facet: str | None = None,
     option: list[str] | None = OPTION,
+    change: bool = Query(False, description="Rank by change against the year before"),
 ) -> dict:
-    return data.rank(variable, level, period, within, top, ascending, facet, _options(option))
+    return data.rank(variable, level, period, within, top, ascending, facet, _options(option), change)
 
 
 @router.get("/search")

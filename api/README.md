@@ -59,8 +59,8 @@ A variable whose values are above or below zero (a gap between two groups) says
 |---|---|
 | `GET /catalog` | Levels, topics, variables (with each facet's levels and years), datasets, dimensions |
 | `GET /variables/{id}` | One variable |
-| `GET /observations?variable&level&period&facet&within&option` | `{entity_id: value}` for every unit of a level, plus quantiles for a legend; `within` limits it to the units inside another (e.g. `es:ine:prov:28`) |
-| `GET /rank?variable&level&period&within&top&ascending` | Highest (or lowest) units |
+| `GET /observations?variable&level&period&facet&within&option&change` | `{entity_id: value}` for every unit of a level, plus quantiles for a legend; `within` limits it to the units inside another (e.g. `es:ine:prov:28`); `change=true` gives each unit's change against the year before (the same month for monthly data): % for counts, a difference for the rest (points for rates) |
+| `GET /rank?variable&level&period&within&top&ascending&change` | Highest (or lowest) units, or changes |
 | `GET /search?q&level` | Places by name, accents ignored (autonomous communities, provinces, municipalities) |
 | `GET /entities/{id}` | A unit, its ancestors and children |
 | `GET /entities/{id}/value?variable&period` | One value |

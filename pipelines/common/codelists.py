@@ -162,3 +162,13 @@ STUDYING = {
     "Cursa estudios pero no hay información sobre los mismos": "studying_unknown",
     "No cursa estudios": "not_studying",
 }
+
+#: Relation with economic activity, residents aged 16 and over (INE's "relación con la actividad (agrupado)").
+ACTIVITY = {
+    "Total": "total",
+    "Ocupado/a": "employed",
+    "Parado/a": "unemployed",
+    "Perceptor/a pensión de incapacidad, jubilación, prejubilación": "pensioner",
+    "Estudiante": "student",
+    "Otra situación de inactividad": "other_inactive",
+}

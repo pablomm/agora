@@ -7,7 +7,7 @@ import { Header } from '../components/Header'
 import { Legend } from '../components/Legend'
 import { SettingsMenu } from '../components/SettingsMenu'
 import { Sidebar } from '../components/Sidebar'
-import { api, facetFor, facetsAt, periodFor, type Catalog, type Choices, type Observations, type Place, type Variable } from '../data/api'
+import { api, facetFor, facetsAt, periodFor, yearBefore, type Catalog, type Choices, type Observations, type Place, type Variable } from '../data/api'
 import { activeLevel, classBreaks, LAYER_LEVEL, minZoomFor, unitFromPlace, type Choropleth, type SelectedUnit } from '../map/boundaries'
 import { MainMap } from '../map/MainMap'
 import { MapControls } from '../map/MapControls'
@@ -28,7 +28,7 @@ function finestWithData(variable: Variable, shown: BoundaryLayer): BoundaryLayer
 }
 
 /** A variable with nothing picked yet: its default options and source (one object, so effects see no change). */
-const NO_PICK: { choices: Choices; facet?: string } = { choices: {} }
+const NO_PICK: { choices: Choices; facet?: string; change?: boolean } = { choices: {} }
 
 export default function App() {
   const [settings, setSettings] = useState(loadSettings)
@@ -54,7 +54,7 @@ export default function App() {
   const [variableId, setVariableId] = useState<string>()
   const [period, setPeriod] = useState<number>()
   // Each variable keeps its options and source while others are shown.
-  const [picks, setPicks] = useState<Record<string, { choices: Choices; facet?: string }>>({})
+  const [picks, setPicks] = useState<Record<string, { choices: Choices; facet?: string; change?: boolean }>>({})
   const pick = (variableId && picks[variableId]) || NO_PICK
   const updatePick = (change: Partial<typeof pick>) => variableId && setPicks({ ...picks, [variableId]: { ...pick, ...change } })
   const zoom = useZoom(map)
@@ -66,16 +66,21 @@ export default function App() {
   const level = layer ? LAYER_LEVEL[layer] : undefined
   const mapSettings = layer && layer !== zoomLayer ? { ...settings, boundaries: layer } : settings
   const facet = variable && level ? facetFor(variable, level, pick.facet) : undefined
-  const year = facet && level ? periodFor(facet, level, period) : undefined
-  const years = facet && level ? [...(facet.coverage[level] ?? [])].sort((a, b) => b - a) : []
+  const change = Boolean(pick.change)
+  const covered = facet && level ? [...(facet.coverage[level] ?? [])].sort((a, b) => b - a) : []
+  // A change needs the year before: the first year can't show one.
+  const years = change ? covered.filter((item) => covered.includes(yearBefore(item))) : covered
+  const shown = facet && level ? periodFor(facet, level, period) : undefined
+  const year = shown !== undefined && change && !years.includes(shown) ? years[0] : shown
   const choices = pick.choices
 
-  const request = variable && level && facet && year !== undefined ? `${variable.id}|${level}|${year}|${facet.id}|${JSON.stringify(choices)}` : undefined
+  const request =
+    variable && level && facet && year !== undefined ? `${variable.id}|${level}|${year}|${facet.id}|${JSON.stringify(choices)}|${change}` : undefined
   const [observations, setObservations] = useState<{ key: string; data?: Observations }>()
   useEffect(() => {
     if (!request || !variable || !level || !facet || year === undefined) return
     let current = true
-    api.observations(variable.id, level, year, facet.id, choices).then(
+    api.observations(variable.id, level, year, facet.id, choices, change).then(
       (data) => current && setObservations({ key: request, data }),
       () => current && setObservations({ key: request }),
     )
@@ -83,8 +88,10 @@ export default function App() {
       current = false
     }
     // The request key covers the choices.
-  }, [request, variable, level, facet, year, choices])
+  }, [request, variable, level, facet, year, choices, change])
   const ready = observations?.key === request ? observations : undefined
+  // Changes go both ways: a diverging scale.
+  const palette = change ? 'diverging' : (variable?.palette ?? 'sequential')
 
   const choropleth = useMemo<Choropleth | undefined>(
     () =>
@@ -92,14 +99,15 @@ export default function App() {
         ? {
             layer,
             values: ready.data.values,
-            breaks: classBreaks(Object.values(ready.data.values), ready.data.stats.quantiles, variable?.palette ?? 'sequential'),
-            palette: variable?.palette ?? 'sequential',
+            breaks: classBreaks(Object.values(ready.data.values), ready.data.stats.quantiles, palette),
+            palette,
+            change: Boolean(ready.data.change),
             label: ready.data.label,
             unit: ready.data.unit,
             period: ready.data.period,
           }
         : undefined,
-    [layer, ready, variable],
+    [layer, ready, palette],
   )
   const theme = useTheme()
   const basemap = settings.basemap === 'satellite' ? 'satellite' : theme
@@ -146,6 +154,8 @@ export default function App() {
             facets={variable && level ? facetsAt(variable, level) : []}
             facetId={facet?.id}
             onFacet={(id) => updatePick({ facet: id })}
+            change={change}
+            onChange={(next) => updatePick({ change: next })}
           />
         </Sidebar>
       )}
@@ -161,7 +171,7 @@ export default function App() {
         </div>
         {variable && (
           <div className="bottom-left">
-            <Legend variable={variable} basemap={basemap} levelLabel={levelLabel} observations={ready?.data} status={legendStatus} />
+            <Legend variable={variable} basemap={basemap} palette={palette} levelLabel={levelLabel} observations={ready?.data} status={legendStatus} />
           </div>
         )}
       </main>

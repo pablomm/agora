@@ -6,7 +6,9 @@ Security affiliation, provincial at best in open data, are left out).
 
 ```sh
 python pipelines/employment/sepe.py              # SEPE registers, monthly (≈ 3 min)
-python pipelines/employment/census_activity.py   # INE census, by section (needs the population pipeline's census_annual.py first)
+python pipelines/employment/census_activity.py sex             # INE census, by section (needs the population pipeline's census_annual.py first)
+python pipelines/population/census_origin.py census_activity_born   # the same by birthplace (52 provincial tables)
+python pipelines/employment/census_activity.py groups gaps     # both in one dimension, and the gaps
 ```
 
 ## Datasets
@@ -17,6 +19,9 @@ python pipelines/employment/census_activity.py   # INE census, by section (needs
 | `job_seekers` | SEPE, [Demandantes de empleo por municipio](https://datos.gob.es/es/catalogo/ea0041513-demandantes-de-empleo-por-municipio) | Municipality | Monthly, 2006-01 → 2026-09 | as above |
 | `contracts` | SEPE, [Contratos registrados por municipio](https://datos.gob.es/es/catalogo/ea0041513-contratos-registrados-por-municipio) | Municipality | Monthly, 2006-01 → 2026-09 | sex × contract type (permanent, temporary, converted to permanent); sector |
 | `census_activity` | INE, Censo anual de población, table 66594 | Census section | Yearly (1 January), 2021–2024 | sex × relation with activity (employed, unemployed, pensioner, student, other inactive) |
+| `census_activity_born` | INE, Censo anual de población, "Población de 16 y más años por país de nacimiento (España/extranjero) y relación con la actividad", one table per province (52, from 66640) | Census section | Yearly, 2021–2024 | born in Spain/abroad × relation with activity; hidden units imputed like the population pipeline's (`census_origin.py`) |
+| `census_activity_groups` | Derived from the two above | Census section | Yearly, 2021–2024 | group (everyone, men, women, born in Spain, born abroad) × relation with activity, with `active` and `inactive` as groups |
+| `census_activity_gaps` | Derived from `census_activity_groups` | Census section | Yearly, 2021–2024 | rate (activity, employment, unemployment) × comparison (women − men, born abroad − born in Spain), in points |
 
 Output: `data/processed/employment/{dataset}/{level}.parquet` (`entity_id`, `code`, `period`,
 dimensions, `value`, `origin`) and `meta.json`. Monthly periods are integers `YYYYMM`. SEPE's
@@ -59,4 +64,6 @@ Registered unemployment (by sex and age; by sector; share by sector; over popula
 which divides each month by the census population of its year, from 2021, the latest census year
 for later months), job seekers (by sex and age; by sector), contracts (by sex and type, and each
 type's share of all contracts; by sector, and each sector's share; share of permanent contracts), and from the census: unemployment, activity and employment
-rates, and population 16+ by relation with activity (count and share), all by sex.
+rates, and population 16+ by relation with activity (count and share, with the active and the
+inactive), all by group (sex or birthplace); and the gaps in those rates between women and men,
+and between those born abroad and in Spain.

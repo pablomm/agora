@@ -234,6 +234,30 @@ def _period(facet: dict, level: str, period: int | None) -> int:
     return period
 
 
+#: How a change against the previous year is named in labels.
+CHANGE_LABEL = "variación interanual"
+
+
+def _previous(facet: dict, level: str, period: int) -> int:
+    """The same period a year before (the same month, for monthly data), which must have data."""
+    previous = period - 100 if facet["frequency"] == "monthly" else period - 1
+    if previous not in facet["coverage"].get(level, []):
+        raise NotFound(f"No data a year before {period} at level {level} to compare with")
+    return previous
+
+
+def _changes(current: dict[str, float], previous: dict[str, float], spec: dict) -> tuple[dict[str, float], str, str]:
+    """
+    Each unit's change against the year before: counts as a percentage (units with none the year
+    before left out), the rest as a difference in their unit (a rate in % becomes points).
+    """
+    if spec["kind"] == "count":
+        values = {key: (value / previous[key] - 1) * 100 for key, value in current.items() if previous.get(key)}
+        return values, "%", "percent"
+    values = {key: value - previous[key] for key, value in current.items() if key in previous}
+    return values, "puntos" if spec["unit"] == "%" else spec["unit"], "difference"
+
+
 def _quantiles(values: list[float], parts: int = 5) -> list[float]:
     ordered = sorted(values)
     if not ordered:
@@ -242,9 +266,19 @@ def _quantiles(values: list[float], parts: int = 5) -> list[float]:
 
 
 def observations(
-    variable_id: str, level: str, period: int | None = None, facet_id: str | None = None, within: str | None = None, options: dict[str, str] | None = None
+    variable_id: str,
+    level: str,
+    period: int | None = None,
+    facet_id: str | None = None,
+    within: str | None = None,
+    options: dict[str, str] | None = None,
+    change: bool = False,
 ) -> dict:
-    """A variable for every unit of a level in a year: what a choropleth needs."""
+    """
+    A variable for every unit of a level in a year: what a choropleth needs. With `change`, each
+    unit's change against the year before instead (see `_changes`): units are matched by id, so a
+    census section redrawn between both years compares different areas.
+    """
     if level not in catalog.level_ids():
         raise NotFound(f"Unknown level {level!r}")
     spec = catalog.variable(variable_id)
@@ -256,12 +290,21 @@ def observations(
     where = "period = ? AND " + _within(within, level, parameters)
     rows = _values(_apply(facet, chosen), spec["scale"], level, where, parameters)
     values = {row["entity_id"]: row["value"] for row in rows}
+    label, unit, compared = _label(spec, described), spec["unit"], None
+    if change:
+        previous = _previous(facet, level, year)
+        parameters = [previous]
+        where = "period = ? AND " + _within(within, level, parameters)
+        before = {row["entity_id"]: row["value"] for row in _values(_apply(facet, chosen), spec["scale"], level, where, parameters)}
+        values, unit, kind = _changes(values, before, spec)
+        label, compared = f"{label} · {CHANGE_LABEL}", {"from": previous, "as": kind}
     numbers = list(values.values())
     return {
         "variable": variable_id,
-        "label": _label(spec, described),
+        "label": label,
         "options": described,
-        "unit": spec["unit"],
+        "unit": unit,
+        "change": compared,
         "level": level,
         "period": year,
         "facet": _facet_info(facet),
@@ -352,13 +395,14 @@ def rank(
     ascending: bool = False,
     facet_id: str | None = None,
     options: dict[str, str] | None = None,
+    change: bool = False,
 ) -> dict:
-    """The units of a level with the highest (or lowest) value, optionally inside another unit."""
-    result = observations(variable_id, level, period, facet_id, within, options)
+    """The units of a level with the highest (or lowest) value, optionally inside another unit (or change against the year before)."""
+    result = observations(variable_id, level, period, facet_id, within, options, change)
     ordered = sorted(result["values"].items(), key=lambda item: item[1], reverse=not ascending)[: max(1, min(top, 200))]
     labels = entities.names([entity_id for entity_id, _ in ordered])
     return {
-        **{key: result[key] for key in ("variable", "label", "options", "unit", "level", "period", "facet", "within")},
+        **{key: result[key] for key in ("variable", "label", "options", "unit", "change", "level", "period", "facet", "within")},
         "total_units": result["stats"]["count"],
         "order": "ascending" if ascending else "descending",
         "items": [{"rank": index + 1, "entity_id": entity_id, "name": labels.get(entity_id, entity_id), "value": number} for index, (entity_id, number) in enumerate(ordered)],

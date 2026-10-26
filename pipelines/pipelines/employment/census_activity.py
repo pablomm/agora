@@ -16,7 +16,15 @@ them:
 Cells are imputed for each sex and activity, rounded so they add up exactly (largest remainder);
 totals are sums. Imputed cells are flagged (`origin = "imputed"`).
 
-    python pipelines/employment/census_activity.py [--refresh]
+Two datasets derive from this one and from census_activity_born (the same by birthplace, built by
+population/census_origin.py):
+
+- census_activity_groups: both in one `group` dimension (everyone, men, women, born in Spain, born
+  abroad), with the active (employed and unemployed) and inactive (the rest) as groups of activity.
+- census_activity_gaps: activity, employment and unemployment rates of women minus men, and of
+  those born abroad minus those born in Spain, in points.
+
+    python pipelines/employment/census_activity.py [step ...] [--refresh]   # steps: sex, groups, gaps
 """
 
 import argparse
@@ -136,9 +144,82 @@ def run(refresh: bool) -> None:
     log.info("Wrote %s: %s", out, counts)
 
 
+#: The groups of `group`: by sex (from census_activity) and by birthplace (from census_activity_born).
+BORN_GROUPS = {"spain": "born_spain", "abroad": "born_abroad"}
+#: Groups of activity: the active and the inactive.
+ACTIVITY_GROUPS = {"active": ["employed", "unemployed"], "inactive": ["pensioner", "student", "other_inactive"]}
+#: Each rate: its numerator and denominator, as activities.
+RATES = {"activity_rate": (["active"], ["total"]), "employment_rate": (["employed"], ["total"]), "unemployment_rate": (["unemployed"], ["active"])}
+#: Gaps: a group minus another.
+COMPARISONS = {"women_vs_men": ("female", "male"), "abroad_vs_spain": ("born_abroad", "born_spain")}
+LEVELS = ["census_section", "census_district", "municipality", "province", "autonomous_community", "country"]
+
+
+def groups() -> None:
+    """census_activity and census_activity_born in one `group` dimension, with the active and the inactive."""
+    folder = output_dir(PIPELINE)
+    levels, checks = {}, []
+    for level in LEVELS:
+        by_sex = pd.read_parquet(folder / f"{DATASET}/{level}.parquet").rename(columns={"sex": "group"})
+        born = pd.read_parquet(folder / f"census_activity_born/{level}.parquet")
+        # Both tables count the same people: their totals agree where neither is imputed.
+        published = by_sex[(by_sex["group"] == "total") & (by_sex["origin"] != "imputed")]
+        checks.append(check_against(published, born[born["born"] == "total"].rename(columns={"born": "group"}), f"{level} (totals by sex and by birthplace)", ["group", "activity"]))
+        born = born[born["born"] != "total"].assign(group=lambda frame: frame["born"].map(BORN_GROUPS)).drop(columns="born")
+        frame = pd.concat([by_sex, born], ignore_index=True)
+        keys = ["entity_id", "code", "period", "group"]
+        added = [
+            frame[frame["activity"].isin(members)].groupby(keys, as_index=False, observed=True).agg(value=("value", "sum"), origin=("origin", "first")).assign(activity=group)
+            for group, members in ACTIVITY_GROUPS.items()
+        ]
+        levels[level] = pd.concat([frame, *added], ignore_index=True)[[*keys, "activity", "value", "origin"]].sort_values([*keys, "activity"], ignore_index=True)
+    # Imputed units may differ a little (each table imputed apart); published ones must not.
+    failed = [check for check in checks if check["mismatches"] and not check["level"].startswith(("census_section", "census_district", "municipality"))]
+    if failed:
+        raise ValueError(f"census_activity_groups: totals by sex and by birthplace differ: {failed}")
+    write_derived("census_activity_groups", levels, {"derived_from": [DATASET, "census_activity_born"]}, checks)
+
+
+def gaps() -> None:
+    """Rates of women minus men, and of those born abroad minus those born in Spain, in points."""
+    folder = output_dir(PIPELINE)
+    levels = {}
+    for level in LEVELS:
+        frame = pd.read_parquet(folder / f"census_activity_groups/{level}.parquet")
+        wide = frame.pivot_table(index=["entity_id", "code", "period", "group"], columns="activity", values="value", observed=True)
+        rates = pd.DataFrame({rate: wide[numerator].sum(axis=1) / wide[denominator].sum(axis=1) * 100 for rate, (numerator, denominator) in RATES.items()})
+        rates = rates.replace([np.inf, -np.inf], np.nan).stack().rename("value").rename_axis([*rates.index.names, "rate"]).reset_index()
+        rates = rates.pivot_table(index=["entity_id", "code", "period", "rate"], columns="group", values="value", observed=True)
+        out = [(rates[first] - rates[second]).dropna().rename("value").reset_index().assign(comparison=comparison) for comparison, (first, second) in COMPARISONS.items()]
+        levels[level] = pd.concat(out, ignore_index=True).assign(origin="derived")[["entity_id", "code", "period", "rate", "comparison", "value", "origin"]]
+    write_derived("census_activity_gaps", levels, {"derived_from": "census_activity_groups", "method": "rate of the first group minus the second's, in percentage points"}, [])
+
+
+def write_derived(dataset: str, levels: dict[str, pd.DataFrame], source: dict, checks: list) -> None:
+    out = output_dir(PIPELINE) / dataset
+    counts = write_levels(levels, out)
+    metadata = {
+        "dataset": dataset,
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "source": source,
+        "periods": sorted(int(period) for period in levels["country"]["period"].unique()),
+        "checks": checks,
+        "rows": counts,
+    }
+    (out / "meta.json").write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n")
+    log.info("Wrote %s: %s", out, counts)
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Population 16+ by sex and relation with activity, by census section (INE annual census).")
+    parser = argparse.ArgumentParser(description="Population 16+ by sex and relation with activity, by census section (INE annual census), and what derives from it.")
+    parser.add_argument("steps", nargs="*", choices=["sex", "groups", "gaps"], help="steps to run (default: all; groups needs census_activity_born)")
     parser.add_argument("--refresh", action="store_true", help="download the table again")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    run(args.refresh)
+    steps = args.steps or ["sex", "groups", "gaps"]
+    if "sex" in steps:
+        run(args.refresh)
+    if "groups" in steps:
+        groups()
+    if "gaps" in steps:
+        gaps()

@@ -1,11 +1,13 @@
 import { copy } from '../app/copy'
 import { formatCompact, formatPeriod, isCount } from '../app/format'
 import type { Observations, Variable } from '../data/api'
-import { choroplethClasses, classBreaks, type BoundaryBasemap } from '../map/boundaries'
+import { choroplethClasses, classBreaks, type BoundaryBasemap, type Palette } from '../map/boundaries'
 
 interface Props {
   variable: Variable
   basemap: BoundaryBasemap
+  /** The variable's palette, or diverging when it shows changes. */
+  palette: Palette
   /** The map's level, as the catalogue names it (undefined: a layer without statistics). */
   levelLabel: string | undefined
   observations: Observations | undefined
@@ -13,18 +15,14 @@ interface Props {
 }
 
 /** What the colors mean: the variable, level, year and source, and one row per class. */
-export function Legend({ variable, basemap, levelLabel, observations, status }: Props) {
+export function Legend({ variable, basemap, palette, levelLabel, observations, status }: Props) {
   let body
   if (!levelLabel) body = <p className="legend-note">{copy.legend.noLevel}</p>
   else if (status === 'unavailable') body = <p className="legend-note">{copy.legend.unavailable(levelLabel)}</p>
   else if (status === 'failed') body = <p className="legend-note">{copy.legend.failed}</p>
   else if (status === 'loading' || !observations) body = <p className="legend-note">{copy.legend.loading}</p>
   else {
-    const { breaks, colors } = choroplethClasses(
-      classBreaks(Object.values(observations.values), observations.stats.quantiles, variable.palette),
-      basemap,
-      variable.palette,
-    )
+    const { breaks, colors } = choroplethClasses(classBreaks(Object.values(observations.values), observations.stats.quantiles, palette), basemap, palette)
     const unit = observations.unit
     const rows = colors.map((color, index) => {
       const from = breaks[index - 1]
@@ -58,7 +56,8 @@ export function Legend({ variable, basemap, levelLabel, observations, status }: 
   return (
     <div className="map-legend" role="group" aria-label={`${copy.legend.label}: ${variable.label}`}>
       <p className="legend-title">
-        {observations?.label ?? variable.label} {!isCount(variable.unit) && <span className="legend-unit">({variable.unit})</span>}
+        {observations?.label ?? variable.label}{' '}
+        {!isCount(observations?.unit ?? variable.unit) && <span className="legend-unit">({observations?.unit ?? variable.unit})</span>}
       </p>
       {body}
     </div>

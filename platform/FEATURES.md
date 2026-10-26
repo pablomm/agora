@@ -2,6 +2,20 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Labour market by group, gaps, year-on-year change
+
+- Tasa de actividad, de empleo, de paro and Población por relación con la actividad take a
+  **Grupo**: everyone, men, women, born in Spain or born abroad (from a second census table by
+  birthplace, down to census sections). Relación con la actividad gains **Activos** and
+  **Inactivos** (pensioners, students and other inactive together).
+- **Brecha laboral**: activity, employment or unemployment rate of women minus men, or of those
+  born abroad minus those born in Spain, in points, with the diverging scale, down to sections.
+- Every layer's card has **Ver: Valor | Variación anual**: each unit's change against the year
+  before (the same month for monthly data), as % for counts and in points for rates, on the
+  diverging scale; the year control leaves out the first year, which has nothing to compare with.
+  Census sections are matched by code, so a section redrawn between both years compares
+  different areas.
+
 ## 2026-10-26 · Education
 
 - New topic **Educación** (residents aged 15 and over, 2021–2024), layers nº · %:

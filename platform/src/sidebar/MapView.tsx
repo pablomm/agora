@@ -24,6 +24,9 @@ interface Props {
   facets: Facet[]
   facetId: string | undefined
   onFacet: (id: string) => void
+  /** Whether the map shows each unit's change against the year before, not its value. */
+  change: boolean
+  onChange: (change: boolean) => void
 }
 
 const COLLAPSED_KEY = 'agora:collapsed-topics'
@@ -40,7 +43,7 @@ function loadCollapsed(): Set<string> {
  * The map tab's panel: a search over the catalogue's variables, the one painted on the map (with
  * its year), and the list of all of them by topic, which scrolls on its own.
  */
-export function MapView({ catalog, catalogFailed, variableId, onVariable, onMeasure, years, period, onPeriod, choices, onChoices, facets, facetId, onFacet }: Props) {
+export function MapView({ catalog, catalogFailed, variableId, onVariable, onMeasure, years, period, onPeriod, choices, onChoices, facets, facetId, onFacet, change, onChange }: Props) {
   const [query, setQuery] = useState('')
   // Collapsed topics, remembered in this browser. A search shows every match, collapsed or not.
   const [collapsed, setCollapsed] = useState(loadCollapsed)
@@ -138,6 +141,15 @@ export function MapView({ catalog, catalogFailed, variableId, onVariable, onMeas
               />
             )}
             <OptionControls options={options} choices={choices} onChange={onChoices} />
+            <Segmented
+              label={copy.mapView.view}
+              items={[
+                { id: 'value', label: copy.mapView.value },
+                { id: 'change', label: copy.mapView.yearChange },
+              ]}
+              value={change ? 'change' : 'value'}
+              onChange={(id) => onChange(id === 'change')}
+            />
             {facets.length > 1 && facetId && <Segmented label={copy.mapView.source} items={facets} value={facetId} onChange={onFacet} />}
             <PeriodControl periods={years} value={period} onChange={(value) => onPeriod(value as number | undefined)} />
           </div>

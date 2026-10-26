@@ -70,19 +70,83 @@
       },
       "values": {
         "total": "Total",
+        "active": "Activos",
         "employed": "Ocupados",
         "unemployed": "Parados",
+        "inactive": "Inactivos",
         "pensioner": "Pensionistas",
         "student": "Estudiantes",
         "other_inactive": "Otros inactivos"
       },
       "order": [
         "total",
+        "active",
         "employed",
         "unemployed",
+        "inactive",
         "pensioner",
         "student",
         "other_inactive"
+      ],
+      "parents": {
+        "employed": "active",
+        "unemployed": "active",
+        "pensioner": "inactive",
+        "student": "inactive",
+        "other_inactive": "inactive"
+      }
+    },
+    {
+      "id": "group",
+      "label": {
+        "es": "Grupo",
+        "en": "Group"
+      },
+      "values": {
+        "total": "Todos",
+        "male": "Hombres",
+        "female": "Mujeres",
+        "born_spain": "Nacidos en España",
+        "born_abroad": "Nacidos en el extranjero"
+      },
+      "order": [
+        "total",
+        "male",
+        "female",
+        "born_spain",
+        "born_abroad"
+      ]
+    },
+    {
+      "id": "rate",
+      "label": {
+        "es": "Tasa",
+        "en": "Rate"
+      },
+      "values": {
+        "activity_rate": "Tasa de actividad",
+        "employment_rate": "Tasa de empleo",
+        "unemployment_rate": "Tasa de paro"
+      },
+      "order": [
+        "activity_rate",
+        "employment_rate",
+        "unemployment_rate"
+      ]
+    },
+    {
+      "id": "comparison",
+      "label": {
+        "es": "Comparación",
+        "en": "Comparison"
+      },
+      "values": {
+        "women_vs_men": "Mujeres − hombres",
+        "abroad_vs_spain": "Extranjero − España"
+      },
+      "order": [
+        "women_vs_men",
+        "abroad_vs_spain"
       ]
     }
   ],
@@ -257,6 +321,190 @@
         "as_of": "{year}-01-01"
       },
       "output": "processed/employment/census_activity/{level}.parquet"
+    },
+    {
+      "id": "census_activity_born",
+      "title": "Población de 16 y más años por país de nacimiento (España/extranjero) y relación con la actividad (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          66640,
+          66644,
+          66648,
+          66652,
+          66656,
+          66660,
+          66664,
+          66668,
+          66672,
+          66676,
+          66680,
+          66684,
+          66688,
+          66692,
+          66696,
+          66700,
+          66704,
+          66708,
+          66712,
+          66716,
+          66720,
+          66724,
+          66728,
+          66732,
+          66736,
+          66740,
+          66744,
+          66748,
+          66752,
+          66756,
+          66760,
+          66764,
+          66768,
+          66772,
+          66776,
+          66780,
+          66784,
+          66788,
+          66792,
+          66796,
+          66800,
+          66804,
+          66808,
+          66812,
+          66816,
+          66820,
+          66824,
+          66828,
+          66832,
+          66836,
+          66840,
+          66844
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population_16_plus",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "born",
+        "activity"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/employment/census_activity_born/{level}.parquet"
+    },
+    {
+      "id": "census_activity_groups",
+      "title": "Población de 16 y más años por sexo o país de nacimiento y relación con la actividad (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "derived",
+        "from": [
+          "census_activity",
+          "census_activity_born"
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population_16_plus",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "group",
+        "activity"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/employment/census_activity_groups/{level}.parquet"
+    },
+    {
+      "id": "census_activity_gaps",
+      "title": "Brechas en las tasas de actividad, empleo y paro (a partir del Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "derived",
+        "from": "census_activity_groups",
+        "method": "rate of the first group minus the second's, in percentage points"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "rate_gap",
+        "unit": "puntos",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "rate",
+        "comparison"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2024",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/employment/census_activity_gaps/{level}.parquet"
     }
   ],
   "variables": [
@@ -808,21 +1056,23 @@
       "topic": "employment",
       "label": {
         "es": "Tasa de paro",
-        "en": "Tasa de paro"
+        "en": "Unemployment rate"
       },
       "description": {
-        "es": "Parados sobre población activa (ocupados y parados) de 16 y más años, a 1 de enero.",
-        "en": "Parados sobre población activa (ocupados y parados) de 16 y más años, a 1 de enero."
+        "es": "Parados sobre población activa (ocupados y parados) de 16 y más años, a 1 de enero, en total, por sexo o por lugar de nacimiento.",
+        "en": "Unemployed over the active population (employed and unemployed) aged 16 and over, on 1 January, in total, by sex or by birthplace."
       },
       "unit": "%",
       "kind": "ratio",
       "options": [
         {
-          "dimension": "sex",
+          "dimension": "group",
           "values": [
             "total",
             "male",
-            "female"
+            "female",
+            "born_spain",
+            "born_abroad"
           ],
           "default": "total"
         }
@@ -834,17 +1084,14 @@
             "es": "Censo anual",
             "en": "Annual census"
           },
-          "dataset": "census_activity",
+          "dataset": "census_activity_groups",
           "numerator": {
-            "sex": "$sex",
+            "group": "$group",
             "activity": "unemployed"
           },
           "denominator": {
-            "sex": "$sex",
-            "activity": [
-              "employed",
-              "unemployed"
-            ]
+            "group": "$group",
+            "activity": "active"
           }
         }
       ],
@@ -855,21 +1102,23 @@
       "topic": "employment",
       "label": {
         "es": "Tasa de actividad",
-        "en": "Tasa de actividad"
+        "en": "Activity rate"
       },
       "description": {
-        "es": "Población activa (ocupados y parados) sobre la población de 16 y más años, a 1 de enero.",
-        "en": "Población activa (ocupados y parados) sobre la población de 16 y más años, a 1 de enero."
+        "es": "Población activa (ocupados y parados) sobre la población de 16 y más años, a 1 de enero, en total, por sexo o por lugar de nacimiento.",
+        "en": "Active population (employed and unemployed) over the population aged 16 and over, on 1 January, in total, by sex or by birthplace."
       },
       "unit": "%",
       "kind": "ratio",
       "options": [
         {
-          "dimension": "sex",
+          "dimension": "group",
           "values": [
             "total",
             "male",
-            "female"
+            "female",
+            "born_spain",
+            "born_abroad"
           ],
           "default": "total"
         }
@@ -881,16 +1130,13 @@
             "es": "Censo anual",
             "en": "Annual census"
           },
-          "dataset": "census_activity",
+          "dataset": "census_activity_groups",
           "numerator": {
-            "sex": "$sex",
-            "activity": [
-              "employed",
-              "unemployed"
-            ]
+            "group": "$group",
+            "activity": "active"
           },
           "denominator": {
-            "sex": "$sex",
+            "group": "$group",
             "activity": "total"
           }
         }
@@ -902,21 +1148,23 @@
       "topic": "employment",
       "label": {
         "es": "Tasa de empleo",
-        "en": "Tasa de empleo"
+        "en": "Employment rate"
       },
       "description": {
-        "es": "Ocupados sobre la población de 16 y más años, a 1 de enero.",
-        "en": "Ocupados sobre la población de 16 y más años, a 1 de enero."
+        "es": "Ocupados sobre la población de 16 y más años, a 1 de enero, en total, por sexo o por lugar de nacimiento.",
+        "en": "Employed over the population aged 16 and over, on 1 January, in total, by sex or by birthplace."
       },
       "unit": "%",
       "kind": "ratio",
       "options": [
         {
-          "dimension": "sex",
+          "dimension": "group",
           "values": [
             "total",
             "male",
-            "female"
+            "female",
+            "born_spain",
+            "born_abroad"
           ],
           "default": "total"
         }
@@ -928,18 +1176,66 @@
             "es": "Censo anual",
             "en": "Annual census"
           },
-          "dataset": "census_activity",
+          "dataset": "census_activity_groups",
           "numerator": {
-            "sex": "$sex",
+            "group": "$group",
             "activity": "employed"
           },
           "denominator": {
-            "sex": "$sex",
+            "group": "$group",
             "activity": "total"
           }
         }
       ],
       "scale": 100
+    },
+    {
+      "id": "labour_gap",
+      "topic": "employment",
+      "label": {
+        "es": "Brecha laboral",
+        "en": "Labour gap"
+      },
+      "description": {
+        "es": "Diferencia en puntos entre la tasa de las mujeres y la de los hombres, o entre la de los nacidos en el extranjero y la de los nacidos en España: positiva si el primer grupo tiene la tasa más alta. A 1 de enero, hasta sección censal.",
+        "en": "Difference in points between the rate of women and men, or of those born abroad and in Spain: positive when the first group's rate is higher. On 1 January, down to census sections."
+      },
+      "unit": "puntos",
+      "kind": "ratio",
+      "palette": "diverging",
+      "options": [
+        {
+          "dimension": "rate",
+          "values": [
+            "activity_rate",
+            "employment_rate",
+            "unemployment_rate"
+          ],
+          "default": "employment_rate"
+        },
+        {
+          "dimension": "comparison",
+          "values": [
+            "women_vs_men",
+            "abroad_vs_spain"
+          ],
+          "default": "women_vs_men"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "census_activity_gaps",
+          "numerator": {
+            "rate": "$rate",
+            "comparison": "$comparison"
+          }
+        }
+      ]
     },
     {
       "id": "activity_status_share",
@@ -950,18 +1246,20 @@
       },
       "measure_of": "activity_status",
       "description": {
-        "es": "Población de 16 y más años en la situación elegida sobre el total de 16 y más años, a 1 de enero.",
-        "en": "Población de 16 y más años en la situación elegida sobre el total de 16 y más años, a 1 de enero."
+        "es": "Población de 16 y más años en la situación elegida (activos, ocupados, parados, inactivos…) sobre el total de 16 y más años del mismo grupo, a 1 de enero.",
+        "en": "Population aged 16 and over in the chosen situation (active, employed, unemployed, inactive…) over everyone aged 16 and over in the same group, on 1 January."
       },
       "unit": "%",
       "kind": "ratio",
       "options": [
         {
-          "dimension": "sex",
+          "dimension": "group",
           "values": [
             "total",
             "male",
-            "female"
+            "female",
+            "born_spain",
+            "born_abroad"
           ],
           "default": "total"
         },
@@ -969,8 +1267,10 @@
           "dimension": "activity",
           "control": "select",
           "values": [
+            "active",
             "employed",
             "unemployed",
+            "inactive",
             "pensioner",
             "student",
             "other_inactive"
@@ -985,14 +1285,14 @@
             "es": "Censo anual",
             "en": "Annual census"
           },
-          "dataset": "census_activity",
+          "dataset": "census_activity_groups",
           "numerator": {
-            "sex": "$sex",
-            "activity": "$activity"
+            "activity": "$activity",
+            "group": "$group"
           },
           "denominator": {
-            "sex": "$sex",
-            "activity": "total"
+            "activity": "total",
+            "group": "$group"
           }
         }
       ],
@@ -1003,21 +1303,23 @@
       "topic": "employment",
       "label": {
         "es": "Población de 16 y más años por relación con la actividad",
-        "en": "Población de 16 y más años por relación con la actividad"
+        "en": "Population aged 16 and over by relation with activity"
       },
       "description": {
-        "es": "Residentes de 16 y más años en la situación elegida, a 1 de enero.",
-        "en": "Residentes de 16 y más años en la situación elegida, a 1 de enero."
+        "es": "Residentes de 16 y más años en la situación elegida (activos, ocupados, parados, inactivos…), a 1 de enero, en total, por sexo o por lugar de nacimiento.",
+        "en": "Residents aged 16 and over in the chosen situation (active, employed, unemployed, inactive…), on 1 January, in total, by sex or by birthplace."
       },
       "unit": "personas",
       "kind": "count",
       "options": [
         {
-          "dimension": "sex",
+          "dimension": "group",
           "values": [
             "total",
             "male",
-            "female"
+            "female",
+            "born_spain",
+            "born_abroad"
           ],
           "default": "total"
         },
@@ -1026,8 +1328,10 @@
           "control": "select",
           "values": [
             "total",
+            "active",
             "employed",
             "unemployed",
+            "inactive",
             "pensioner",
             "student",
             "other_inactive"
@@ -1042,10 +1346,10 @@
             "es": "Censo anual",
             "en": "Annual census"
           },
-          "dataset": "census_activity",
+          "dataset": "census_activity_groups",
           "numerator": {
-            "sex": "$sex",
-            "activity": "$activity"
+            "activity": "$activity",
+            "group": "$group"
           }
         }
       ]

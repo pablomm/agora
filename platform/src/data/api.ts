@@ -92,6 +92,8 @@ export interface Observations {
   label: string
   options: AppliedOptions
   unit: string
+  /** Set when the values are changes against the year before: from which period, as % or a difference. */
+  change: { from: number; as: 'percent' | 'difference' } | null
   level: DataLevel
   period: number
   facet: Omit<Facet, 'coverage'>
@@ -158,8 +160,8 @@ function get<T>(path: string, params: Record<string, string | number | string[] 
 
 export const api = {
   catalog: () => get<Catalog>('/catalog'),
-  observations: (variable: string, level: DataLevel, period?: number, facet?: string, choices: Choices = {}) =>
-    get<Observations>('/observations', { variable, level, period, facet, option: optionParams(choices) }),
+  observations: (variable: string, level: DataLevel, period?: number, facet?: string, choices: Choices = {}, change = false) =>
+    get<Observations>('/observations', { variable, level, period, facet, option: optionParams(choices), change: change ? 'true' : undefined }),
   series: (entityId: string, variable: string, choices: Choices = {}) =>
     get<Series>(`/entities/${encodeURIComponent(entityId)}/series`, { variable, option: optionParams(choices) }),
   breakdown: (entityId: string, dataset: string, period?: number) =>
@@ -192,6 +194,9 @@ export function optionValue(option: VariableOption, choices: Choices): string {
   if (chosen !== undefined && chosen.split('..').every((code) => codes.includes(code))) return chosen
   return Array.isArray(option.default) ? `${option.default[0]}..${option.default[option.default.length - 1]}` : option.default
 }
+
+/** The same period a year before (the same month, for monthly data). */
+export const yearBefore = (period: number) => (period > 9999 ? period - 100 : period - 1)
 
 /**
  * The period to show at a level: the one chosen if that level has it; for a month chosen on yearly

@@ -112,6 +112,8 @@ export interface Choropleth {
   values: Record<string, number>
   breaks: number[]
   palette: Palette
+  /** Values are changes against the year before (shown with their sign). */
+  change: boolean
   /** What the values are, for the hover label: the variable with its options, unit and year. */
   label: string
   unit: string
@@ -408,7 +410,7 @@ function dataLine(choropleth: Choropleth, value: number | undefined, basemap: Bo
     amount.textContent = copy.boundaries.noValue
   } else {
     swatch.style.background = choroplethColor(value, choropleth.breaks, basemap, choropleth.palette)
-    amount.textContent = formatValue(value, choropleth.unit)
+    amount.textContent = (choropleth.change && value > 0 ? '+' : '') + formatValue(value, choropleth.unit)
   }
   const what = document.createElement('small')
   what.textContent = `${choropleth.label} · ${formatPeriod(choropleth.period)}`
