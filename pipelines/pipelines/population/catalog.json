@@ -2248,7 +2248,7 @@
     },
     {
       "id": "population_marital_status_age",
-      "title": "Población de 16 y más años por sexo, edad y estado civil (Censo de Población anual)",
+      "title": "Población de 16 y más años por sexo, edad y estado civil, municipios de 500 habitantes o más (Censo de Población anual)",
       "publisher": {
         "name": "INE",
         "url": "https://www.ine.es"
@@ -2257,11 +2257,8 @@
         "kind": "ine_table",
         "operation": "Censo de Población (463)",
         "tables": [
-          76306,
-          76312,
-          76291
-        ],
-        "method": "municipalities of 500 residents or more as published; under 500, fitted to their totals by sex and marital status and their province's residual by age (iterative proportional fitting from residents by age, rounded keeping both); levels above summed and checked against table 76291"
+          76306
+        ]
       },
       "license": {
         "id": "CC-BY-4.0",
@@ -2281,10 +2278,7 @@
       ],
       "base_level": "municipality",
       "levels": [
-        "municipality",
-        "province",
-        "autonomous_community",
-        "country"
+        "municipality"
       ],
       "periods": "2021–2024",
       "validity": {
@@ -5223,8 +5217,8 @@
         "en": "Population by marital status and age"
       },
       "description": {
-        "es": "Residentes de 16 años o más por estado civil, en el tramo de edad elegido (compara sin que pese la estructura de edad). A 1 de enero; municipios de menos de 500 habitantes estimados a partir de su total y de su provincia.",
-        "en": "Residents aged 16 and over by marital status, in the chosen age band (to compare regardless of age structure). On 1 January; municipalities under 500 residents estimated from their total and their province."
+        "es": "Residentes de 16 años o más por estado civil, en el tramo de edad elegido (compara sin que pese la estructura de edad). A 1 de enero, solo municipios de 500 habitantes o más.",
+        "en": "Residents aged 16 and over by marital status, in the chosen age band (to compare regardless of age structure). On 1 January, only municipalities of 500 residents or more."
       },
       "unit": "personas",
       "kind": "count",
@@ -5289,8 +5283,8 @@
       },
       "measure_of": "population_marital_status_age",
       "description": {
-        "es": "Residentes de 16 años o más por estado civil, en el tramo de edad elegido, sobre el total de residentes del mismo sexo y edad. A 1 de enero; municipios de menos de 500 habitantes estimados a partir de su total y de su provincia.",
-        "en": "Residents aged 16 and over by marital status, in the chosen age band, over all residents of the same sex and age. On 1 January; municipalities under 500 residents estimated from their total and their province."
+        "es": "Residentes de 16 años o más por estado civil, en el tramo de edad elegido, sobre el total de residentes del mismo sexo y edad. A 1 de enero, solo municipios de 500 habitantes o más.",
+        "en": "Residents aged 16 and over by marital status, in the chosen age band, over all residents of the same sex and age. On 1 January, only municipalities of 500 residents or more."
       },
       "unit": "%",
       "kind": "ratio",

@@ -24,6 +24,12 @@ Education, residents aged 15 and over, in municipalities of 500 residents or mor
   66627 and 66628).
 - population_education_age: highest level completed (grouped) by sex and age (table 66620).
 
+Marital status, residents aged 16 and over, in municipalities of 500 residents or more (2021 on):
+
+- population_marital_status_age: single, married, widowed, divorced or separated, not stated, by
+  sex and age (16–34, 35–54, 55–74, 75 and over) (table 76306). By sex alone, in every
+  municipality and up to Spain: population_marital_status (census_marital.py).
+
 The employed aged 16 and over, in municipalities of 500 residents or more (2021–2023), output to the
 employment pipeline, with classification codes as values (INE's labels start with them):
 
@@ -60,8 +66,8 @@ NATIONALITY = ("nationality", codelists.NATIONALITY_SPANISH_FOREIGN)
 #: Born in Spain or abroad, or Spanish or foreign nationality, in one dimension (from two tables).
 ORIGIN_BORN = ("birth_nationality", {"Total": "total", "España": "born_spain", "Extranjero": "born_abroad"})
 ORIGIN_NATIONALITY = ("birth_nationality", {"Total": "total", "Española": "spanish", "Extranjera": "foreign"})
-#: The total of the education tables' ages.
-ADULTS = "15 y más años"
+#: The total of the tables' ages: residents aged 15 and over (education), 16 and over (marital status).
+ADULTS = ("15 y más años", "16 y más años")
 
 
 def classified(classification: str):
@@ -153,6 +159,14 @@ DATASETS = {
         "dimension": "education_level",
         "groups": {},
     },
+    "population_marital_status_age": {
+        "raw": "population_marital_status",
+        "tables": {76306: {"Edad": AGE}},
+        "column": "Estado civil",
+        "codes": codelists.MARITAL_STATUS,
+        "dimension": "marital_status",
+        "groups": {},
+    },
     "employed_cno11": {
         "pipeline": "employment",
         "raw": "employment_census",
@@ -197,7 +211,7 @@ def read(path, column: str, others: dict[str, tuple]) -> pd.DataFrame:
     )
     for name, (dimension, codes) in others.items():
         if codes is None:
-            frame[dimension] = table[name].map(lambda label: "total" if label == ADULTS else codelists.age_group(label))
+            frame[dimension] = table[name].map(lambda label: "total" if label in ADULTS else codelists.age_group(label))
         else:
             frame[dimension] = codelists.mapped(table[name], codes, name)
     hidden = table["Total"].str.strip() == "."
