@@ -37,6 +37,8 @@ together row by row: it isn't used.
 - Spain as a whole is published from 2021 only (empty before), and some foral indicators are ".."
   (not available) before 2020: left out, as cells for units that didn't exist that year.
 - Some tables come in English format ("Period", 12,345.6): read like the rest.
+- A few units in 2015 (six sections, one district) have the shares above 140, 160 and 200% of
+  the median rising, likely their complement published by mistake: taken as hidden and imputed.
 
 ## Hidden values
 
@@ -47,6 +49,8 @@ tables, and 80–90% of sections in the breakdowns by age and nationality. None 
 - A breakdown's cell (by sex, age or nationality) whose unit total is known: the unit's total
   times the cell's ratio to the total in the unit above. Shares are capped at 100.
 - Anything else: the value of the nearest unit above that has one.
+- Population, a count: what the unit above has beyond its published units, shared among the hidden
+  ones by their size in the years they're published.
 - With nothing above (foral municipalities before 2020): the same unit's value in the nearest year.
 
 INE also caps the extremes: each year some 170 sections share the highest value of an indicator,

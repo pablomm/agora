@@ -2,6 +2,16 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Income distributions (pipeline, experimental)
+
+- Every census section's income distribution (2015–2024), a Dagum fitted to INE's published
+  shares, median, mean, Gini and P80/P20; it adds up to districts, municipalities and Spain within
+  a point or so of INE's figures. Not in the platform yet: meant for a neighbourhood's detail view.
+- Plots a unit's fit against INE's figures (`income_distribution/plot.py`).
+- Income fixes: hidden ADRH populations (2015–2019) are now what their parent has beyond its
+  published units, not the parent's whole population; six sections and a district in 2015 whose
+  "above the median" shares came reversed are imputed instead.
+
 ## 2026-10-26 · Income (ADRH)
 
 - New topic **Renta**, from INE's household income atlas (2015–2024, income year), down to census

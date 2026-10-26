@@ -21,8 +21,13 @@ filled from the top down (province, municipality, district, section):
   the cell's ratio to the total in the unit above (a section's poverty rate for those under 18 is the
   section's rate times its district's under-18 to overall ratio). Shares are capped at 100.
 - Anything else: the value of the unit above (a section's district, else its municipality…).
+- Population, a count: what the unit above has beyond its published units, shared among the hidden
+  ones by their size in the years they're published.
 - With nothing above (foral municipalities before 2020, when their province and Spain aren't
   available): the same unit's value in the nearest year.
+
+A few units in 2015 have the shares above 140, 160 and 200% of the median rising (likely their
+complement, published by mistake): taken as hidden.
 
 Cells INE leaves empty or marks ".." (not available: Spain as a whole before 2021, some foral
 indicators before 2020) aren't hidden figures, and are left out.
@@ -47,6 +52,7 @@ import pyarrow.csv as csv
 import pyarrow.parquet as pq
 
 from common import codelists, ine
+from common.imputation import share_out
 from common.paths import output_dir, raw_dir
 from common.rollup import COUNTRY_ID, ID_PREFIX, ccaa_by_province
 
@@ -287,8 +293,47 @@ def impute(frame: pd.DataFrame, dimension: str, breakdown: bool, shares: bool) -
             values = values.clip(upper=100)
         part.loc[hidden, "value"] = values[hidden]
         part.loc[hidden, "origin"] = "imputed"
+        if dimension == "household_indicator":
+            counts = hidden & (part[dimension] == "population").to_numpy()
+            if counts.any():
+                part.loc[counts, "value"] = share_counts(part, counts, filled, level, ccaa, dimension)
         filled[level] = part
     return pd.concat(filled.values(), ignore_index=True)
+
+
+def share_counts(part: pd.DataFrame, rows: np.ndarray, filled: dict, level: str, ccaa: pd.Series, dimension: str) -> pd.Series:
+    """
+    Hidden populations: the nearest unit above's, less its published units', shared among its hidden
+    ones by their mean published size (equally without one). NaN where the unit above has none.
+    """
+    name, codes = next((name, codes) for name, codes in parents(part["code"], level, ccaa) if name in filled)
+    population = part[part[dimension] == "population"].assign(parent=codes)
+    published = population[~population["hidden"]]
+    above = filled[name][filled[name][dimension] == "population"].set_index(["code", "period"])["value"].rename_axis(["parent", "period"])
+    residual = above.sub(published.groupby(["parent", "period"])["value"].sum(), fill_value=0).reindex(above.index)
+    residual = residual.rename("residual").reset_index().assign(**{dimension: "population"})
+    hidden = part[rows].assign(parent=codes[rows])
+    size = published.groupby("code")["value"].mean()
+    weights = pd.Series(size.reindex(hidden["code"]).to_numpy(), index=pd.MultiIndex.from_frame(hidden[["code", "period", "sex"]]))
+    values = share_out(residual, hidden[["code", "parent", "period", dimension, "sex"]], weights, "parent", [dimension])
+    known = pd.MultiIndex.from_frame(hidden[["parent", "period"]]).isin(above.dropna().index)
+    return values.where(known)
+
+
+def reversed_shares(frame: pd.DataFrame, dimension: str) -> pd.DataFrame:
+    """Units whose share above 140% of the median is below the one above 200%: their "above" shares, hidden."""
+    if dimension != "income_threshold":
+        return frame
+    keys = ["level", "code", "period", "sex", "group"]
+    above = frame[frame[dimension].isin(["above_140", "above_200"])].pivot_table(index=keys, columns=dimension, values="value", observed=True)
+    wrong = above.index[above["above_140"] < above["above_200"]]
+    if wrong.empty:
+        return frame
+    log.warning("%d units with reversed 'above' shares, taken as hidden: %s", len(wrong), wrong[:3].tolist())
+    rows = pd.MultiIndex.from_frame(frame[keys]).isin(wrong) & frame[dimension].astype(str).str.startswith("above").to_numpy()
+    frame.loc[rows, "value"] = np.nan
+    frame.loc[rows, "hidden"] = True
+    return frame
 
 
 #: The national tables (Spain, autonomous communities, provinces), one per kind.
@@ -344,6 +389,7 @@ def build(name: str, refresh: bool) -> None:
         frame = pd.concat([read(path, dimension, spec["codes"]) for path in group], ignore_index=True)
         # The breakdown tables repeat their totals (by sex): keep each once. Units that didn't exist are empty.
         frame = frame[~frame["empty"]].drop_duplicates(["level", "code", "period", "sex", "group", dimension]).drop(columns="empty")
+        frame = reversed_shares(frame, dimension)
         for level, count in frame[frame["hidden"]].groupby("level").size().items():
             stats["hidden"][level] = stats["hidden"].get(level, 0) + int(count)
         return frame.assign(origin="published")
