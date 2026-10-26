@@ -9,6 +9,15 @@ Log of what the platform does, newest first. Add an entry with every feature tha
   icon, and 192/512 PNG icons (plus a maskable one) in a web manifest (`site.webmanifest`), so the
   site can be added to the home screen as "Agora".
 
+## 2026-10-26 · Parcel hover card, favicon, stronger control labels
+
+- The parcel hover label is a compact card: the facade thumbnail (56 px, even margin around it)
+  and, beside it, "Parcela urbana" as a small caption, the cadastral reference in bold and the
+  municipality below, instead of one long bold line.
+- The names of the active layer's controls (Sexo, Edad, Mes, Año, Fuente) are in text ink, so
+  they stand out from the muted range ends.
+- Favicon (ICO, SVG), Apple touch icon and web app manifest.
+
 ## 2026-10-25 · Collapsible topics in the layers list
 
 - Each topic heading in the layers list (Demografía, Empleo…) collapses and expands its layers,
