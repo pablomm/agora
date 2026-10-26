@@ -11,12 +11,14 @@ const decimal = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 1, maxim
 const compact = new Intl.NumberFormat('es-ES', { notation: 'compact', maximumFractionDigits: 1 })
 
 /** Units of counts (whole numbers); the rest are rates and ratios. */
-const COUNT_UNITS = new Set(['personas', 'contratos'])
+const COUNT_UNITS = new Set(['personas', 'contratos', 'viviendas', 'hogares'])
+/** Amounts shown whole, with their unit. */
+const WHOLE_UNITS = new Set(['€', 'kWh'])
 
 /** A variable's value with its unit's precision: counts as integers, the rest with one decimal. */
 export function formatValue(value: number, unit: string): string {
   if (unit === '%') return `${decimal.format(value)} %`
-  if (unit === '€') return `${integer.format(value)} €`
+  if (WHOLE_UNITS.has(unit)) return `${integer.format(value)} ${unit}`
   if (COUNT_UNITS.has(unit)) return integer.format(value)
   return decimal.format(value)
 }
@@ -24,7 +26,7 @@ export function formatValue(value: number, unit: string): string {
 /** Short form for axes and legends (1,2 mil; 3,5 M). */
 export function formatCompact(value: number, unit: string): string {
   if (unit === '%') return `${decimal.format(value)} %`
-  if (unit === '€') return `${integer.format(value)} €`
+  if (WHOLE_UNITS.has(unit)) return `${integer.format(value)} ${unit}`
   if (COUNT_UNITS.has(unit)) return Math.abs(value) < 1000 ? integer.format(Math.round(value)) : compact.format(value)
   return decimal.format(value)
 }

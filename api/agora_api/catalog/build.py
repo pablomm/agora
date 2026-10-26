@@ -209,7 +209,7 @@ def build(target: Path = CATALOG_DB) -> Path:
         catalog = json.loads(path.read_text())
         pipeline = path.parent.name
         for topic in catalog.get("topics", []):
-            db.execute("INSERT OR REPLACE INTO topics VALUES (?, ?, ?)", (topic["id"], label(topic["label"], "es"), label(topic["label"], "en")))
+            db.execute("INSERT OR REPLACE INTO topics VALUES (?, ?, ?, ?)", (topic["id"], label(topic["label"], "es"), label(topic["label"], "en"), topic.get("position", 0)))
         for dimension in catalog.get("dimensions", []):
             linked = dimension.get("classification")
             db.execute(

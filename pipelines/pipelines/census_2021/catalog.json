@@ -1,0 +1,828 @@
+{
+  "$comment": "Censos de Población y Viviendas 2021: a one-off picture (period 2021), grouped in its own topic, after the yearly series.",
+  "topics": [
+    {
+      "id": "census_2021",
+      "label": {
+        "es": "Censo 2021",
+        "en": "Census 2021"
+      },
+      "position": 1
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "dwelling",
+      "label": {
+        "es": "Vivienda",
+        "en": "Dwelling"
+      },
+      "values": {
+        "total": "Total",
+        "principal": "Principales",
+        "non_principal": "No principales",
+        "owned": "En propiedad",
+        "rented": "En alquiler",
+        "other_tenure": "Otro régimen de tenencia"
+      },
+      "order": [
+        "total",
+        "principal",
+        "owned",
+        "rented",
+        "other_tenure",
+        "non_principal"
+      ],
+      "parents": {
+        "owned": "principal",
+        "rented": "principal",
+        "other_tenure": "principal"
+      }
+    },
+    {
+      "id": "household_size",
+      "label": {
+        "es": "Tamaño del hogar",
+        "en": "Household size"
+      },
+      "values": {
+        "total": "Total",
+        "1": "1 persona",
+        "2": "2 personas",
+        "3": "3 personas",
+        "4": "4 personas",
+        "5_plus": "5 o más personas"
+      },
+      "order": [
+        "total",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5_plus"
+      ]
+    },
+    {
+      "id": "dwelling_use",
+      "label": {
+        "es": "Uso según consumo eléctrico",
+        "en": "Use by electricity consumption"
+      },
+      "values": {
+        "total": "Total",
+        "empty": "Vacías",
+        "very_low": "Muy bajo consumo",
+        "sporadic": "Uso esporádico",
+        "sporadic_251_500": "De 251 a 500 kWh",
+        "sporadic_501_750": "De 501 a 750 kWh",
+        "regular": "Uso habitual",
+        "kwh_751_1000": "De 751 a 1.000 kWh",
+        "kwh_1001_2000": "De 1.001 a 2.000 kWh",
+        "kwh_2001_3000": "De 2.001 a 3.000 kWh",
+        "kwh_3001_4000": "De 3.001 a 4.000 kWh",
+        "kwh_4001_5000": "De 4.001 a 5.000 kWh",
+        "kwh_5001_6000": "De 5.001 a 6.000 kWh",
+        "kwh_6001_7000": "De 6.001 a 7.000 kWh",
+        "kwh_7001_8000": "De 7.001 a 8.000 kWh",
+        "kwh_8001_9000": "De 8.001 a 9.000 kWh",
+        "kwh_9001_10000": "De 9.001 a 10.000 kWh",
+        "kwh_over_10000": "Más de 10.000 kWh"
+      },
+      "order": [
+        "total",
+        "empty",
+        "very_low",
+        "sporadic",
+        "sporadic_251_500",
+        "sporadic_501_750",
+        "regular",
+        "kwh_751_1000",
+        "kwh_1001_2000",
+        "kwh_2001_3000",
+        "kwh_3001_4000",
+        "kwh_4001_5000",
+        "kwh_5001_6000",
+        "kwh_6001_7000",
+        "kwh_7001_8000",
+        "kwh_8001_9000",
+        "kwh_9001_10000",
+        "kwh_over_10000"
+      ],
+      "parents": {
+        "sporadic_251_500": "sporadic",
+        "sporadic_501_750": "sporadic",
+        "kwh_751_1000": "regular",
+        "kwh_1001_2000": "regular",
+        "kwh_2001_3000": "regular",
+        "kwh_3001_4000": "regular",
+        "kwh_4001_5000": "regular",
+        "kwh_5001_6000": "regular",
+        "kwh_6001_7000": "regular",
+        "kwh_7001_8000": "regular",
+        "kwh_8001_9000": "regular",
+        "kwh_9001_10000": "regular",
+        "kwh_over_10000": "regular"
+      }
+    },
+    {
+      "id": "consumption_statistic",
+      "label": {
+        "es": "Estadístico",
+        "en": "Statistic"
+      },
+      "values": {
+        "p10": "Percentil 10",
+        "p25": "Percentil 25",
+        "median": "Mediana",
+        "p75": "Percentil 75",
+        "p90": "Percentil 90"
+      },
+      "order": [
+        "p10",
+        "p25",
+        "median",
+        "p75",
+        "p90"
+      ]
+    },
+    {
+      "id": "housing_indicator",
+      "label": {
+        "es": "Indicador",
+        "en": "Indicator"
+      },
+      "values": {
+        "mean_floor_area": "Superficie media de la vivienda",
+        "floor_area_per_occupant": "Superficie por ocupante",
+        "mean_household_size": "Tamaño medio del hogar"
+      },
+      "order": [
+        "mean_floor_area",
+        "floor_area_per_occupant",
+        "mean_household_size"
+      ]
+    }
+  ],
+  "datasets": [
+    {
+      "id": "dwellings_2021",
+      "title": "Viviendas familiares convencionales por tipo y viviendas principales por régimen de tenencia (Censos de Población y Viviendas 2021)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censos de Población y Viviendas 2021",
+        "tables": [
+          "C2021_Indicadores.csv (T18–T20)",
+          59525,
+          59523
+        ],
+        "method": "sections as published, blank ones (municipalities under 100 residents) from their municipality's figures and their province's tenure; districts summed from sections; municipalities as in table 59525 (tenure summed from sections); provinces up summed from municipalities"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "dwellings",
+        "unit": "viviendas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "dwelling"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/dwellings_2021/{level}.parquet"
+    },
+    {
+      "id": "households_2021",
+      "title": "Hogares por tamaño (Censos de Población y Viviendas 2021)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censos de Población y Viviendas 2021",
+        "tables": [
+          "C2021_Indicadores.csv (T21–T22)",
+          59543
+        ],
+        "method": "sections as published, blank ones from their municipality's figures; districts summed from sections; municipalities as in table 59543; provinces up summed from municipalities"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "households",
+        "unit": "hogares",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "household_size"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/households_2021/{level}.parquet"
+    },
+    {
+      "id": "housing_means_2021",
+      "title": "Superficie media de las viviendas, superficie por ocupante y tamaño medio del hogar (Censos de Población y Viviendas 2021)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_service",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/servergis/rest/services/Hosted/SAS_seleccion_2021/FeatureServer",
+        "method": "every level as published in INE's census map viewer; a hidden (zero) mean takes the unit above's"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "housing_means",
+        "unit": "m² o personas",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "housing_indicator"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/housing_means_2021/{level}.parquet"
+    },
+    {
+      "id": "dwelling_use_2021",
+      "title": "Viviendas según su intensidad de uso a partir del consumo eléctrico (Censos de Población y Viviendas 2021)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censos de Población y Viviendas 2021",
+        "tables": [
+          59531
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "dwellings",
+        "unit": "viviendas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "dwelling_use"
+      ],
+      "base_level": "municipality",
+      "levels": [
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/dwelling_use_2021/{level}.parquet"
+    },
+    {
+      "id": "electricity_consumption_2021",
+      "title": "Consumo eléctrico anual de las viviendas: percentiles por distrito y mediana (Censos de Población y Viviendas 2021)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censos de Población y Viviendas 2021",
+        "tables": [
+          59532,
+          59531
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "electricity_consumption",
+        "unit": "kWh",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "consumption_statistic"
+      ],
+      "base_level": "census_district",
+      "levels": [
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/electricity_consumption_2021/{level}.parquet"
+    }
+  ],
+  "variables": [
+    {
+      "id": "dwellings_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Viviendas por tipo (2021)",
+        "en": "Dwellings by type (2021)"
+      },
+      "description": {
+        "es": "Viviendas familiares convencionales, principales (residencia habitual de alguien) o no principales (secundarias, vacías u otras). A 1 de enero de 2021, hasta sección censal (secciones de 2021).",
+        "en": "Conventional family dwellings, principal (someone's usual residence) or not (second homes, empty or other). On 1 January 2021, down to census sections (as drawn in 2021)."
+      },
+      "unit": "viviendas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "dwelling",
+          "values": [
+            "total",
+            "principal",
+            "non_principal"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_2021",
+          "numerator": {
+            "dwelling": "$dwelling"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de viviendas por tipo (2021)",
+        "en": "Share of dwellings by type (2021)"
+      },
+      "measure_of": "dwellings_2021",
+      "description": {
+        "es": "Viviendas principales o no principales sobre el total de viviendas familiares convencionales. A 1 de enero de 2021, hasta sección censal (secciones de 2021).",
+        "en": "Principal or other dwellings over all conventional family dwellings. On 1 January 2021, down to census sections (as drawn in 2021)."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "dwelling",
+          "values": [
+            "principal",
+            "non_principal"
+          ],
+          "default": "non_principal"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_2021",
+          "numerator": {
+            "dwelling": "$dwelling"
+          },
+          "denominator": {
+            "dwelling": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_tenure_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Viviendas principales por régimen de tenencia (2021)",
+        "en": "Principal dwellings by tenure (2021)"
+      },
+      "description": {
+        "es": "Viviendas principales en propiedad, en alquiler o en otro régimen (cedidas, por ejemplo). A 1 de enero de 2021, hasta sección censal (secciones de 2021).",
+        "en": "Principal dwellings owned, rented or held otherwise (lent, say). On 1 January 2021, down to census sections (as drawn in 2021)."
+      },
+      "unit": "viviendas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "dwelling",
+          "values": [
+            "owned",
+            "rented",
+            "other_tenure"
+          ],
+          "default": "rented"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_2021",
+          "numerator": {
+            "dwelling": "$dwelling"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_tenure_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de viviendas principales por régimen de tenencia (2021)",
+        "en": "Share of principal dwellings by tenure (2021)"
+      },
+      "measure_of": "dwellings_tenure_2021",
+      "description": {
+        "es": "Viviendas principales en propiedad, en alquiler o en otro régimen, sobre el total de viviendas principales. A 1 de enero de 2021, hasta sección censal (secciones de 2021).",
+        "en": "Principal dwellings owned, rented or held otherwise, over all principal dwellings. On 1 January 2021, down to census sections (as drawn in 2021)."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "dwelling",
+          "values": [
+            "owned",
+            "rented",
+            "other_tenure"
+          ],
+          "default": "rented"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_2021",
+          "numerator": {
+            "dwelling": "$dwelling"
+          },
+          "denominator": {
+            "dwelling": "principal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Hogares por tamaño (2021)",
+        "en": "Households by size (2021)"
+      },
+      "description": {
+        "es": "Hogares según el número de personas que viven en ellos. A 1 de enero de 2021, hasta sección censal (secciones de 2021).",
+        "en": "Households by how many people live in them. On 1 January 2021, down to census sections (as drawn in 2021)."
+      },
+      "unit": "hogares",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "household_size",
+          "values": [
+            "total",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5_plus"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_2021",
+          "numerator": {
+            "household_size": "$household_size"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de hogares por tamaño (2021)",
+        "en": "Share of households by size (2021)"
+      },
+      "measure_of": "households_2021",
+      "description": {
+        "es": "Hogares de cada tamaño sobre el total de hogares (1 persona: hogares unipersonales). A 1 de enero de 2021, hasta sección censal (secciones de 2021).",
+        "en": "Households of each size over all households (1 person: single-person households). On 1 January 2021, down to census sections (as drawn in 2021)."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "household_size",
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5_plus"
+          ],
+          "default": "1"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_2021",
+          "numerator": {
+            "household_size": "$household_size"
+          },
+          "denominator": {
+            "household_size": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "floor_area_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Superficie de la vivienda (2021)",
+        "en": "Dwelling floor area (2021)"
+      },
+      "description": {
+        "es": "Superficie útil media de las viviendas (estimada por el INE a partir de la superficie construida del Catastro), o superficie por ocupante en las viviendas principales. A 1 de enero de 2021, hasta sección censal (secciones de 2021).",
+        "en": "The dwellings' mean usable floor area (estimated by INE from Catastro's built area), or the floor area per occupant of principal dwellings. On 1 January 2021, down to census sections (as drawn in 2021)."
+      },
+      "unit": "m²",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "housing_indicator",
+          "values": [
+            "mean_floor_area",
+            "floor_area_per_occupant"
+          ],
+          "default": "mean_floor_area"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "housing_means_2021",
+          "numerator": {
+            "housing_indicator": "$housing_indicator"
+          }
+        }
+      ]
+    },
+    {
+      "id": "household_size_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Tamaño medio del hogar (2021)",
+        "en": "Mean household size (2021)"
+      },
+      "description": {
+        "es": "Personas por hogar. A 1 de enero de 2021, hasta sección censal (secciones de 2021).",
+        "en": "People per household. On 1 January 2021, down to census sections (as drawn in 2021)."
+      },
+      "unit": "personas por hogar",
+      "kind": "ratio",
+      "options": [],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "housing_means_2021",
+          "numerator": {
+            "housing_indicator": "mean_household_size"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwelling_use_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Viviendas según consumo eléctrico (2021)",
+        "en": "Dwellings by electricity use (2021)"
+      },
+      "description": {
+        "es": "Viviendas familiares. Según su consumo eléctrico del año anterior: vacías (sin contrato, o menos de la veinticuatroava parte del consumo medio del municipio), muy bajo consumo (hasta 250 kWh), uso esporádico (251 a 750 kWh) o habitual (más de 750 kWh). Municipios de 1.000 habitantes o más, provincias, comunidades y España.",
+        "en": "Family dwellings. By their electricity use in the year before: empty (no supply contract, or under a 24th of the municipality's mean use), very low use (up to 250 kWh), sporadic (251 to 750 kWh) or regular (over 750 kWh). Municipalities of 1,000 residents or more, provinces, communities and Spain."
+      },
+      "unit": "viviendas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "dwelling_use",
+          "values": [
+            "total",
+            "empty",
+            "very_low",
+            "sporadic",
+            "regular"
+          ],
+          "default": "empty"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwelling_use_2021",
+          "numerator": {
+            "dwelling_use": "$dwelling_use"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwelling_use_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de viviendas según consumo eléctrico (2021)",
+        "en": "Share of dwellings by electricity use (2021)"
+      },
+      "measure_of": "dwelling_use_2021",
+      "description": {
+        "es": "Viviendas de cada uso sobre el total de viviendas. Según su consumo eléctrico del año anterior: vacías (sin contrato, o menos de la veinticuatroava parte del consumo medio del municipio), muy bajo consumo (hasta 250 kWh), uso esporádico (251 a 750 kWh) o habitual (más de 750 kWh). Municipios de 1.000 habitantes o más, provincias, comunidades y España.",
+        "en": "Dwellings of each use over all dwellings. By their electricity use in the year before: empty (no supply contract, or under a 24th of the municipality's mean use), very low use (up to 250 kWh), sporadic (251 to 750 kWh) or regular (over 750 kWh). Municipalities of 1,000 residents or more, provinces, communities and Spain."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "dwelling_use",
+          "values": [
+            "empty",
+            "very_low",
+            "sporadic",
+            "regular"
+          ],
+          "default": "empty"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwelling_use_2021",
+          "numerator": {
+            "dwelling_use": "$dwelling_use"
+          },
+          "denominator": {
+            "dwelling_use": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "electricity_consumption_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Consumo eléctrico por vivienda (2021)",
+        "en": "Electricity consumption per dwelling (2021)"
+      },
+      "description": {
+        "es": "Consumo eléctrico anual de las viviendas (kWh) en el año anterior al censo: percentiles por distrito censal; la mediana también por municipio (1.000 habitantes o más), provincia, comunidad y España.",
+        "en": "The dwellings' annual electricity consumption (kWh) in the year before the census: percentiles by census district; the median by municipality (1,000 residents or more), province, community and Spain too."
+      },
+      "unit": "kWh",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "consumption_statistic",
+          "values": [
+            "p10",
+            "p25",
+            "median",
+            "p75",
+            "p90"
+          ],
+          "default": "median"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "electricity_consumption_2021",
+          "numerator": {
+            "consumption_statistic": "$consumption_statistic"
+          }
+        }
+      ]
+    }
+  ]
+}

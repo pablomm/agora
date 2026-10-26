@@ -156,4 +156,4 @@ def summary() -> dict:
 @lru_cache
 def topics() -> list[dict]:
     with catalog() as db:
-        return db.execute("SELECT id, label_es AS label FROM topics ORDER BY id").fetchall()
+        return db.execute("SELECT id, label_es AS label FROM topics ORDER BY position, id").fetchall()

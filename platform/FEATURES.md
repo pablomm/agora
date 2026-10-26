@@ -2,6 +2,21 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Census 2021: dwellings and households
+
+- New topic **Censo 2021**, last in the list (topics can now take a position): a one-off picture on
+  1 January 2021, down to census sections, from INE's Censos de Población y Viviendas 2021:
+  - **Viviendas por tipo (2021)**, nº · %: principal or not.
+  - **Viviendas principales por régimen de tenencia (2021)**, nº · %: owned, rented, other.
+  - **Hogares por tamaño (2021)**, nº · %: 1 to 5 or more people.
+  - **Superficie de la vivienda (2021)** (m²): mean usable floor area, or per occupant.
+  - **Tamaño medio del hogar (2021)**: people per household.
+  - **Viviendas según consumo eléctrico (2021)**, nº · %: empty, very low use, sporadic or regular,
+    by municipality (1,000 residents or more) and up.
+  - **Consumo eléctrico por vivienda (2021)** (kWh): percentiles by district, median by municipality.
+- Sources with a single year don't offer "Variación anual".
+- Dwellings, households and kWh show as whole numbers; "Medida" says "Número" for them.
+
 ## 2026-10-26 · Marital status
 
 - **Población por estado civil** (Demografía), nº · %: residents aged 16 and over single, married,

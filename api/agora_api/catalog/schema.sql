@@ -24,7 +24,12 @@ CREATE INDEX entities_level ON entities(level);
 -- Name search with accents folded (getafe, alacant, a coruna…).
 CREATE VIRTUAL TABLE entities_fts USING fts5(name, label, content='entities', content_rowid='rowid', tokenize='unicode61 remove_diacritics 2');
 
-CREATE TABLE topics (id TEXT PRIMARY KEY, label_es TEXT NOT NULL, label_en TEXT NOT NULL);
+CREATE TABLE topics (
+  id TEXT PRIMARY KEY,
+  label_es TEXT NOT NULL,
+  label_en TEXT NOT NULL,
+  position INTEGER NOT NULL DEFAULT 0  -- topics show by position, then id (a one-off census after the series)
+);
 
 CREATE TABLE datasets (
   id TEXT PRIMARY KEY,

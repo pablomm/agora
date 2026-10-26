@@ -15,13 +15,15 @@ from .download import download
 log = logging.getLogger(__name__)
 
 CSV_URL = "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/{table}.csv"
+#: PC-Axis tables (Censos de Población y Viviendas 2021: "tpx" in their links).
+PX_CSV_URL = "https://www.ine.es/jaxi/files/tpx/es/csv_bdsc/{table}.csv"
 
 
-def fetch_table(table: int, target: Path, refresh: bool = False) -> Path:
+def fetch_table(table: int, target: Path, refresh: bool = False, url: str = CSV_URL) -> Path:
     if target.exists() and not refresh:
         log.info("Using today's download %s", target)
     else:
-        download(CSV_URL.format(table=table), target)
+        download(url.format(table=table), target)
     return target
 
 

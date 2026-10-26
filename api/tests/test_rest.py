@@ -238,3 +238,23 @@ def test_income_distribution(client):
     catalog = client.get("/catalog").json()
     assert any(dataset["id"] == "income_distribution" for dataset in catalog["datasets"])
     assert not any("income_distribution" in (facet["dataset"] for facet in variable["facets"]) for variable in catalog["variables"])
+
+
+def test_census_2021(client):
+    # A one-off census: one period, down to sections, in its own topic after the yearly ones.
+    topics = [topic["id"] for topic in client.get("/catalog").json()["topics"]]
+    assert topics[-1] == "census_2021"
+    empty = client.get("/observations", params={"variable": "dwellings_2021_share", "level": "census_section", "option": "dwelling:non_principal"}).json()
+    assert empty["period"] == 2021 and empty["stats"]["count"] > 35_000
+    spain = client.get("/entities/es:country:es/value", params={"variable": "dwellings_2021", "option": "dwelling:total"}).json()["value"]
+    assert spain == 26_623_708
+    households = client.get(f"/entities/{MADRID}/value", params={"variable": "households_2021", "option": "household_size:total"}).json()["value"]
+    assert 1_200_000 < households < 1_400_000
+    use = client.get("/observations", params={"variable": "dwelling_use_2021_share", "level": "municipality", "option": "dwelling_use:empty"}).json()
+    assert use["stats"]["count"] > 3_000 and all(0 <= value <= 100 for value in use["values"].values())
+    area = client.get("/entities/es:country:es/value", params={"variable": "floor_area_2021"}).json()
+    assert area["unit"] == "m²" and 80 < area["value"] < 95
+    size = client.get("/observations", params={"variable": "household_size_2021", "level": "census_section"}).json()
+    assert size["stats"]["count"] > 36_000
+    median = client.get("/observations", params={"variable": "electricity_consumption_2021", "level": "census_district"}).json()
+    assert median["unit"] == "kWh" and median["stats"]["count"] > 5_000

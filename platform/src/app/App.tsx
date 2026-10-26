@@ -66,8 +66,10 @@ export default function App() {
   const level = layer ? LAYER_LEVEL[layer] : undefined
   const mapSettings = layer && layer !== zoomLayer ? { ...settings, boundaries: layer } : settings
   const facet = variable && level ? facetFor(variable, level, pick.facet) : undefined
-  const change = Boolean(pick.change)
   const covered = facet && level ? [...(facet.coverage[level] ?? [])].sort((a, b) => b - a) : []
+  // A one-off source (the 2021 census) has no year before to change from.
+  const canChange = covered.some((item) => covered.includes(yearBefore(item)))
+  const change = Boolean(pick.change) && canChange
   // A change needs the year before: the first year can't show one.
   const years = change ? covered.filter((item) => covered.includes(yearBefore(item))) : covered
   const shown = facet && level ? periodFor(facet, level, period) : undefined
@@ -155,6 +157,7 @@ export default function App() {
             facetId={facet?.id}
             onFacet={(id) => updatePick({ facet: id })}
             change={change}
+            canChange={canChange}
             onChange={(next) => updatePick({ change: next })}
           />
         </Sidebar>
