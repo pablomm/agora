@@ -74,6 +74,8 @@ def variables() -> dict[str, dict]:
             {
                 **option,
                 "range": option.get("range", False),
+                # As the catalogue says; None: the web picks by whether the values fit side by side.
+                "control": option.get("control"),
                 "label": dimensions()[option["dimension"]]["label"],
                 "values": [{"code": code, "label": dimension_labels(option["dimension"])[code]} for code in option["values"]],
             }

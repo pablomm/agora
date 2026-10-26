@@ -1,8 +1,42 @@
 import { copy } from '../app/copy'
 import { optionValue, type Choices, type VariableOption } from '../data/api'
 
-/** One of a few values, side by side (Total · Hombres · Mujeres; or the sources). */
-export function Segmented({ label, items, value, onChange }: { label: string; items: { id: string; label: string }[]; value: string; onChange: (id: string) => void }) {
+/** Values side by side at most, and their labels' length: beyond them, a dropdown. */
+const MAX_SEGMENTS = 4
+const MAX_SEGMENTS_TEXT = 40
+
+/**
+ * One of a few values, side by side (Total · Hombres · Mujeres; or the sources); one of many or
+ * long ones (sectors, nationalities) from a dropdown. `control` forces either.
+ */
+export function Segmented({
+  label,
+  items,
+  value,
+  onChange,
+  control,
+}: {
+  label: string
+  items: { id: string; label: string }[]
+  value: string
+  onChange: (id: string) => void
+  control?: VariableOption['control']
+}) {
+  const fits = items.length <= MAX_SEGMENTS && items.reduce((length, item) => length + item.label.length, 0) <= MAX_SEGMENTS_TEXT
+  if (control === 'select' || (!control && !fits)) {
+    return (
+      <label className="option-control">
+        <span className="option-label">{label}</span>
+        <select value={value} onChange={(event) => onChange(event.target.value)}>
+          {items.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.label}
+            </option>
+          ))}
+        </select>
+      </label>
+    )
+  }
   return (
     <div className="option-control">
       <span className="option-label">{label}</span>
@@ -74,20 +108,20 @@ function RangeOption({ option, value, onChange }: { option: VariableOption; valu
   )
 }
 
-/** The variable's options: a segmented control for a value, a range slider for a run of values. */
+/** The variable's options: side by side or a dropdown for a value, a range slider for a run of values. */
 export function OptionControls({ options, choices, onChange }: { options: VariableOption[]; choices: Choices; onChange: (choices: Choices) => void }) {
   return options.map((option) => {
     const value = optionValue(option, choices)
     const change = (next: string) => onChange({ ...choices, [option.dimension]: next })
-    return option.range ? (
-      <RangeOption key={option.dimension} option={option} value={value} onChange={change} />
-    ) : (
+    if (option.range) return <RangeOption key={option.dimension} option={option} value={value} onChange={change} />
+    return (
       <Segmented
         key={option.dimension}
         label={option.label}
         items={option.values.map((item) => ({ id: item.code, label: item.label }))}
         value={value}
         onChange={change}
+        control={option.control}
       />
     )
   })

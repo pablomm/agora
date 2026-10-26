@@ -20,11 +20,16 @@ export interface Facet {
   coverage: Partial<Record<DataLevel, number[]>>
 }
 
-/** A dimension the user picks for a variable: one value, or (`range`) a run of ordered values, summed. */
+/**
+ * A dimension the user picks for a variable: one value, or (`range`) a run of ordered values,
+ * summed. One value is picked side by side (`segmented`) or from a dropdown (`select`); null:
+ * side by side if the values fit, a dropdown if not.
+ */
 export interface VariableOption {
   dimension: string
   label: string
   range: boolean
+  control: 'segmented' | 'select' | null
   values: { code: string; label: string }[]
   default: string | string[]
 }

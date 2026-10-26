@@ -2,6 +2,15 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Dropdowns for long options
+
+- A layer's option (and its source switch) shows its values side by side only when they fit: up
+  to 4 values with up to 40 characters between them. Otherwise it's a dropdown, so long or many
+  values (sectors, relation with activity, contract type, age bands; nationalities later) no
+  longer overlap. An option can force either in its pipeline's `catalog.json` with
+  `"control": "segmented"` or `"control": "select"`; sector, activity and contract type say
+  `select`.
+
 ## 2026-10-25 · Logo and app icons
 
 - New logo: a pediment over columns of different heights, a stoa whose columns are bars. Used as

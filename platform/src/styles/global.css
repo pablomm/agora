@@ -926,7 +926,8 @@ body {
   border-top: 1px solid var(--border);
 }
 
-.period-control select {
+.period-control select,
+.option-control select {
   height: 26px;
   padding: 0 6px;
   font: inherit;

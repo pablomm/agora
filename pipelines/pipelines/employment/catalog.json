@@ -385,6 +385,7 @@
       "options": [
         {
           "dimension": "sector",
+          "control": "select",
           "values": [
             "agriculture",
             "industry",
@@ -427,6 +428,7 @@
       "options": [
         {
           "dimension": "sector",
+          "control": "select",
           "values": [
             "agriculture",
             "industry",
@@ -525,6 +527,7 @@
       "options": [
         {
           "dimension": "sector",
+          "control": "select",
           "values": [
             "agriculture",
             "industry",
@@ -576,6 +579,7 @@
         },
         {
           "dimension": "contract_type",
+          "control": "select",
           "values": [
             "total",
             "permanent_initial",
@@ -617,6 +621,7 @@
       "options": [
         {
           "dimension": "sector",
+          "control": "select",
           "values": [
             "agriculture",
             "industry",
@@ -854,6 +859,7 @@
         },
         {
           "dimension": "activity",
+          "control": "select",
           "values": [
             "employed",
             "unemployed",
@@ -909,6 +915,7 @@
         },
         {
           "dimension": "activity",
+          "control": "select",
           "values": [
             "total",
             "employed",

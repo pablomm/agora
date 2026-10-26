@@ -81,6 +81,10 @@ def coverage(con: duckdb.DuckDBPyConnection, dataset: str, template: str) -> lis
     return out
 
 
+#: How the web shows an option with one value to pick: side by side, or a dropdown for long or many values.
+CONTROLS = ("segmented", "select")
+
+
 def check_options(variable: dict) -> None:
     """Every "$dimension" a facet uses is one of the variable's options, and every option's default is one of its values."""
     options = {option["dimension"]: option for option in variable.get("options", [])}
@@ -94,6 +98,8 @@ def check_options(variable: dict) -> None:
         defaults = option["default"] if isinstance(option["default"], list) else [option["default"]]
         if not set(defaults) <= set(option["values"]):
             raise ValueError(f"{variable['id']}: the default of option {option['dimension']} isn't one of its values")
+        if option.get("control", "segmented") not in CONTROLS or (option.get("control") and option.get("range")):
+            raise ValueError(f"{variable['id']}: option {option['dimension']} has control {option.get('control')!r}, not one of {CONTROLS} (and ranges take none)")
 
 
 def label(value: dict | str | None, lang: str) -> str | None:
