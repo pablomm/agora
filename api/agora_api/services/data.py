@@ -111,8 +111,9 @@ def _applied(facet: dict, described: dict) -> dict:
 
 
 def _label(spec: dict, described: dict) -> str:
-    """The variable's name with the choice ("Población · Mujeres"); a "total" choice adds nothing."""
-    parts = [entry["label"] for entry in described.values() if entry["codes"] != ["total"]]
+    """The variable's name with the choice ("Población · Mujeres"); a "total" choice, or a range of every value, adds nothing."""
+    whole = {option["dimension"]: len(option["values"]) for option in spec["options"] if option["range"]}
+    parts = [entry["label"] for dimension, entry in described.items() if entry["codes"] != ["total"] and len(entry["codes"]) != whole.get(dimension)]
     return " · ".join([spec["label"], *parts])
 
 

@@ -186,7 +186,8 @@ export function MapView({ catalog, catalogFailed, variableId, onVariable, onMeas
                   className="layer-row"
                   aria-pressed={variable.id === layerId}
                   title={variable.description ?? undefined}
-                  onClick={() => onVariable(variable.id === layerId ? undefined : variable.id)}
+                  // A layer with a number and a share opens on the share.
+                  onClick={() => onVariable(variable.id === layerId ? undefined : ((measures.get(variable.id) ?? []).find((item) => item.measure_of) ?? variable).id)}
                 >
                   <span className="layer-row-label">{variable.label}</span>
                   <span className="layer-row-unit">

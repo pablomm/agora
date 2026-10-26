@@ -2,6 +2,12 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Layers open on their share
+
+- A layer with a number and a share (nº · %) opens on the share; Medida switches to the number.
+- Labels leave out an age range that covers every age, as they leave out a "total" choice
+  ("Proporción de población extranjera", not "… · Todas las edades").
+
 ## 2026-10-26 · Professional status, groups of activity sections
 
 - **Ocupados por situación profesional** (self-employed, employees), nº · %, by sex, down to census
