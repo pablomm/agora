@@ -717,6 +717,37 @@
         "asia_other": "asia",
         "oceania": "abroad"
       }
+    },
+    {
+      "id": "birthplace",
+      "label": {
+        "es": "Lugar de nacimiento",
+        "en": "Birthplace"
+      },
+      "values": {
+        "total": "Total",
+        "born_in_spain": "Nacidos en España",
+        "same_municipality": "En el mismo municipio",
+        "same_province": "En otro municipio de la provincia",
+        "same_community": "En otra provincia de la comunidad",
+        "other_community": "En otra comunidad",
+        "abroad": "En el extranjero"
+      },
+      "order": [
+        "total",
+        "born_in_spain",
+        "same_municipality",
+        "same_province",
+        "same_community",
+        "other_community",
+        "abroad"
+      ],
+      "parents": {
+        "same_municipality": "born_in_spain",
+        "same_province": "born_in_spain",
+        "same_community": "born_in_spain",
+        "other_community": "born_in_spain"
+      }
     }
   ],
   "datasets": [
@@ -851,6 +882,48 @@
         "as_of": "{year}-01-01"
       },
       "output": "processed/population/population_sex_age_nationality/{level}.parquet"
+    },
+    {
+      "id": "population_mean_age",
+      "title": "Edad media de la población por sexo (a partir del Censo de Población anual por edad quinquenal)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "derived",
+        "from": "population_sex_age",
+        "method": "five-year groups at their midpoints (100 and over at 102.5), checked against INE's mean age by province (table 68527)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "mean_age",
+        "unit": "años",
+        "aggregation": "mean"
+      },
+      "dimensions": [
+        "sex"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_mean_age/{level}.parquet"
     },
     {
       "id": "population_nationality",
@@ -1131,6 +1204,102 @@
         "as_of": "{year}-01-01"
       },
       "output": "processed/population/population_birth_country_detail/{level}.parquet"
+    },
+    {
+      "id": "population_birthplace",
+      "title": "Población por sexo y relación entre lugar de nacimiento y lugar de residencia (Censo de Población anual)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_table",
+        "operation": "Censo de Población (463)",
+        "tables": [
+          65041,
+          69096,
+          69104,
+          69108,
+          69112,
+          69116,
+          69120,
+          69124,
+          69128,
+          69132,
+          69136,
+          69140,
+          69144,
+          69148,
+          69152,
+          69156,
+          69160,
+          69164,
+          69168,
+          69172,
+          69176,
+          69180,
+          69184,
+          69188,
+          69192,
+          69196,
+          69200,
+          69204,
+          69208,
+          69212,
+          69216,
+          69220,
+          69224,
+          69228,
+          69232,
+          69236,
+          69240,
+          69244,
+          69248,
+          69252,
+          69256,
+          69260,
+          69264,
+          69268,
+          69272,
+          69276,
+          69280,
+          69284,
+          69288,
+          69292,
+          69296,
+          69344
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "population",
+        "unit": "personas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "sex",
+        "birthplace"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021–2025",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "{year}-01-01"
+      },
+      "output": "processed/population/population_birthplace/{level}.parquet"
     }
   ],
   "variables": [
@@ -1374,6 +1543,226 @@
       ]
     },
     {
+      "id": "mean_age",
+      "topic": "demography",
+      "label": {
+        "es": "Edad media",
+        "en": "Mean age"
+      },
+      "description": {
+        "es": "Edad media de los residentes, en total o por sexo, calculada a partir de los grupos de edad de cinco años.",
+        "en": "Mean age of residents, in total or by sex, from the five-year age groups."
+      },
+      "unit": "años",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_mean_age",
+          "numerator": {
+            "sex": "$sex"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ageing_index",
+      "topic": "demography",
+      "label": {
+        "es": "Índice de envejecimiento",
+        "en": "Ageing index"
+      },
+      "description": {
+        "es": "Residentes de 65 años o más por cada 100 menores de 15.",
+        "en": "Residents aged 65 and over per 100 under 15."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_sex_age",
+          "numerator": {
+            "sex": "$sex",
+            "age": [
+              "Y65T69",
+              "Y70T74",
+              "Y75T79",
+              "Y80T84",
+              "Y85T89",
+              "Y90T94",
+              "Y95T99",
+              "Y_GE100"
+            ]
+          },
+          "denominator": {
+            "sex": "$sex",
+            "age": [
+              "Y0T4",
+              "Y5T9",
+              "Y10T14"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "dependency_ratio",
+      "topic": "demography",
+      "label": {
+        "es": "Índice de dependencia",
+        "en": "Dependency ratio"
+      },
+      "description": {
+        "es": "Menores de 15 y mayores de 64 por cada 100 residentes de 15 a 64 años.",
+        "en": "Residents under 15 and over 64 per 100 aged 15 to 64."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_sex_age",
+          "numerator": {
+            "sex": "$sex",
+            "age": [
+              "Y0T4",
+              "Y5T9",
+              "Y10T14",
+              "Y65T69",
+              "Y70T74",
+              "Y75T79",
+              "Y80T84",
+              "Y85T89",
+              "Y90T94",
+              "Y95T99",
+              "Y_GE100"
+            ]
+          },
+          "denominator": {
+            "sex": "$sex",
+            "age": [
+              "Y15T19",
+              "Y20T24",
+              "Y25T29",
+              "Y30T34",
+              "Y35T39",
+              "Y40T44",
+              "Y45T49",
+              "Y50T54",
+              "Y55T59",
+              "Y60T64"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "overageing_index",
+      "topic": "demography",
+      "label": {
+        "es": "Índice de sobreenvejecimiento",
+        "en": "Oldest-old ratio"
+      },
+      "description": {
+        "es": "Residentes de 85 años o más por cada 100 de 65 o más.",
+        "en": "Residents aged 85 and over per 100 aged 65 and over."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_sex_age",
+          "numerator": {
+            "sex": "$sex",
+            "age": [
+              "Y85T89",
+              "Y90T94",
+              "Y95T99",
+              "Y_GE100"
+            ]
+          },
+          "denominator": {
+            "sex": "$sex",
+            "age": [
+              "Y65T69",
+              "Y70T74",
+              "Y75T79",
+              "Y80T84",
+              "Y85T89",
+              "Y90T94",
+              "Y95T99",
+              "Y_GE100"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "id": "population_age_share",
       "topic": "demography",
       "label": {
@@ -1499,8 +1888,8 @@
         {
           "id": "census",
           "label": {
-            "es": "Censo anual",
-            "en": "Annual census"
+            "es": "Censo anual (con edad)",
+            "en": "Annual census (with age)"
           },
           "dataset": "population_sex_age_nationality",
           "numerator": {
@@ -1508,8 +1897,28 @@
             "age": "$age",
             "nationality": "foreign"
           }
+        },
+        {
+          "id": "census_sections",
+          "label": {
+            "es": "Censo anual (por sección, sin edad)",
+            "en": "Annual census (by section, no age)"
+          },
+          "dataset": "population_nationality",
+          "numerator": {
+            "sex": "$sex",
+            "nationality_main": "foreign"
+          }
         }
-      ]
+      ],
+      "default_facet": {
+        "census_section": "census_sections",
+        "census_district": "census_sections",
+        "municipality": "census",
+        "province": "census",
+        "autonomous_community": "census",
+        "country": "census"
+      }
     },
     {
       "id": "population_foreign_share",
@@ -1572,8 +1981,8 @@
         {
           "id": "census",
           "label": {
-            "es": "Censo anual",
-            "en": "Annual census"
+            "es": "Censo anual (con edad)",
+            "en": "Annual census (with age)"
           },
           "dataset": "population_sex_age_nationality",
           "numerator": {
@@ -1586,8 +1995,32 @@
             "age": "$age",
             "nationality": "total"
           }
+        },
+        {
+          "id": "census_sections",
+          "label": {
+            "es": "Censo anual (por sección, sin edad)",
+            "en": "Annual census (by section, no age)"
+          },
+          "dataset": "population_nationality",
+          "numerator": {
+            "sex": "$sex",
+            "nationality_main": "foreign"
+          },
+          "denominator": {
+            "sex": "$sex",
+            "nationality_main": "total"
+          }
         }
-      ]
+      ],
+      "default_facet": {
+        "census_section": "census_sections",
+        "census_district": "census_sections",
+        "municipality": "census",
+        "province": "census",
+        "autonomous_community": "census",
+        "country": "census"
+      }
     },
     {
       "id": "population_nationality",
@@ -2353,6 +2786,114 @@
           "denominator": {
             "sex": "$sex",
             "birth_country_detail": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_birthplace",
+      "topic": "origin",
+      "label": {
+        "es": "Población por lugar de nacimiento",
+        "en": "Population by birthplace"
+      },
+      "description": {
+        "es": "Residentes según dónde nacieron respecto a donde viven: en el mismo municipio, en otro de la provincia, en otra provincia de la comunidad, en otra comunidad o en el extranjero.",
+        "en": "Residents by where they were born relative to where they live: same municipality, another in the province, another province of the community, another community, or abroad."
+      },
+      "unit": "personas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "birthplace",
+          "values": [
+            "born_in_spain",
+            "same_municipality",
+            "same_province",
+            "same_community",
+            "other_community",
+            "abroad"
+          ],
+          "default": "same_municipality"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_birthplace",
+          "numerator": {
+            "sex": "$sex",
+            "birthplace": "$birthplace"
+          }
+        }
+      ]
+    },
+    {
+      "id": "population_birthplace_share",
+      "topic": "origin",
+      "label": {
+        "es": "Proporción de población por lugar de nacimiento",
+        "en": "Share of population by birthplace"
+      },
+      "measure_of": "population_birthplace",
+      "description": {
+        "es": "Residentes nacidos en el lugar elegido (respecto a donde viven) sobre el total de residentes del mismo sexo.",
+        "en": "Residents born in the chosen place (relative to where they live), over all residents of the same sex."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "birthplace",
+          "values": [
+            "born_in_spain",
+            "same_municipality",
+            "same_province",
+            "same_community",
+            "other_community",
+            "abroad"
+          ],
+          "default": "same_municipality"
+        },
+        {
+          "dimension": "sex",
+          "values": [
+            "total",
+            "male",
+            "female"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census",
+          "label": {
+            "es": "Censo anual",
+            "en": "Annual census"
+          },
+          "dataset": "population_birthplace",
+          "numerator": {
+            "sex": "$sex",
+            "birthplace": "$birthplace"
+          },
+          "denominator": {
+            "sex": "$sex",
+            "birthplace": "total"
           }
         }
       ]

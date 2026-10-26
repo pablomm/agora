@@ -74,7 +74,7 @@ def test_entity_with_ancestors(client):
 def test_errors(client):
     assert client.get("/variables/nope").status_code == 404
     assert client.get("/observations", params={"variable": "population", "level": "municipality", "period": 1900}).status_code == 404
-    assert client.get("/observations", params={"variable": "population_foreign_share", "level": "census_section"}).status_code == 404
+    assert client.get("/observations", params={"variable": "population_nationality_detail_share", "level": "census_section"}).status_code == 404
     assert client.get("/observations", params={"variable": "population", "level": "census_section", "facet": "official"}).status_code == 404
     assert client.get("/rank", params={"variable": "population", "level": "province", "within": MADRID}).status_code == 400
 
@@ -116,3 +116,22 @@ def test_nationality_lists(client):
     detail = client.get("/variables/population_nationality_detail").json()
     values = {value["code"]: value for value in detail["options"][0]["values"]}
     assert values["FRA"]["parent"] == "eu" and values["eu"]["parent"] == "europe" and values["europe"]["parent"] == "foreign"
+
+
+def test_age_indicators_and_birthplace(client):
+    spain = {
+        variable: client.get("/entities/es:country:es/value", params={"variable": variable, "period": 2025}).json()["value"]
+        for variable in ("mean_age", "ageing_index", "dependency_ratio", "overageing_index")
+    }
+    assert 43 < spain["mean_age"] < 45 and 140 < spain["ageing_index"] < 180 and 45 < spain["dependency_ratio"] < 60 and 10 < spain["overageing_index"] < 25
+    born = client.get("/observations", params={"variable": "population_birthplace_share", "level": "census_section", "period": 2025, "option": "birthplace:abroad"}).json()
+    assert born["stats"]["count"] > 36_000 and born["label"] == "Proporción de población por lugar de nacimiento · En el extranjero"
+
+
+def test_foreign_by_section_ignores_age(client):
+    # By census section the foreign population has no age: the choice isn't applied, nor named.
+    params = {"variable": "population_foreign_share", "period": 2025, "option": ["sex:female", "age:Y20T24..Y30T34"]}
+    section = client.get("/observations", params={**params, "level": "census_section"}).json()
+    assert section["facet"]["id"] == "census_sections" and section["label"] == "Proporción de población extranjera · Mujeres"
+    municipality = client.get("/observations", params={**params, "level": "municipality"}).json()
+    assert municipality["label"] == "Proporción de población extranjera · Mujeres · De 20 a 34 años"

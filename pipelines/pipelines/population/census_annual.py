@@ -4,6 +4,9 @@ Annual Population Census (INE, Censo de Población, every 1 January since 2021),
 - population_sex_age: by sex and five-year age group, from census sections up to Spain.
 - population_sex_age_nationality: by sex, five-year age group and nationality (Spanish/foreign),
   from municipalities up to Spain (INE doesn't cross age and nationality below municipalities).
+- population_mean_age: mean age by sex at every level of population_sex_age, from its five-year
+  groups (each counted at its midpoint: 2.5 for 0–4, 102.5 for 100+), checked against the mean
+  age INE publishes by province (table 68527). Run after population_sex_age.
 
 Only the most detailed level of each is kept; the levels above are aggregated, and checked
 against the totals INE publishes in the same tables.
@@ -17,11 +20,13 @@ import logging
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timezone
 
+import re
+
 import pandas as pd
 
 from common import codelists, ine
 from common.paths import output_dir, raw_dir
-from common.rollup import check_against, rollup, write_levels
+from common.rollup import LEVELS, check_against, rollup, write_levels
 
 log = logging.getLogger(__name__)
 
@@ -37,6 +42,12 @@ SEX_AGE_TABLES = [
 ]
 #: "Población por sexo, edad (grupos quinquenales) y nacionalidad (española/extranjera)" by municipality.
 SEX_AGE_NATIONALITY_TABLE = 68535
+#: "Población y edad media por sexo y país de nacionalidad" by province: to check the mean age.
+MEAN_AGE_TABLE = 68527
+#: The age the open-ended group (100 and over) counts at.
+OLDEST_MIDPOINT = 102.5
+#: The largest difference allowed with INE's mean age, in years (grouped ages are an approximation).
+MEAN_AGE_TOLERANCE = 0.1
 
 
 def tidy(table: pd.DataFrame, geography: str, dimensions: dict[str, str]) -> pd.DataFrame:
@@ -96,6 +107,56 @@ def sex_age_nationality(refresh: bool) -> None:
     )
 
 
+def midpoint(age: str) -> float:
+    """The age a five-year group counts at: its middle (Y20T24 → 22.5)."""
+    band = re.fullmatch(r"Y(\d+)T\d+", age)
+    return int(band[1]) + 2.5 if band else OLDEST_MIDPOINT
+
+
+def mean_age(refresh: bool) -> None:
+    source = output_dir(PIPELINE) / "population_sex_age"
+    levels = {}
+    for level in LEVELS:
+        frame = pd.read_parquet(source / f"{level}.parquet", columns=["entity_id", "code", "period", "sex", "age", "value"])
+        frame = frame[frame["age"] != "total"]
+        frame = frame.assign(years=frame["value"] * frame["age"].map(midpoint))
+        grouped = frame.groupby(["entity_id", "code", "period", "sex"], as_index=False, observed=True)[["years", "value"]].sum()
+        grouped = grouped[grouped["value"] > 0]
+        levels[level] = grouped.assign(value=grouped["years"] / grouped["value"], origin="derived").drop(columns="years")
+
+    raw = raw_dir(PIPELINE, date.today().isoformat())
+    table = ine.read_table(ine.fetch_table(MEAN_AGE_TABLE, raw / f"{MEAN_AGE_TABLE}.csv", refresh))
+    table = table[(table["Conceptos Demográficos"] == "Edad media de la población") & (table["País de nacionalidad"] == "Total") & (table["Provincias"] != "")]
+    published = pd.DataFrame(
+        {
+            "code": ine.codes(table["Provincias"]),
+            "period": table["Periodo"].astype(int),
+            "sex": codelists.mapped(table["Sexo"], codelists.SEX, "sex"),
+            "value": ine.values(table["Total"]),
+        }
+    )
+    merged = published.merge(levels["province"], on=["code", "period", "sex"], suffixes=("_published", "_derived"))
+    difference = (merged["value_derived"] - merged["value_published"]).abs()
+    check = {"level": "province", "compared": int(len(merged)), "max_difference": round(float(difference.max()), 3), "tolerance": MEAN_AGE_TOLERANCE}
+    log.info("Check province mean age against INE's: %s", check)
+    if difference.max() > MEAN_AGE_TOLERANCE:
+        raise ValueError(f"population_mean_age: further than {MEAN_AGE_TOLERANCE} years from INE's mean age: {check}")
+
+    out = output_dir(PIPELINE) / "population_mean_age"
+    rows = write_levels(levels, out)
+    metadata = {
+        "dataset": "population_mean_age",
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "source": {"derived_from": "population_sex_age", "checked_against": {"operation": "INE Censo de Población (463)", "tables": [MEAN_AGE_TABLE]}},
+        "method": f"five-year groups at their midpoints; 100 and over at {OLDEST_MIDPOINT}",
+        "periods": sorted(int(period) for period in levels["country"]["period"].unique()),
+        "rows_by_level": rows,
+        "checks": [check],
+    }
+    (out / "meta.json").write_text(json.dumps(metadata, indent=2) + "\n")
+    log.info("Wrote %s: %s", out, rows)
+
+
 def finish(dataset: str, base: pd.DataFrame, level: str, dimensions: list[str], published: dict, source: dict) -> None:
     """Aggregates, checks against INE's published totals, and writes one file per level."""
     missing = base["value"].isna().sum()
@@ -123,7 +184,7 @@ def finish(dataset: str, base: pd.DataFrame, level: str, dimensions: list[str], 
     log.info("Wrote %s: %s", out, rows)
 
 
-DATASETS = {"population_sex_age": sex_age, "population_sex_age_nationality": sex_age_nationality}
+DATASETS = {"population_sex_age": sex_age, "population_sex_age_nationality": sex_age_nationality, "population_mean_age": mean_age}
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Annual Population Census by sex, age and nationality, aggregated up.")

@@ -79,3 +79,14 @@ COUNTRY_DETAIL = {
     "Otros países de Sudamérica": "south_america_other",
     "Otros países de Asia": "asia_other",
 }
+
+#: Where residents were born, against where they live (INE's "relación entre lugar de nacimiento y
+#: lugar de residencia").
+BIRTHPLACE = {
+    "Total": "total",
+    "Mismo municipio al de residencia": "same_municipality",
+    "Distinto municipio de la misma provincia": "same_province",
+    "Distinta provincia de la misma comunidad": "same_community",
+    "Distinta comunidad": "other_community",
+    "Nacido en el extranjero o en antiguos territorios españoles": "abroad",
+}

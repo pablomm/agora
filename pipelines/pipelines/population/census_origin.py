@@ -4,6 +4,9 @@ Annual Population Census (INE, since 2021) by sex and nationality or country of 
 - population_nationality: main countries of nationality (about twenty), from census sections up.
 - population_nationality_detail: main nationalities (about sixty), from municipalities up.
 - population_birth_country, population_birth_country_detail: the same by country of birth.
+- population_birthplace: where residents were born against where they live (same municipality,
+  another of the province, another province of the community, another community, abroad), from
+  census sections up, with those born in Spain as the sum of the first four.
 
 INE's lists of main countries close each continent or country group with its rest ("Otros países de
 África"), so the countries add up to their groups. Each dataset nests them in one dimension
@@ -38,6 +41,7 @@ NATIONALITY_SECTION_TABLES = [65040, *range(66375, 66458, 2), 66459, 66461, 6646
 BIRTH_SECTION_TABLES = [65038, *range(66374, 66457, 2), 66458, 66460, 66462, *range(66464, 66475, 2)]
 
 #: Each group with what it's made of, from the top: the base level's lists and the sums above them.
+#: "abroad" is the foreign nationality, or born abroad (see `rooted`).
 MAIN_TREE = {
     "abroad": ["europe", "africa", "america", "asia", "oceania", "stateless"],
     "europe": ["FRA", "GBR", "ROU", "UKR", "europe_other"],
@@ -58,18 +62,28 @@ DETAIL_TREE = {
     "asia": ["BGD", "CHN", "PHL", "IND", "PAK", "asia_other"],
 }
 
-#: Per dataset: where its tables go, the column with the country, the code list, the tree, the base
-#: level, Spain's code and the code of the rest of the world (foreign nationality, born abroad).
+#: "Población por sexo y relación entre lugar de nacimiento y lugar de residencia", one table per
+#: province (national table: 65033).
+BIRTHPLACE_SECTION_TABLES = [65041, 69096, *range(69104, 69297, 4), 69344]
+
+
+def rooted(tree: dict[str, list[str]], top: str, leave_out: str | None = None) -> dict[str, list[str]]:
+    """The tree with its top ("abroad") named as the dataset names it, and maybe without a value."""
+    return {top if group == "abroad" else group: [code for code in members if code != leave_out] for group, members in tree.items()}
+
+
+#: Per dataset: where its tables go, the column with the categories, the code list, the tree (groups
+#: as sums), the parts that make up the total, the base level, and Spain's code in the table if any.
 DATASETS = {
     "population_nationality": {
         "raw": "population_nationality",
         "tables": NATIONALITY_SECTION_TABLES,
         "column": "País de nacionalidad",
         "codes": codelists.COUNTRY_MAIN,
-        "tree": MAIN_TREE,
+        "tree": rooted(MAIN_TREE, "foreign"),
+        "parts": ["spanish", "foreign"],
         "level": "census_section",
         "home": "spanish",
-        "abroad": "foreign",
         "dimension": "nationality_main",
     },
     "population_nationality_detail": {
@@ -79,10 +93,10 @@ DATASETS = {
         "groups_table": 68537,
         "column": "País de nacionalidad",
         "codes": codelists.COUNTRY_DETAIL,
-        "tree": DETAIL_TREE,
+        "tree": rooted(DETAIL_TREE, "foreign"),
+        "parts": ["spanish", "foreign"],
         "level": "municipality",
         "home": "spanish",
-        "abroad": "foreign",
         "dimension": "nationality_detail",
     },
     "population_birth_country": {
@@ -90,10 +104,10 @@ DATASETS = {
         "tables": BIRTH_SECTION_TABLES,
         "column": "País de nacimiento",
         "codes": codelists.COUNTRY_MAIN,
-        "tree": {key: [code for code in codes if code != "stateless"] for key, codes in MAIN_TREE.items()},
+        "tree": rooted(MAIN_TREE, "abroad", leave_out="stateless"),
+        "parts": ["spain", "abroad"],
         "level": "census_section",
         "home": "spain",
-        "abroad": "abroad",
         "dimension": "birth_country_main",
     },
     "population_birth_country_detail": {
@@ -102,11 +116,21 @@ DATASETS = {
         "groups_table": 68538,
         "column": "Lugar de nacimiento (principales países)",
         "codes": codelists.COUNTRY_DETAIL,
-        "tree": {key: [code for code in codes if code != "stateless"] for key, codes in DETAIL_TREE.items()},
+        "tree": rooted(DETAIL_TREE, "abroad", leave_out="stateless"),
+        "parts": ["spain", "abroad"],
         "level": "municipality",
         "home": "spain",
-        "abroad": "abroad",
         "dimension": "birth_country_detail",
+    },
+    "population_birthplace": {
+        "raw": "population_birthplace",
+        "tables": BIRTHPLACE_SECTION_TABLES,
+        "column": "Relación entre lugar de nacimiento y lugar de residencia",
+        "codes": codelists.BIRTHPLACE,
+        "tree": {"born_in_spain": ["same_municipality", "same_province", "same_community", "other_community"]},
+        "parts": ["born_in_spain", "abroad"],
+        "level": "census_section",
+        "dimension": "birthplace",
     },
 }
 
@@ -136,22 +160,21 @@ def tidy(table: pd.DataFrame, column: str, codes: dict[str, str], dimension: str
     return out
 
 
-def nest(frame: pd.DataFrame, tree: dict[str, list[str]], dimension: str, home: str, abroad: str) -> pd.DataFrame:
-    """Adds every group of `tree` as the sum of what it holds (the deepest first), `abroad` being the top."""
+def nest(frame: pd.DataFrame, tree: dict[str, list[str]], dimension: str, parts: list[str]) -> pd.DataFrame:
+    """Adds every group of `tree` as the sum of what it holds (the deepest first), and the total as the sum of `parts`."""
     keys = ["code", "period", "sex"]
     frame = frame[frame[dimension] != "total"].copy() if "total" in set(frame[dimension]) else frame
     added = []
     known = frame
     for group, members in reversed(tree.items()):
-        code = abroad if group == "abroad" else group
         part = known[known[dimension].isin(members)]
         missing = set(members) - set(part[dimension])
         if missing:
             raise ValueError(f"{group}: no rows for {sorted(missing)}")
-        summed = part.groupby(keys, as_index=False, observed=True)["value"].sum().assign(**{dimension: code})
+        summed = part.groupby(keys, as_index=False, observed=True)["value"].sum().assign(**{dimension: group})
         added.append(summed)
         known = pd.concat([known, summed], ignore_index=True)
-    total = known[known[dimension].isin([home, abroad])].groupby(keys, as_index=False, observed=True)["value"].sum().assign(**{dimension: "total"})
+    total = known[known[dimension].isin(parts)].groupby(keys, as_index=False, observed=True)["value"].sum().assign(**{dimension: "total"})
     return pd.concat([frame, *added, total], ignore_index=True)
 
 
@@ -165,7 +188,7 @@ def build(name: str, refresh: bool) -> None:
         paths = list(pool.map(lambda table: ine.fetch_table(table, folder / f"{table}.csv", refresh), spec["tables"]))
 
     # Spain is "España" or "Española" depending on the table.
-    codes = {**spec["codes"], "España": spec["home"], "Española": spec["home"]}
+    codes = {**spec["codes"], "España": spec["home"], "Española": spec["home"]} if "home" in spec else spec["codes"]
     by_level: dict[str, list[pd.DataFrame]] = {}
     for path in paths:
         for level, frame in tidy(ine.read_table(path), spec["column"], codes, dimension).items():
@@ -183,9 +206,9 @@ def build(name: str, refresh: bool) -> None:
         raise ValueError(f"{name}: unit-years with some cells empty, not all: {partial.head().to_dict('index')}")
     log.info("%s: %d empty cells (units that didn't exist that year), left out", name, int(empty.sum()))
     published_total = base[~empty & (base[dimension] == "total")]
-    base = nest(base[~empty], spec["tree"], dimension, spec["home"], spec["abroad"])
+    base = nest(base[~empty], spec["tree"], dimension, spec["parts"])
 
-    # The total from the parts, against INE's: Spanish and foreign make up everyone.
+    # The total from the parts, against INE's (Spanish and foreign make up everyone).
     checks = [check_against(published_total, base[base[dimension] == "total"], spec["level"], ["sex", dimension])]
     levels = rollup(base, spec["level"], ["sex", dimension])
     for level, published in tables.items():

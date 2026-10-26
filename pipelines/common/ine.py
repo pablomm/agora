@@ -27,7 +27,12 @@ def fetch_table(table: int, target: Path, refresh: bool = False) -> Path:
 
 def read_table(path: Path) -> pd.DataFrame:
     """Every column as text, values included (parse them with `values`)."""
-    return pd.read_csv(path, sep=";", dtype=str, keep_default_na=False, encoding="utf-8-sig")
+    table = pd.read_csv(path, sep=";", dtype=str, keep_default_na=False, encoding="utf-8-sig")
+    # A few tables come in English format (69172): "Period", and numbers like 733,149 or 12.5.
+    if "Period" in table:
+        table = table.rename(columns={"Period": "Periodo"})
+        table["Total"] = table["Total"].str.replace(",", "", regex=False).str.replace(".", ",", regex=False)
+    return table
 
 
 def codes(column: pd.Series) -> pd.Series:

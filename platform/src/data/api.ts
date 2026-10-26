@@ -18,6 +18,19 @@ export interface Facet {
   frequency: 'yearly' | 'monthly'
   /** Periods with data (years, or months as YYYYMM), by level. */
   coverage: Partial<Record<DataLevel, number[]>>
+  /** What it sums: dimension → code, codes, or "$dimension" (the option picked). */
+  numerator: Record<string, unknown>
+  /** What it's divided by, if a share: like `numerator`, or another dataset's `filter`. */
+  denominator: Record<string, unknown> | null
+}
+
+/** The options a source applies: one without a dimension (no age by census section) ignores its option. */
+export function facetDimensions(facet: Facet): Set<string> {
+  const denominator = facet.denominator ?? {}
+  const filters = [facet.numerator, ('dataset' in denominator ? denominator.filter : denominator) as Record<string, unknown>]
+  return new Set(
+    filters.flatMap((filter) => Object.values(filter ?? {})).flatMap((code) => (typeof code === 'string' && code.startsWith('$') ? [code.slice(1)] : [])),
+  )
 }
 
 /**

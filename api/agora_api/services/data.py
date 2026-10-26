@@ -102,6 +102,14 @@ def _apply(facet: dict, chosen: dict) -> dict:
     return {**facet, "numerator": fill(facet["numerator"]), "denominator": denominator}
 
 
+def _applied(facet: dict, described: dict) -> dict:
+    """The choices a facet applies: a source without a dimension (no age by census section) ignores its option."""
+    denominator = facet["denominator"] or {}
+    filters = [facet["numerator"], denominator.get("filter", {}) if "dataset" in denominator else denominator]
+    used = {code[1:] for filter_ in filters for code in filter_.values() if isinstance(code, str) and code.startswith("$")}
+    return {dimension: entry for dimension, entry in described.items() if dimension in used}
+
+
 def _label(spec: dict, described: dict) -> str:
     """The variable's name with the choice ("Población · Mujeres"); a "total" choice adds nothing."""
     parts = [entry["label"] for entry in described.values() if entry["codes"] != ["total"]]
@@ -242,6 +250,7 @@ def observations(
     spec = catalog.variable(variable_id)
     chosen, described = resolve_options(spec, options)
     facet = catalog.facet_for(variable_id, level, facet_id)
+    described = _applied(facet, described)
     year = _period(facet, level, period)
     parameters: list = [year]
     where = "period = ? AND " + _within(within, level, parameters)
@@ -298,6 +307,7 @@ def value(entity_id: str, variable_id: str, period: int | None = None, facet_id:
     spec = catalog.variable(variable_id)
     chosen, described = resolve_options(spec, options)
     facet = catalog.facet_for(variable_id, level, facet_id)
+    described = _applied(facet, described)
     year = _period(facet, level, period)
     rows = _values(_apply(facet, chosen), spec["scale"], level, "entity_id = ? AND period = ?", [entity_id, year])
     if not rows:

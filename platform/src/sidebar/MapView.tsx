@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { copy } from '../app/copy'
 import { fold, isCount } from '../app/format'
-import type { Catalog, Choices, Facet, Variable } from '../data/api'
+import { facetDimensions, type Catalog, type Choices, type Facet, type Variable } from '../data/api'
 import { OptionControls, Segmented } from './OptionControls'
 import { PeriodControl } from './PeriodControl'
 
@@ -97,6 +97,9 @@ export function MapView({ catalog, catalogFailed, variableId, onVariable, onMeas
   const active = catalog.variables.find((variable) => variable.id === variableId)
   const layerId = active ? (active.measure_of ?? active.id) : undefined
   const activeMeasures = layerId ? (measures.get(layerId) ?? []) : []
+  // Only the options the source in use applies (no age for the foreign population by census section).
+  const facet = facets.find((item) => item.id === facetId)
+  const options = active && facet ? active.options.filter((option) => facetDimensions(facet).has(option.dimension)) : (active?.options ?? [])
 
   return (
     <div className="layers">
@@ -134,7 +137,7 @@ export function MapView({ catalog, catalogFailed, variableId, onVariable, onMeas
                 onChange={onMeasure}
               />
             )}
-            <OptionControls options={active.options} choices={choices} onChange={onChoices} />
+            <OptionControls options={options} choices={choices} onChange={onChoices} />
             {facets.length > 1 && facetId && <Segmented label={copy.mapView.source} items={facets} value={facetId} onChange={onFacet} />}
             <PeriodControl periods={years} value={period} onChange={(value) => onPeriod(value as number | undefined)} />
           </div>

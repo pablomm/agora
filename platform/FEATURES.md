@@ -2,6 +2,18 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-26 · Age indicators, birthplace, foreign population by section
+
+- Demografía gains **Edad media** (from the five-year age groups, within 0.04 years of INE's) and
+  the **índices de envejecimiento, dependencia y sobreenvejecimiento**, all by sex, down to census
+  sections.
+- Nacionalidad y origen gains **Población por lugar de nacimiento** (nº · %): born in the same
+  municipality, another of the province, another province of the community, another community,
+  abroad, or in Spain (the first four together), down to census sections.
+- Población extranjera reaches census sections, with a second source (by section, without age).
+  A layer's card only shows the options its current source applies: zoomed into sections, the age
+  slider hides; the legend names only the choices applied.
+
 ## 2026-10-26 · Contract shares
 
 - Contratos registrados and Contratos registrados por sector gain a % measure: each contract type's
