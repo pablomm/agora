@@ -5,7 +5,9 @@ INE's Censos de Población y Viviendas 2021: a one-off picture of dwellings and 
 pipeline) has no dwellings or households: this is the only source for them by section.
 
 ```sh
-python pipelines/census_2021/census_2021.py   # seconds; ~23 MB of downloads
+python pipelines/census_2021/census_2021.py          # seconds; ~23 MB of downloads
+python pipelines/census_2021/custom_tables.py        # ~8 hours: 1,080 tables from INE's tool, one at a time
+python pipelines/census_2021/census_2021_detail.py   # ~5 min, after the two above
 ```
 
 Needs the provinces pipeline (provinces → autonomous communities).
@@ -85,25 +87,70 @@ with today's sections, leaves them out.
   250 kWh; **sporadic**, 251 to 750 kWh (one to three months' use); **regular**, the rest, in
   bands up to over 10,000 kWh.
 
+## Detail by section: INE's custom tables
+
+`custom_tables.py` downloads, and `census_2021_detail.py` turns into datasets, what INE only offers
+through its custom tables tool ([Crear tablas](https://www.ine.es/Censo2021/Inicio.do)): 20 tables
+with sections as rows, as PC-Axis files in `data/raw/census_2021/{date}/custom/{table}/{group}.px`.
+
+| Dataset | Values | Breakdown |
+|---|---|---|
+| `dwellings_by_year_2021` | Dwellings | `construction_period`: before 1900 … 2011–2020 (11), grouped (before 1951, 1951–1980, 1981–2000, 2001–2020), not stated |
+| `dwellings_mean_age_2021` | Mean age of the dwellings (years) | `dwelling`: `total`, `principal`, `non_principal` |
+| `dwellings_by_building_2021` | Dwellings | `building_type`: one, two, three or more dwellings, non-residential, not stated |
+| `dwellings_by_floor_area_2021` | Dwellings | `floor_area_band`: up to 30 m² … over 180 m² (10), grouped (up to 60, 61–90, 91–120, over 120) |
+| `dwellings_by_floors_2021` | Dwellings | `building_floors`: 1 … 9, 10 or more, grouped (1–2, 3–5, 6–9), not stated |
+| `households_by_structure_2021` | Households | `household_structure`: alone (woman or man, under 65 or 65 and over), lone parent (with a child under 25, or all 25 and over), couple without or with children (likewise), parents with children and others, other |
+| `households_by_type_2021` | Households | `household_type`: one person, no family, one family (5 kinds), two or more families |
+| `households_by_nuclei_2021`, `households_by_families_2021` | Households | number of family nuclei (0, 1, 2, 3 or more), of families (0, 1, 2 or more) |
+| `households_by_members_2021` | Households | `member_group` (aged 0–4, 5–15, 65–84, 85 or more; aged 16–64 working, unemployed) × `members` (0, 1, 2, 3 or more; any) |
+| `nuclei_by_type_2021` | Family nuclei | `nucleus_type`: couple without or with children, parent 1 or 2 with children (INE's names) |
+| `nuclei_by_couple_kind_2021` | Family nuclei | `couple_kind`: married, cohabiting (both single, other), not a couple |
+| `nuclei_by_couple_sexes_2021` | Family nuclei | `couple_sexes`: different sex, same sex (two women, two men), not a couple |
+| `nuclei_by_children_2021` | Family nuclei | `children`: number of children |
+| `nuclei_mean_children_2021` | Mean children per nucleus | `nucleus_type` |
+
+How the tool is asked (`custom_tables.py`): a table per group of municipalities of up to 2,500
+sections (a whole province is too big for Madrid's or Barcelona's: 54 requests per table), each in
+a fresh session, one at a time. **INE's server mixes up concurrent requests**: run in parallel, a
+table came with another's rows or values (10 of the first 721). Every table is checked: the
+municipalities asked for, the variable asked for, as many values as rows × columns, and counts that
+add up to each section's official total (nuclei: 0.4–1.2 per household in at least 90% of sections; means: in range).
+A failing table is asked again; tables already there are skipped, so running it again (with
+`--date` set to the folder's day) completes a download. A download from 2023 (47,606 tables, run in parallel) had 1,114
+such tables (whole provinces with another's data) and isn't used.
+
+How it's turned into sections (`census_2021_detail.py`). The tool only shows sections of about 500
+units or more (dwellings, households or nuclei, whatever the table counts: the smallest shown has
+~500), and so whole small municipalities (Madrid: 1,646 of its 2,443 sections shown; Soria: 26 of
+183 municipalities). Its districts, municipalities and group totals **add up their shown sections
+only** (the difference is ±30 at most, in every table): there is no remainder for the hidden ones.
+It also perturbs its cells slightly (statistical disclosure control: ±1–3 against the indicators
+file). So:
+
+- **Counts**: a shown section keeps its split by category; a hidden one takes its district's (else
+  its municipality's, else the group's), which is the split of the shown sections around it. Each
+  section's split is then fitted to its total in integers (largest remainders), which takes the
+  noise out: the official dwellings or households (`dwellings_2021`, `households_2021`); nuclei,
+  the tool's own, and for a hidden section its households' nuclei from `households_by_nuclei_2021`
+  (one, two, three for "3 or more"; in shown sections this matches the tool's total within 0.5%).
+  Districts and up are summed from sections, so every table adds up to Spain's 18,539,223
+  households (13.2 million nuclei). Hidden sections, `imputed`, are about 29% of sections for
+  dwellings (4% by floor area), 51% for households and 79% for nuclei; as they take the split of
+  bigger sections nearby, they lean towards it (in rural areas, fewer single-family dwellings and
+  old buildings than they surely have).
+- **Means**: as the tool gives them for shown sections; a hidden one takes its district's, else
+  its municipality's, else its group's (of shown sections); a 0 (nothing to average: no
+  non-principal dwellings) is left out. Every level up is weighted by what it's the mean of.
+
 ## Not here yet
 
 By municipality INE also publishes, only for provincial capitals and municipalities of over 50,000
 residents: dwellings by year of construction and floor area, tenure, households by type and
-structure (tables 59526–59530, 59544, 59545; downloaded, not used).
-
-By section, the rest is only in INE's custom tables tool ([Crear tablas](https://www.ine.es/Censo2021/Inicio.do)).
-For family dwellings it offers, with sections as rows: floor area and floor area per occupant
-(bands), tenure, dwelling type by building (one, two, three or more dwellings, non-residential),
-floors above and below ground, year of construction (grouped and in detail), household size; and as
-measures, the count, the dwellings' **mean age**, mean floor area and the share of non-principal
-ones. Households, couples and family nuclei have their own variables (household type and
-structure, nuclei by type). Two ways in, neither in files:
-
-- "Todas las secciones" (all of Spain at once): too big to show; INE offers to process it and email
-  the result, which asks for a name, organisation, email and phone.
-- One municipality at a time, choosing its districts and sections: some 8,000 requests per table.
-
-The microdata (10% sample) identify municipalities of over 10,000 residents only.
+structure (tables 59526–59530, 59544, 59545; downloaded, not used: the custom tables cover them by
+section). The tool has more (people by any census variable, dwellings by detailed year…): add a line
+to `TABLES` in `custom_tables.py` and a dataset in `census_2021_detail.py`. The microdata (10%
+sample) identify municipalities of over 10,000 residents only.
 
 ## License
 

@@ -2,6 +2,22 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-27 · Census 2021 detail: dwellings, households and family nuclei by section
+
+- 15 new layers in **Censo 2021**, down to census sections, from INE's custom tables (20 tables,
+  1,080 downloads):
+  - Dwellings: **por año de construcción**, **por tipo de edificio**, **por superficie**, **por
+    plantas del edificio** (nº · %) and **Edad media de la vivienda (2021)**.
+  - Households: **por estructura** (alone by sex and age, lone parents, couples with or without
+    children…), **por tipo**, **por número de núcleos familiares**, **por número de familias** and
+    **según sus miembros** (how many aged 0–4, 5–15, 65–84, 85+, or working or unemployed), nº · %.
+  - Family nuclei: **por tipo**, **Parejas por tipo de unión** (married, cohabiting),
+    **Parejas por sexo de sus miembros**, **por número de hijos** (nº · %) and **Hijos por núcleo
+    familiar (2021)**.
+- INE only shows sections of about 500 units or more; the rest take their district's split, fitted
+  to their official total (marked as imputed). Every households table adds up to Spain's 18,539,223.
+- Nuclei and couples count as whole numbers.
+
 ## 2026-10-26 · Census 2021: dwellings and households
 
 - New topic **Censo 2021**, last in the list (topics can now take a position): a one-off picture on

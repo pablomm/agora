@@ -161,6 +161,508 @@
         "floor_area_per_occupant",
         "mean_household_size"
       ]
+    },
+    {
+      "id": "construction_period",
+      "label": {
+        "es": "Año de construcción",
+        "en": "Year of construction"
+      },
+      "values": {
+        "total": "Total",
+        "before_1951": "Antes de 1951",
+        "before_1900": "Antes de 1900",
+        "1900_1920": "De 1900 a 1920",
+        "1921_1940": "De 1921 a 1940",
+        "1941_1950": "De 1941 a 1950",
+        "1951_1980": "De 1951 a 1980",
+        "1951_1960": "De 1951 a 1960",
+        "1961_1970": "De 1961 a 1970",
+        "1971_1980": "De 1971 a 1980",
+        "1981_2000": "De 1981 a 2000",
+        "1981_1990": "De 1981 a 1990",
+        "1991_2000": "De 1991 a 2000",
+        "2001_2020": "De 2001 a 2020",
+        "2001_2010": "De 2001 a 2010",
+        "2011_2020": "De 2011 a 2020",
+        "not_stated": "No consta"
+      },
+      "order": [
+        "total",
+        "before_1951",
+        "before_1900",
+        "1900_1920",
+        "1921_1940",
+        "1941_1950",
+        "1951_1980",
+        "1951_1960",
+        "1961_1970",
+        "1971_1980",
+        "1981_2000",
+        "1981_1990",
+        "1991_2000",
+        "2001_2020",
+        "2001_2010",
+        "2011_2020",
+        "not_stated"
+      ],
+      "parents": {
+        "before_1900": "before_1951",
+        "1900_1920": "before_1951",
+        "1921_1940": "before_1951",
+        "1941_1950": "before_1951",
+        "1951_1960": "1951_1980",
+        "1961_1970": "1951_1980",
+        "1971_1980": "1951_1980",
+        "1981_1990": "1981_2000",
+        "1991_2000": "1981_2000",
+        "2001_2010": "2001_2020",
+        "2011_2020": "2001_2020"
+      }
+    },
+    {
+      "id": "building_type",
+      "label": {
+        "es": "Tipo de edificio",
+        "en": "Building type"
+      },
+      "values": {
+        "total": "Total",
+        "one_dwelling": "Edificio de una vivienda",
+        "two_dwellings": "Edificio de dos viviendas",
+        "three_or_more": "Edificio de tres o más viviendas",
+        "non_residential": "Edificio no residencial",
+        "not_stated": "No consta"
+      },
+      "order": [
+        "total",
+        "one_dwelling",
+        "two_dwellings",
+        "three_or_more",
+        "non_residential",
+        "not_stated"
+      ]
+    },
+    {
+      "id": "floor_area_band",
+      "label": {
+        "es": "Superficie útil",
+        "en": "Usable floor area"
+      },
+      "values": {
+        "total": "Total",
+        "up_to_60": "Hasta 60 m²",
+        "up_to_30": "Hasta 30 m²",
+        "30_45": "De 30 a 45 m²",
+        "46_60": "De 46 a 60 m²",
+        "61_90": "De 61 a 90 m²",
+        "61_75": "De 61 a 75 m²",
+        "76_90": "De 76 a 90 m²",
+        "91_120": "De 91 a 120 m²",
+        "91_105": "De 91 a 105 m²",
+        "106_120": "De 106 a 120 m²",
+        "over_120": "Más de 120 m²",
+        "121_150": "De 121 a 150 m²",
+        "151_180": "De 151 a 180 m²",
+        "over_180": "Más de 180 m²",
+        "not_stated": "No consta"
+      },
+      "order": [
+        "total",
+        "up_to_60",
+        "up_to_30",
+        "30_45",
+        "46_60",
+        "61_90",
+        "61_75",
+        "76_90",
+        "91_120",
+        "91_105",
+        "106_120",
+        "over_120",
+        "121_150",
+        "151_180",
+        "over_180",
+        "not_stated"
+      ],
+      "parents": {
+        "up_to_30": "up_to_60",
+        "30_45": "up_to_60",
+        "46_60": "up_to_60",
+        "61_75": "61_90",
+        "76_90": "61_90",
+        "91_105": "91_120",
+        "106_120": "91_120",
+        "121_150": "over_120",
+        "151_180": "over_120",
+        "over_180": "over_120"
+      }
+    },
+    {
+      "id": "building_floors",
+      "label": {
+        "es": "Plantas sobre rasante",
+        "en": "Floors above ground"
+      },
+      "values": {
+        "total": "Total",
+        "floors_1_2": "1 o 2 plantas",
+        "floors_1": "1 planta",
+        "floors_2": "2 plantas",
+        "floors_3_5": "De 3 a 5 plantas",
+        "floors_3": "3 plantas",
+        "floors_4": "4 plantas",
+        "floors_5": "5 plantas",
+        "floors_6_9": "De 6 a 9 plantas",
+        "floors_6": "6 plantas",
+        "floors_7": "7 plantas",
+        "floors_8": "8 plantas",
+        "floors_9": "9 plantas",
+        "floors_10_plus": "10 o más plantas",
+        "not_stated": "No consta"
+      },
+      "order": [
+        "total",
+        "floors_1_2",
+        "floors_1",
+        "floors_2",
+        "floors_3_5",
+        "floors_3",
+        "floors_4",
+        "floors_5",
+        "floors_6_9",
+        "floors_6",
+        "floors_7",
+        "floors_8",
+        "floors_9",
+        "floors_10_plus",
+        "not_stated"
+      ],
+      "parents": {
+        "floors_1": "floors_1_2",
+        "floors_2": "floors_1_2",
+        "floors_3": "floors_3_5",
+        "floors_4": "floors_3_5",
+        "floors_5": "floors_3_5",
+        "floors_6": "floors_6_9",
+        "floors_7": "floors_6_9",
+        "floors_8": "floors_6_9",
+        "floors_9": "floors_6_9"
+      }
+    },
+    {
+      "id": "household_structure",
+      "label": {
+        "es": "Estructura del hogar",
+        "en": "Household structure"
+      },
+      "values": {
+        "total": "Total",
+        "living_alone": "Personas solas",
+        "alone_under_65": "Solas, menores de 65 años",
+        "woman_alone_under_65": "Mujer sola menor de 65 años",
+        "man_alone_under_65": "Hombre solo menor de 65 años",
+        "alone_65_plus": "Solas, de 65 años o más",
+        "woman_alone_65_plus": "Mujer sola de 65 años o más",
+        "man_alone_65_plus": "Hombre solo de 65 años o más",
+        "lone_parent": "Monoparentales",
+        "lone_parent_young_children": "Monoparental con algún hijo menor de 25 años",
+        "lone_parent_adult_children": "Monoparental con hijos de 25 años o más",
+        "couple_no_children": "Pareja sin hijos",
+        "couple_with_children": "Pareja con hijos",
+        "couple_young_children": "Pareja con algún hijo menor de 25 años",
+        "couple_adult_children": "Pareja con hijos de 25 años o más",
+        "parents_children_others": "Padres con algún hijo menor de 25 años y otras personas",
+        "other": "Otro tipo de hogar"
+      },
+      "order": [
+        "total",
+        "living_alone",
+        "alone_under_65",
+        "woman_alone_under_65",
+        "man_alone_under_65",
+        "alone_65_plus",
+        "woman_alone_65_plus",
+        "man_alone_65_plus",
+        "lone_parent",
+        "lone_parent_young_children",
+        "lone_parent_adult_children",
+        "couple_no_children",
+        "couple_with_children",
+        "couple_young_children",
+        "couple_adult_children",
+        "parents_children_others",
+        "other"
+      ],
+      "parents": {
+        "alone_under_65": "living_alone",
+        "alone_65_plus": "living_alone",
+        "woman_alone_under_65": "alone_under_65",
+        "man_alone_under_65": "alone_under_65",
+        "woman_alone_65_plus": "alone_65_plus",
+        "man_alone_65_plus": "alone_65_plus",
+        "lone_parent_young_children": "lone_parent",
+        "lone_parent_adult_children": "lone_parent",
+        "couple_young_children": "couple_with_children",
+        "couple_adult_children": "couple_with_children"
+      }
+    },
+    {
+      "id": "household_type",
+      "label": {
+        "es": "Tipo de hogar",
+        "en": "Household type"
+      },
+      "values": {
+        "total": "Total",
+        "one_person": "Unipersonal",
+        "no_family": "Varias personas que no forman familia",
+        "one_family": "Una familia",
+        "family_no_nucleus": "Una familia sin núcleo",
+        "family_one_nucleus": "Una familia con un núcleo",
+        "family_nucleus_and_others": "Una familia con un núcleo y otras personas",
+        "family_two_nuclei": "Una familia con dos núcleos o más",
+        "family_and_unrelated": "Una familia con personas no emparentadas",
+        "two_or_more_families": "Dos o más familias"
+      },
+      "order": [
+        "total",
+        "one_person",
+        "no_family",
+        "one_family",
+        "family_no_nucleus",
+        "family_one_nucleus",
+        "family_nucleus_and_others",
+        "family_two_nuclei",
+        "family_and_unrelated",
+        "two_or_more_families"
+      ],
+      "parents": {
+        "family_no_nucleus": "one_family",
+        "family_one_nucleus": "one_family",
+        "family_nucleus_and_others": "one_family",
+        "family_two_nuclei": "one_family",
+        "family_and_unrelated": "one_family"
+      }
+    },
+    {
+      "id": "household_nuclei",
+      "label": {
+        "es": "Núcleos familiares en el hogar",
+        "en": "Family nuclei in the household"
+      },
+      "values": {
+        "total": "Total",
+        "nuclei_0": "Ninguno",
+        "nuclei_1": "Uno",
+        "nuclei_2_plus": "Dos o más",
+        "nuclei_2": "Dos",
+        "nuclei_3_plus": "Tres o más"
+      },
+      "order": [
+        "total",
+        "nuclei_0",
+        "nuclei_1",
+        "nuclei_2_plus",
+        "nuclei_2",
+        "nuclei_3_plus"
+      ],
+      "parents": {
+        "nuclei_2": "nuclei_2_plus",
+        "nuclei_3_plus": "nuclei_2_plus"
+      }
+    },
+    {
+      "id": "household_families",
+      "label": {
+        "es": "Familias en el hogar",
+        "en": "Families in the household"
+      },
+      "values": {
+        "total": "Total",
+        "families_0": "Ninguna",
+        "families_1": "Una",
+        "families_2_plus": "Dos o más"
+      },
+      "order": [
+        "total",
+        "families_0",
+        "families_1",
+        "families_2_plus"
+      ]
+    },
+    {
+      "id": "member_group",
+      "label": {
+        "es": "Miembros",
+        "en": "Members"
+      },
+      "values": {
+        "aged_0_4": "De 0 a 4 años",
+        "aged_5_15": "De 5 a 15 años",
+        "aged_65_84": "De 65 a 84 años",
+        "aged_85_plus": "De 85 años o más",
+        "working": "De 16 a 64 años que trabajan",
+        "unemployed": "De 16 a 64 años en paro"
+      },
+      "order": [
+        "aged_0_4",
+        "aged_5_15",
+        "aged_65_84",
+        "aged_85_plus",
+        "working",
+        "unemployed"
+      ]
+    },
+    {
+      "id": "members",
+      "label": {
+        "es": "Cuántos",
+        "en": "How many"
+      },
+      "values": {
+        "total": "Total",
+        "members_1_plus": "Alguno",
+        "members_0": "Ninguno",
+        "members_1": "Uno",
+        "members_2": "Dos",
+        "members_3_plus": "Tres o más"
+      },
+      "order": [
+        "total",
+        "members_1_plus",
+        "members_0",
+        "members_1",
+        "members_2",
+        "members_3_plus"
+      ],
+      "parents": {
+        "members_1": "members_1_plus",
+        "members_2": "members_1_plus",
+        "members_3_plus": "members_1_plus"
+      }
+    },
+    {
+      "id": "nucleus_type",
+      "label": {
+        "es": "Tipo de núcleo",
+        "en": "Nucleus type"
+      },
+      "values": {
+        "total": "Total",
+        "couple": "Parejas",
+        "couple_no_children": "Pareja sin hijos",
+        "couple_with_children": "Pareja con hijos",
+        "lone_parent": "Monoparentales",
+        "parent_1": "Progenitor 1 con hijos",
+        "parent_2": "Progenitor 2 con hijos"
+      },
+      "order": [
+        "total",
+        "couple",
+        "couple_no_children",
+        "couple_with_children",
+        "lone_parent",
+        "parent_1",
+        "parent_2"
+      ],
+      "parents": {
+        "couple_no_children": "couple",
+        "couple_with_children": "couple",
+        "parent_1": "lone_parent",
+        "parent_2": "lone_parent"
+      }
+    },
+    {
+      "id": "couple_kind",
+      "label": {
+        "es": "Tipo de unión",
+        "en": "Kind of union"
+      },
+      "values": {
+        "total": "Total",
+        "couple": "Parejas",
+        "married": "Casadas (de derecho)",
+        "cohabiting": "De hecho",
+        "cohabiting_single": "De hecho, ambos solteros",
+        "cohabiting_other": "De hecho, otras",
+        "not_couple": "Núcleos que no son pareja"
+      },
+      "order": [
+        "total",
+        "couple",
+        "married",
+        "cohabiting",
+        "cohabiting_single",
+        "cohabiting_other",
+        "not_couple"
+      ],
+      "parents": {
+        "married": "couple",
+        "cohabiting": "couple",
+        "cohabiting_single": "cohabiting",
+        "cohabiting_other": "cohabiting"
+      }
+    },
+    {
+      "id": "couple_sexes",
+      "label": {
+        "es": "Sexo de la pareja",
+        "en": "Couple's sexes"
+      },
+      "values": {
+        "total": "Total",
+        "couple": "Parejas",
+        "different_sex": "De distinto sexo",
+        "same_sex": "Del mismo sexo",
+        "same_sex_female": "Dos mujeres",
+        "same_sex_male": "Dos hombres",
+        "not_couple": "Núcleos que no son pareja"
+      },
+      "order": [
+        "total",
+        "couple",
+        "different_sex",
+        "same_sex",
+        "same_sex_female",
+        "same_sex_male",
+        "not_couple"
+      ],
+      "parents": {
+        "different_sex": "couple",
+        "same_sex": "couple",
+        "same_sex_female": "same_sex",
+        "same_sex_male": "same_sex"
+      }
+    },
+    {
+      "id": "children",
+      "label": {
+        "es": "Número de hijos",
+        "en": "Number of children"
+      },
+      "values": {
+        "total": "Total",
+        "children_0": "Sin hijos",
+        "children_1": "Uno",
+        "children_2": "Dos",
+        "children_3_plus": "Tres o más",
+        "children_3": "Tres",
+        "children_4_plus": "Cuatro o más"
+      },
+      "order": [
+        "total",
+        "children_0",
+        "children_1",
+        "children_2",
+        "children_3_plus",
+        "children_3",
+        "children_4_plus"
+      ],
+      "parents": {
+        "children_3": "children_3_plus",
+        "children_4_plus": "children_3_plus"
+      }
     }
   ],
   "datasets": [
@@ -385,6 +887,702 @@
         "as_of": "2021-01-01"
       },
       "output": "processed/census_2021/electricity_consumption_2021/{level}.parquet"
+    },
+    {
+      "id": "dwellings_by_year_2021",
+      "title": "Viviendas familiares por año de construcción del edificio (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "dwellings_year"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "dwellings",
+        "unit": "viviendas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "construction_period"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/dwellings_by_year_2021/{level}.parquet"
+    },
+    {
+      "id": "dwellings_mean_age_2021",
+      "title": "Edad media de las viviendas familiares (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "dwellings_mean_age"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "mean_age",
+        "unit": "años",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "dwelling"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/dwellings_mean_age_2021/{level}.parquet"
+    },
+    {
+      "id": "dwellings_by_building_2021",
+      "title": "Viviendas familiares por tipo de edificio (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "dwellings_building"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "dwellings",
+        "unit": "viviendas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "building_type"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/dwellings_by_building_2021/{level}.parquet"
+    },
+    {
+      "id": "dwellings_by_floor_area_2021",
+      "title": "Viviendas familiares por superficie útil (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "dwellings_floor_area"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "dwellings",
+        "unit": "viviendas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "floor_area_band"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/dwellings_by_floor_area_2021/{level}.parquet"
+    },
+    {
+      "id": "dwellings_by_floors_2021",
+      "title": "Viviendas familiares por plantas sobre rasante del edificio (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "dwellings_floors"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "dwellings",
+        "unit": "viviendas",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "building_floors"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/dwellings_by_floors_2021/{level}.parquet"
+    },
+    {
+      "id": "households_by_structure_2021",
+      "title": "Hogares por estructura (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "households_structure"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "households",
+        "unit": "hogares",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "household_structure"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/households_by_structure_2021/{level}.parquet"
+    },
+    {
+      "id": "households_by_type_2021",
+      "title": "Hogares por tipo (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "households_type"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "households",
+        "unit": "hogares",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "household_type"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/households_by_type_2021/{level}.parquet"
+    },
+    {
+      "id": "households_by_nuclei_2021",
+      "title": "Hogares por número de núcleos familiares (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "households_nuclei"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "households",
+        "unit": "hogares",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "household_nuclei"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/households_by_nuclei_2021/{level}.parquet"
+    },
+    {
+      "id": "households_by_families_2021",
+      "title": "Hogares por número de familias (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "households_families"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "households",
+        "unit": "hogares",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "household_families"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/households_by_families_2021/{level}.parquet"
+    },
+    {
+      "id": "households_by_members_2021",
+      "title": "Hogares según cuántos de sus miembros tienen cada edad o están trabajando o en paro (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "households_aged_0_4",
+          "households_aged_5_15",
+          "households_aged_65_84",
+          "households_aged_85_plus",
+          "households_working",
+          "households_unemployed"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "households",
+        "unit": "hogares",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "member_group",
+        "members"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/households_by_members_2021/{level}.parquet"
+    },
+    {
+      "id": "nuclei_by_type_2021",
+      "title": "Núcleos familiares por tipo (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "nuclei_type"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "nuclei",
+        "unit": "núcleos",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "nucleus_type"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/nuclei_by_type_2021/{level}.parquet"
+    },
+    {
+      "id": "nuclei_by_couple_kind_2021",
+      "title": "Núcleos familiares por tipo de unión de la pareja (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "nuclei_couple_kind"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "nuclei",
+        "unit": "núcleos",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "couple_kind"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/nuclei_by_couple_kind_2021/{level}.parquet"
+    },
+    {
+      "id": "nuclei_by_couple_sexes_2021",
+      "title": "Núcleos familiares por sexo de los miembros de la pareja (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "nuclei_couple_sexes"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "nuclei",
+        "unit": "núcleos",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "couple_sexes"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/nuclei_by_couple_sexes_2021/{level}.parquet"
+    },
+    {
+      "id": "nuclei_by_children_2021",
+      "title": "Núcleos familiares por número de hijos (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "nuclei_children"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "nuclei",
+        "unit": "núcleos",
+        "aggregation": "sum"
+      },
+      "dimensions": [
+        "children"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/nuclei_by_children_2021/{level}.parquet"
+    },
+    {
+      "id": "nuclei_mean_children_2021",
+      "title": "Número medio de hijos por núcleo familiar (Censos de Población y Viviendas 2021, tablas a medida)",
+      "publisher": {
+        "name": "INE",
+        "url": "https://www.ine.es"
+      },
+      "source": {
+        "kind": "ine_custom_tables",
+        "operation": "Censos de Población y Viviendas 2021",
+        "url": "https://www.ine.es/Censo2021/Inicio.do",
+        "tables": [
+          "nuclei_mean_children"
+        ],
+        "method": "sections as INE's custom tables show them, fitted to the official totals; hidden sections take their district's remainder (or municipality's, or their group's) by their dwellings or households; levels above summed (means: weighted)"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {
+        "id": "mean_children",
+        "unit": "hijos por núcleo",
+        "aggregation": "none"
+      },
+      "dimensions": [
+        "nucleus_type"
+      ],
+      "base_level": "census_section",
+      "levels": [
+        "census_section",
+        "census_district",
+        "municipality",
+        "province",
+        "autonomous_community",
+        "country"
+      ],
+      "periods": "2021",
+      "validity": {
+        "kind": "yearly",
+        "as_of": "2021-01-01"
+      },
+      "output": "processed/census_2021/nuclei_mean_children_2021/{level}.parquet"
     }
   ],
   "variables": [
@@ -820,6 +2018,1303 @@
           "dataset": "electricity_consumption_2021",
           "numerator": {
             "consumption_statistic": "$consumption_statistic"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_by_year_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Viviendas por año de construcción (2021)",
+        "en": "Dwellings by year of construction (2021)"
+      },
+      "description": {
+        "es": "Viviendas familiares según el año de construcción de su edificio. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family dwellings by when their building was built. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "viviendas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "construction_period",
+          "values": [
+            "before_1951",
+            "before_1900",
+            "1900_1920",
+            "1921_1940",
+            "1941_1950",
+            "1951_1980",
+            "1951_1960",
+            "1961_1970",
+            "1971_1980",
+            "1981_2000",
+            "1981_1990",
+            "1991_2000",
+            "2001_2020",
+            "2001_2010",
+            "2011_2020",
+            "not_stated"
+          ],
+          "default": "2001_2020"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_by_year_2021",
+          "numerator": {
+            "construction_period": "$construction_period"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_by_year_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de viviendas por año de construcción (2021)",
+        "en": "Share of dwellings by year of construction (2021)"
+      },
+      "measure_of": "dwellings_by_year_2021",
+      "description": {
+        "es": "Viviendas familiares según el año de construcción de su edificio, sobre el total de viviendas. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family dwellings by when their building was built, over all dwellings. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "construction_period",
+          "values": [
+            "before_1951",
+            "before_1900",
+            "1900_1920",
+            "1921_1940",
+            "1941_1950",
+            "1951_1980",
+            "1951_1960",
+            "1961_1970",
+            "1971_1980",
+            "1981_2000",
+            "1981_1990",
+            "1991_2000",
+            "2001_2020",
+            "2001_2010",
+            "2011_2020",
+            "not_stated"
+          ],
+          "default": "2001_2020"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_by_year_2021",
+          "numerator": {
+            "construction_period": "$construction_period"
+          },
+          "denominator": {
+            "construction_period": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_mean_age_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Edad media de la vivienda (2021)",
+        "en": "Mean dwelling age (2021)"
+      },
+      "description": {
+        "es": "Años desde la construcción del edificio, de media, de todas las viviendas o de las principales o no principales. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Years since their building was built, on average, for all dwellings or the principal or other ones. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "años",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "dwelling",
+          "values": [
+            "total",
+            "principal",
+            "non_principal"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_mean_age_2021",
+          "numerator": {
+            "dwelling": "$dwelling"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_by_building_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Viviendas por tipo de edificio (2021)",
+        "en": "Dwellings by building type (2021)"
+      },
+      "description": {
+        "es": "Viviendas familiares en edificios residenciales de una, dos o tres o más viviendas, o en edificios no residenciales. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family dwellings in residential buildings of one, two or three or more dwellings, or in non-residential buildings. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "viviendas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "building_type",
+          "values": [
+            "one_dwelling",
+            "two_dwellings",
+            "three_or_more",
+            "non_residential",
+            "not_stated"
+          ],
+          "default": "one_dwelling"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_by_building_2021",
+          "numerator": {
+            "building_type": "$building_type"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_by_building_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de viviendas por tipo de edificio (2021)",
+        "en": "Share of dwellings by building type (2021)"
+      },
+      "measure_of": "dwellings_by_building_2021",
+      "description": {
+        "es": "Viviendas familiares por tipo de edificio, sobre el total de viviendas. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family dwellings by building type, over all dwellings. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "building_type",
+          "values": [
+            "one_dwelling",
+            "two_dwellings",
+            "three_or_more",
+            "non_residential",
+            "not_stated"
+          ],
+          "default": "one_dwelling"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_by_building_2021",
+          "numerator": {
+            "building_type": "$building_type"
+          },
+          "denominator": {
+            "building_type": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_by_floor_area_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Viviendas por superficie (2021)",
+        "en": "Dwellings by floor area (2021)"
+      },
+      "description": {
+        "es": "Viviendas familiares según su superficie útil (estimada por el INE a partir del Catastro). A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family dwellings by usable floor area (estimated by INE from Catastro). On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "viviendas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "floor_area_band",
+          "values": [
+            "up_to_60",
+            "up_to_30",
+            "30_45",
+            "46_60",
+            "61_90",
+            "61_75",
+            "76_90",
+            "91_120",
+            "91_105",
+            "106_120",
+            "over_120",
+            "121_150",
+            "151_180",
+            "over_180",
+            "not_stated"
+          ],
+          "default": "up_to_60"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_by_floor_area_2021",
+          "numerator": {
+            "floor_area_band": "$floor_area_band"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_by_floor_area_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de viviendas por superficie (2021)",
+        "en": "Share of dwellings by floor area (2021)"
+      },
+      "measure_of": "dwellings_by_floor_area_2021",
+      "description": {
+        "es": "Viviendas familiares según su superficie útil, sobre el total de viviendas. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family dwellings by usable floor area, over all dwellings. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "floor_area_band",
+          "values": [
+            "up_to_60",
+            "up_to_30",
+            "30_45",
+            "46_60",
+            "61_90",
+            "61_75",
+            "76_90",
+            "91_120",
+            "91_105",
+            "106_120",
+            "over_120",
+            "121_150",
+            "151_180",
+            "over_180",
+            "not_stated"
+          ],
+          "default": "up_to_60"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_by_floor_area_2021",
+          "numerator": {
+            "floor_area_band": "$floor_area_band"
+          },
+          "denominator": {
+            "floor_area_band": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_by_floors_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Viviendas por plantas del edificio (2021)",
+        "en": "Dwellings by building floors (2021)"
+      },
+      "description": {
+        "es": "Viviendas familiares según las plantas sobre rasante de su edificio. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family dwellings by their building's floors above ground. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "viviendas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "building_floors",
+          "values": [
+            "floors_1_2",
+            "floors_1",
+            "floors_2",
+            "floors_3_5",
+            "floors_3",
+            "floors_4",
+            "floors_5",
+            "floors_6_9",
+            "floors_6",
+            "floors_7",
+            "floors_8",
+            "floors_9",
+            "floors_10_plus",
+            "not_stated"
+          ],
+          "default": "floors_10_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_by_floors_2021",
+          "numerator": {
+            "building_floors": "$building_floors"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwellings_by_floors_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de viviendas por plantas del edificio (2021)",
+        "en": "Share of dwellings by building floors (2021)"
+      },
+      "measure_of": "dwellings_by_floors_2021",
+      "description": {
+        "es": "Viviendas familiares según las plantas sobre rasante de su edificio, sobre el total de viviendas. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family dwellings by their building's floors above ground, over all dwellings. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "building_floors",
+          "values": [
+            "floors_1_2",
+            "floors_1",
+            "floors_2",
+            "floors_3_5",
+            "floors_3",
+            "floors_4",
+            "floors_5",
+            "floors_6_9",
+            "floors_6",
+            "floors_7",
+            "floors_8",
+            "floors_9",
+            "floors_10_plus",
+            "not_stated"
+          ],
+          "default": "floors_10_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "dwellings_by_floors_2021",
+          "numerator": {
+            "building_floors": "$building_floors"
+          },
+          "denominator": {
+            "building_floors": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_by_structure_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Hogares por estructura (2021)",
+        "en": "Households by structure (2021)"
+      },
+      "description": {
+        "es": "Hogares de personas solas (por sexo y edad), monoparentales, de parejas con o sin hijos y otros. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Households of people living alone (by sex and age), lone parents, couples with or without children, and others. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "hogares",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "household_structure",
+          "values": [
+            "living_alone",
+            "alone_under_65",
+            "woman_alone_under_65",
+            "man_alone_under_65",
+            "alone_65_plus",
+            "woman_alone_65_plus",
+            "man_alone_65_plus",
+            "lone_parent",
+            "lone_parent_young_children",
+            "lone_parent_adult_children",
+            "couple_no_children",
+            "couple_with_children",
+            "couple_young_children",
+            "couple_adult_children",
+            "parents_children_others",
+            "other"
+          ],
+          "default": "alone_65_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_by_structure_2021",
+          "numerator": {
+            "household_structure": "$household_structure"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_by_structure_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de hogares por estructura (2021)",
+        "en": "Share of households by structure (2021)"
+      },
+      "measure_of": "households_by_structure_2021",
+      "description": {
+        "es": "Hogares de cada estructura sobre el total de hogares. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Households of each structure over all households. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "household_structure",
+          "values": [
+            "living_alone",
+            "alone_under_65",
+            "woman_alone_under_65",
+            "man_alone_under_65",
+            "alone_65_plus",
+            "woman_alone_65_plus",
+            "man_alone_65_plus",
+            "lone_parent",
+            "lone_parent_young_children",
+            "lone_parent_adult_children",
+            "couple_no_children",
+            "couple_with_children",
+            "couple_young_children",
+            "couple_adult_children",
+            "parents_children_others",
+            "other"
+          ],
+          "default": "alone_65_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_by_structure_2021",
+          "numerator": {
+            "household_structure": "$household_structure"
+          },
+          "denominator": {
+            "household_structure": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_by_type_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Hogares por tipo (2021)",
+        "en": "Households by type (2021)"
+      },
+      "description": {
+        "es": "Hogares unipersonales, de varias personas que no forman familia, de una familia (con o sin núcleos y otras personas) o de varias familias. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "One-person households, several people who aren't a family, one family (with or without nuclei and others) or several families. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "hogares",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "household_type",
+          "values": [
+            "one_person",
+            "no_family",
+            "one_family",
+            "family_no_nucleus",
+            "family_one_nucleus",
+            "family_nucleus_and_others",
+            "family_two_nuclei",
+            "family_and_unrelated",
+            "two_or_more_families"
+          ],
+          "default": "no_family"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_by_type_2021",
+          "numerator": {
+            "household_type": "$household_type"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_by_type_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de hogares por tipo (2021)",
+        "en": "Share of households by type (2021)"
+      },
+      "measure_of": "households_by_type_2021",
+      "description": {
+        "es": "Hogares de cada tipo sobre el total de hogares. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Households of each type over all households. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "household_type",
+          "values": [
+            "one_person",
+            "no_family",
+            "one_family",
+            "family_no_nucleus",
+            "family_one_nucleus",
+            "family_nucleus_and_others",
+            "family_two_nuclei",
+            "family_and_unrelated",
+            "two_or_more_families"
+          ],
+          "default": "no_family"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_by_type_2021",
+          "numerator": {
+            "household_type": "$household_type"
+          },
+          "denominator": {
+            "household_type": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_by_nuclei_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Hogares por número de núcleos familiares (2021)",
+        "en": "Households by number of family nuclei (2021)"
+      },
+      "description": {
+        "es": "Hogares sin núcleo familiar (pareja, o progenitor con hijos), con uno o con varios: varios núcleos suelen ser varias generaciones juntas. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Households with no family nucleus (a couple, or a parent with children), one or several: several nuclei are often generations living together. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "hogares",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "household_nuclei",
+          "values": [
+            "nuclei_0",
+            "nuclei_1",
+            "nuclei_2_plus",
+            "nuclei_2",
+            "nuclei_3_plus"
+          ],
+          "default": "nuclei_2_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_by_nuclei_2021",
+          "numerator": {
+            "household_nuclei": "$household_nuclei"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_by_nuclei_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de hogares por número de núcleos familiares (2021)",
+        "en": "Share of households by number of family nuclei (2021)"
+      },
+      "measure_of": "households_by_nuclei_2021",
+      "description": {
+        "es": "Hogares por número de núcleos familiares, sobre el total de hogares. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Households by number of family nuclei, over all households. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "household_nuclei",
+          "values": [
+            "nuclei_0",
+            "nuclei_1",
+            "nuclei_2_plus",
+            "nuclei_2",
+            "nuclei_3_plus"
+          ],
+          "default": "nuclei_2_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_by_nuclei_2021",
+          "numerator": {
+            "household_nuclei": "$household_nuclei"
+          },
+          "denominator": {
+            "household_nuclei": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_by_families_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Hogares por número de familias (2021)",
+        "en": "Households by number of families (2021)"
+      },
+      "description": {
+        "es": "Hogares sin familia (personas que no son parientes), con una o con varias familias. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Households with no family (unrelated people), one or several families. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "hogares",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "household_families",
+          "values": [
+            "families_0",
+            "families_1",
+            "families_2_plus"
+          ],
+          "default": "families_2_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_by_families_2021",
+          "numerator": {
+            "household_families": "$household_families"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_by_families_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de hogares por número de familias (2021)",
+        "en": "Share of households by number of families (2021)"
+      },
+      "measure_of": "households_by_families_2021",
+      "description": {
+        "es": "Hogares por número de familias, sobre el total de hogares. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Households by number of families, over all households. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "household_families",
+          "values": [
+            "families_0",
+            "families_1",
+            "families_2_plus"
+          ],
+          "default": "families_2_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_by_families_2021",
+          "numerator": {
+            "household_families": "$household_families"
+          },
+          "denominator": {
+            "household_families": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_by_members_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Hogares según sus miembros (2021)",
+        "en": "Households by their members (2021)"
+      },
+      "description": {
+        "es": "Hogares según cuántos de sus miembros tienen cada edad (niños de 0 a 4 o de 5 a 15 años, mayores de 65 a 84 o de 85 o más) o, de 16 a 64 años, trabajan o están en paro. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Households by how many of their members are of each age (children aged 0–4 or 5–15, older people aged 65–84 or 85 and over) or, aged 16 to 64, work or are unemployed. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "hogares",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "member_group",
+          "values": [
+            "aged_0_4",
+            "aged_5_15",
+            "aged_65_84",
+            "aged_85_plus",
+            "working",
+            "unemployed"
+          ],
+          "default": "aged_0_4",
+          "control": "select"
+        },
+        {
+          "dimension": "members",
+          "values": [
+            "members_1_plus",
+            "members_0",
+            "members_1",
+            "members_2",
+            "members_3_plus"
+          ],
+          "default": "members_1_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_by_members_2021",
+          "numerator": {
+            "member_group": "$member_group",
+            "members": "$members"
+          }
+        }
+      ]
+    },
+    {
+      "id": "households_by_members_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de hogares según sus miembros (2021)",
+        "en": "Share of households by their members (2021)"
+      },
+      "measure_of": "households_by_members_2021",
+      "description": {
+        "es": "Hogares según cuántos de sus miembros tienen cada edad o trabajan o están en paro, sobre el total de hogares. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Households by how many of their members are of each age or work or are unemployed, over all households. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "member_group",
+          "values": [
+            "aged_0_4",
+            "aged_5_15",
+            "aged_65_84",
+            "aged_85_plus",
+            "working",
+            "unemployed"
+          ],
+          "default": "aged_0_4",
+          "control": "select"
+        },
+        {
+          "dimension": "members",
+          "values": [
+            "members_1_plus",
+            "members_0",
+            "members_1",
+            "members_2",
+            "members_3_plus"
+          ],
+          "default": "members_1_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "households_by_members_2021",
+          "numerator": {
+            "member_group": "$member_group",
+            "members": "$members"
+          },
+          "denominator": {
+            "member_group": "$member_group",
+            "members": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "nuclei_by_type_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Núcleos familiares por tipo (2021)",
+        "en": "Family nuclei by type (2021)"
+      },
+      "description": {
+        "es": "Núcleos familiares: parejas con o sin hijos, y progenitores solos con hijos (progenitor 1 y 2, como los llama el INE). A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family nuclei: couples with or without children, and lone parents with children (parent 1 and 2, as INE calls them). On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "núcleos",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "nucleus_type",
+          "values": [
+            "couple",
+            "couple_no_children",
+            "couple_with_children",
+            "lone_parent",
+            "parent_1",
+            "parent_2"
+          ],
+          "default": "lone_parent"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "nuclei_by_type_2021",
+          "numerator": {
+            "nucleus_type": "$nucleus_type"
+          }
+        }
+      ]
+    },
+    {
+      "id": "nuclei_by_type_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de núcleos familiares por tipo (2021)",
+        "en": "Share of family nuclei by type (2021)"
+      },
+      "measure_of": "nuclei_by_type_2021",
+      "description": {
+        "es": "Núcleos familiares de cada tipo sobre el total de núcleos. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family nuclei of each type over all nuclei. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "nucleus_type",
+          "values": [
+            "couple",
+            "couple_no_children",
+            "couple_with_children",
+            "lone_parent",
+            "parent_1",
+            "parent_2"
+          ],
+          "default": "lone_parent"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "nuclei_by_type_2021",
+          "numerator": {
+            "nucleus_type": "$nucleus_type"
+          },
+          "denominator": {
+            "nucleus_type": "total"
+          }
+        }
+      ]
+    },
+    {
+      "id": "couples_by_kind_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Parejas por tipo de unión (2021)",
+        "en": "Couples by kind of union (2021)"
+      },
+      "description": {
+        "es": "Parejas casadas (de derecho) o de hecho. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Couples married or cohabiting. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "parejas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "couple_kind",
+          "values": [
+            "married",
+            "cohabiting",
+            "cohabiting_single",
+            "cohabiting_other"
+          ],
+          "default": "cohabiting"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "nuclei_by_couple_kind_2021",
+          "numerator": {
+            "couple_kind": "$couple_kind"
+          }
+        }
+      ]
+    },
+    {
+      "id": "couples_by_kind_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de parejas por tipo de unión (2021)",
+        "en": "Share of couples by kind of union (2021)"
+      },
+      "measure_of": "couples_by_kind_2021",
+      "description": {
+        "es": "Parejas casadas o de hecho sobre el total de parejas. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Married or cohabiting couples over all couples. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "couple_kind",
+          "values": [
+            "married",
+            "cohabiting",
+            "cohabiting_single",
+            "cohabiting_other"
+          ],
+          "default": "cohabiting"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "nuclei_by_couple_kind_2021",
+          "numerator": {
+            "couple_kind": "$couple_kind"
+          },
+          "denominator": {
+            "couple_kind": "couple"
+          }
+        }
+      ]
+    },
+    {
+      "id": "couples_by_sexes_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Parejas por sexo de sus miembros (2021)",
+        "en": "Couples by their members' sexes (2021)"
+      },
+      "description": {
+        "es": "Parejas de distinto sexo o del mismo sexo (dos mujeres o dos hombres). A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Couples of different sexes or the same (two women or two men). On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "parejas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "couple_sexes",
+          "values": [
+            "different_sex",
+            "same_sex",
+            "same_sex_female",
+            "same_sex_male"
+          ],
+          "default": "same_sex"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "nuclei_by_couple_sexes_2021",
+          "numerator": {
+            "couple_sexes": "$couple_sexes"
+          }
+        }
+      ]
+    },
+    {
+      "id": "couples_by_sexes_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de parejas por sexo de sus miembros (2021)",
+        "en": "Share of couples by their members' sexes (2021)"
+      },
+      "measure_of": "couples_by_sexes_2021",
+      "description": {
+        "es": "Parejas de distinto o del mismo sexo sobre el total de parejas. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Couples of different or the same sex over all couples. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "couple_sexes",
+          "values": [
+            "different_sex",
+            "same_sex",
+            "same_sex_female",
+            "same_sex_male"
+          ],
+          "default": "same_sex"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "nuclei_by_couple_sexes_2021",
+          "numerator": {
+            "couple_sexes": "$couple_sexes"
+          },
+          "denominator": {
+            "couple_sexes": "couple"
+          }
+        }
+      ]
+    },
+    {
+      "id": "nuclei_mean_children_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Hijos por núcleo familiar (2021)",
+        "en": "Children per family nucleus (2021)"
+      },
+      "description": {
+        "es": "Número medio de hijos que conviven en cada núcleo familiar, en todos o en los de cada tipo. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Mean number of children living in each family nucleus, all or by type. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "hijos por núcleo",
+      "kind": "ratio",
+      "options": [
+        {
+          "dimension": "nucleus_type",
+          "values": [
+            "total",
+            "couple_with_children",
+            "parent_1",
+            "parent_2"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "nuclei_mean_children_2021",
+          "numerator": {
+            "nucleus_type": "$nucleus_type"
+          }
+        }
+      ]
+    },
+    {
+      "id": "nuclei_by_children_2021",
+      "topic": "census_2021",
+      "label": {
+        "es": "Núcleos familiares por número de hijos (2021)",
+        "en": "Family nuclei by number of children (2021)"
+      },
+      "description": {
+        "es": "Núcleos familiares según cuántos hijos conviven en ellos. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family nuclei by how many children live in them. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "núcleos",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "children",
+          "values": [
+            "children_0",
+            "children_1",
+            "children_2",
+            "children_3_plus",
+            "children_3",
+            "children_4_plus"
+          ],
+          "default": "children_3_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "nuclei_by_children_2021",
+          "numerator": {
+            "children": "$children"
+          }
+        }
+      ]
+    },
+    {
+      "id": "nuclei_by_children_2021_share",
+      "topic": "census_2021",
+      "label": {
+        "es": "Proporción de núcleos familiares por número de hijos (2021)",
+        "en": "Share of family nuclei by number of children (2021)"
+      },
+      "measure_of": "nuclei_by_children_2021",
+      "description": {
+        "es": "Núcleos familiares por número de hijos, sobre el total de núcleos. A 1 de enero de 2021, hasta sección censal (secciones de 2021). En sus tablas a medida el INE solo muestra las secciones de unas 500 viviendas, hogares o núcleos o más; las demás toman el reparto de las secciones de su distrito (o municipio), ajustado a su total.",
+        "en": "Family nuclei by number of children, over all nuclei. On 1 January 2021, down to census sections (as drawn in 2021). INE's custom tables only show sections of about 500 dwellings, households or nuclei or more; the rest take the split of their district's (or municipality's) sections, fitted to their total."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "children",
+          "values": [
+            "children_0",
+            "children_1",
+            "children_2",
+            "children_3_plus",
+            "children_3",
+            "children_4_plus"
+          ],
+          "default": "children_3_plus"
+        }
+      ],
+      "facets": [
+        {
+          "id": "census_2021",
+          "label": {
+            "es": "Censo 2021",
+            "en": "Census 2021"
+          },
+          "dataset": "nuclei_by_children_2021",
+          "numerator": {
+            "children": "$children"
+          },
+          "denominator": {
+            "children": "total"
           }
         }
       ]

@@ -11,7 +11,7 @@ const decimal = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 1, maxim
 const compact = new Intl.NumberFormat('es-ES', { notation: 'compact', maximumFractionDigits: 1 })
 
 /** Units of counts (whole numbers); the rest are rates and ratios. */
-const COUNT_UNITS = new Set(['personas', 'contratos', 'viviendas', 'hogares'])
+const COUNT_UNITS = new Set(['personas', 'contratos', 'viviendas', 'hogares', 'núcleos', 'parejas'])
 /** Amounts shown whole, with their unit. */
 const WHOLE_UNITS = new Set(['€', 'kWh'])
 

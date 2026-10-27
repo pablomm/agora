@@ -258,3 +258,20 @@ def test_census_2021(client):
     assert size["stats"]["count"] > 36_000
     median = client.get("/observations", params={"variable": "electricity_consumption_2021", "level": "census_district"}).json()
     assert median["unit"] == "kWh" and median["stats"]["count"] > 5_000
+
+
+def test_census_2021_detail(client):
+    # INE's custom tables, down to sections: hidden sections imputed, every table adding up to the official households.
+    for dataset, dimension in [("households_by_structure_2021", "household_structure"), ("households_by_members_2021", "members"), ("households_by_nuclei_2021", "household_nuclei")]:
+        rows = client.get("/entities/es:country:es/breakdown", params={"dataset": dataset, "period": 2021}).json()["rows"]
+        assert {row["value"] for row in rows if row[dimension] == "total"} == {18_539_223}
+    alone = client.get("/observations", params={"variable": "households_by_structure_2021_share", "level": "census_section", "option": "household_structure:living_alone"}).json()
+    assert alone["stats"]["count"] > 36_000 and all(0 <= value <= 100 for value in alone["values"].values())
+    nuclei = client.get("/entities/es:country:es/breakdown", params={"dataset": "nuclei_by_children_2021", "period": 2021}).json()["rows"]
+    assert 12_500_000 < next(row["value"] for row in nuclei if row["children"] == "total") < 14_000_000
+    same_sex = client.get(f"/entities/{MADRID}/value", params={"variable": "couples_by_sexes_2021_share", "option": "couple_sexes:same_sex"}).json()["value"]
+    assert 0.5 < same_sex < 3
+    children = client.get("/entities/es:country:es/value", params={"variable": "nuclei_mean_children_2021", "option": "nucleus_type:total"}).json()["value"]
+    assert 1 < children < 1.5
+    age = client.get(f"/entities/{MADRID}/value", params={"variable": "dwellings_mean_age_2021", "option": "dwelling:total"}).json()
+    assert 40 < age["value"] < 55
