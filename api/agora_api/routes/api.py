@@ -1,8 +1,11 @@
 """REST endpoints for the web: compact JSON, straight from the services."""
 
-from fastapi import APIRouter, Query
+from typing import Literal
 
-from agora_api.services import catalog, classifications, data, entities
+from fastapi import APIRouter, Query
+from fastapi.responses import FileResponse
+
+from agora_api.services import catalog, classifications, data, downloads, entities
 
 router = APIRouter()
 
@@ -110,3 +113,37 @@ def get_value(entity_id: str, variable: str, period: int | None = None, facet: s
 @router.get("/entities/{entity_id}/breakdown")
 def get_breakdown(entity_id: str, dataset: str, period: int | None = None) -> dict:
     return data.breakdown(entity_id, dataset, period)
+
+
+@router.get("/datasets")
+def get_datasets(
+    q: str | None = Query(None, description="Only datasets whose id, title, dimensions or kind of rows have every word"),
+    kind: Literal["statistics", "geometry", "reference"] | None = None,
+) -> list[dict]:
+    return downloads.listing(q, kind)
+
+
+@router.get("/datasets/{dataset_id}")
+def get_dataset(dataset_id: str) -> dict:
+    """A dataset's columns, codes and labels (statistics), and its files with their rows and size."""
+    return downloads.describe(dataset_id)
+
+
+# HEAD too: readers like DuckDB ask for the size first, then read the file in ranges.
+@router.api_route("/datasets/{dataset_id}/{file}.{format}", methods=["GET", "HEAD"])
+def download_dataset(
+    dataset_id: str,
+    file: str,
+    format: Literal["parquet", "csv"],
+    period: list[int] | None = Query(None, description="Only these periods (repeat for several)"),
+    within: str | None = Query(None, description="Only units inside this one (e.g. es:ine:prov:28)"),
+    entity: list[str] | None = Query(None, description="Only these units (repeat for several)"),
+    filter: list[str] | None = Query(None, description="Only rows with this value, as dimension:code for statistics (e.g. sex:female) or column:value for the rest (e.g. province_code:28); repeat for several"),
+    labels: bool = Query(False, description="Add each dimension's label next to its code (<dimension>_label)"),
+) -> FileResponse:
+    """
+    One of a dataset's files (a level for statistics, an edition, a province…: see /datasets/{id}),
+    as it is or a slice of it, in Parquet or CSV (geometries as WKT).
+    """
+    path = downloads.export(dataset_id, file, format, period, within, entity, downloads.parse_filters(filter), labels)
+    return FileResponse(path, media_type=downloads.FORMATS[format], filename=f"{dataset_id}_{file}.{format}")

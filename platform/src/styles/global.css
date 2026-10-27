@@ -1709,3 +1709,439 @@ body {
   color: var(--muted);
   cursor: default;
 }
+
+/* The data catalogue: in place of the map, filters in the sidebar. */
+.catalog-page {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  background: var(--page);
+}
+
+.catalog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px 24px 40px;
+}
+
+.catalog-header h1 {
+  margin: 0 0 4px;
+  font-size: 1.45rem;
+  font-weight: 650;
+}
+
+.catalog-header p,
+.catalog-tab-hint,
+.catalog-message {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.catalog-search {
+  position: relative;
+}
+
+.catalog-search .search-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  color: var(--muted);
+  transform: translateY(-50%);
+}
+
+.catalog-search input {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px 0 38px;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--field);
+}
+
+.catalog-search input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.catalog-tabs {
+  display: grid;
+  gap: 6px;
+}
+
+.catalog-tabs .segmented {
+  max-width: 420px;
+}
+
+.catalog-tabs .segmented button {
+  padding: 6px 10px;
+  font-size: 0.84rem;
+}
+
+.catalog-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.catalog-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.catalog-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.catalog-sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.catalog-sort select,
+.filter-years select {
+  height: 28px;
+  padding: 0 6px;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--field);
+}
+
+.catalog-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.catalog-results > li {
+  display: flex;
+}
+
+.catalog-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 14px 14px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.catalog-card h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.catalog-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.catalog-card-description {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--muted);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.catalog-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.catalog-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.catalog-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-top: auto;
+  padding-top: 8px;
+  font-size: 0.76rem;
+  border-top: 1px solid var(--border);
+}
+
+.catalog-card-related {
+  flex: 1 1 100%;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.catalog-card-id {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.catalog-card-action {
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+.catalog-card-action:hover {
+  filter: brightness(1.08);
+}
+
+/* Which levels have data: a cell per level, from sections to Spain. */
+.coverage-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.coverage-strip li {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.coverage-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+}
+
+.coverage-strip .is-full .coverage-bar {
+  background: var(--accent);
+}
+
+.coverage-strip .is-partial .coverage-bar {
+  background: repeating-linear-gradient(-45deg, var(--accent) 0 3px, color-mix(in srgb, var(--accent) 30%, transparent) 3px 6px);
+}
+
+.coverage-label {
+  overflow: hidden;
+  font-size: 0.64rem;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+}
+
+.coverage-strip .is-none .coverage-label {
+  opacity: 0.6;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  font: inherit;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--hover);
+}
+
+.chip.is-removable {
+  cursor: pointer;
+}
+
+.chip.is-removable:hover {
+  border-color: var(--muted);
+}
+
+.chip.is-tag {
+  color: var(--muted);
+  background: none;
+}
+
+.chip.is-experimental,
+.chip.is-imputed {
+  color: var(--text);
+  background: var(--warning);
+  border-color: transparent;
+}
+
+.text-button,
+.link-button {
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  color: var(--accent);
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.text-button {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.text-button:hover,
+.link-button:hover {
+  text-decoration: underline;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The catalogue's filters, in the sidebar: they scroll under their header. */
+.catalog-filters {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.catalog-filters-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 2px 2px 6px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.catalog-filters-body {
+  flex: 1;
+  min-height: 0;
+  margin: 0 -4px;
+  padding: 0 4px 16px;
+  overflow-y: auto;
+}
+
+.filter-group {
+  display: grid;
+  gap: 1px;
+  margin: 0 0 12px;
+  padding: 0;
+  border: none;
+}
+
+.filter-group legend {
+  margin-bottom: 4px;
+  padding: 0 2px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 4px;
+  font-size: 0.82rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.filter-option:hover {
+  background: var(--hover);
+}
+
+.filter-option input {
+  flex: none;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.filter-option-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-option-count {
+  flex: none;
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.filter-more {
+  justify-self: start;
+  margin: 2px 4px 0;
+}
+
+.filter-years {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .catalog-content {
+    padding: 18px 16px 32px;
+  }
+
+  .catalog-sort {
+    margin-left: 0;
+  }
+}

@@ -79,10 +79,58 @@ export interface Dimension {
   values: { code: string; label: string }[]
 }
 
+/** What a dataset is tagged with: in its catalog.json, or found when the catalogue is built. */
+export type DatasetTag = 'imputed' | 'derived' | 'experimental' | 'single_edition' | 'no_license' | (string & {})
+
+/**
+ * Statistics: values by unit and period, which variables are computed from. Geometries:
+ * boundaries, cadastre, postal codes. Reference: classifications, the territorial units.
+ */
+export type DatasetKind = 'statistics' | 'geometry' | 'reference'
+
+/** One of a dataset's files: a level (statistics), an edition or province (geometries), or its one file. */
+export interface DatasetFile {
+  name: string
+  label: string
+  rows: number
+  /** Its size, when the dataset has all of the file (not a classification's share of the items). */
+  bytes: number | null
+}
+
+/** A table: statistics at one or more levels (one file per level), a geometry or a reference table. */
+export interface Dataset {
+  id: string
+  title: string
+  kind: DatasetKind
+  pipeline: string
+  publisher: string | null
+  license: License | null
+  /** As the pipeline's catalog.json describes it: kind, operation, tables, method… */
+  source: { kind?: string; operation?: string; tables?: unknown; method?: string; url?: string } | null
+  dimensions: string[]
+  base_level: DataLevel | null
+  /** Statistics only. */
+  frequency: 'yearly' | 'monthly' | null
+  /** Geometries and reference tables: what each row is (municipality, cadastral_parcel…). */
+  entity_type: string | null
+  /** Geometries and reference tables: current, a snapshot or an edition, as of when. */
+  validity: { kind?: 'current' | 'snapshot' | 'edition' | (string & {}); as_of?: string | null } | null
+  /** False when its license isn't known: listed, but its files aren't served. */
+  downloadable: boolean
+  files: DatasetFile[]
+  tags: DatasetTag[]
+  /** Periods with data (years, or months as YYYYMM), by level. */
+  coverage: Partial<Record<DataLevel, number[]>>
+  /** The most units a level has data for in any period. */
+  units: Partial<Record<DataLevel, number>>
+}
+
 export interface Catalog {
-  levels: { id: DataLevel; rank: number; label: string }[]
+  /** `units`: how many the level has in the current cartography. */
+  levels: { id: DataLevel; rank: number; label: string; units: number }[]
   topics: { id: string; label: string }[]
   variables: Variable[]
+  datasets: Dataset[]
   dimensions: Dimension[]
 }
 

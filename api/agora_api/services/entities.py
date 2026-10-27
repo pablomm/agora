@@ -50,16 +50,18 @@ def ancestors(entity_id: str) -> list[dict]:
         ).fetchall()
 
 
-def children(entity_id: str, limit: int = 100) -> tuple[list[dict], int]:
+def children(entity_id: str, limit: int | None = 100) -> tuple[list[dict], int]:
+    """The units directly inside one, by name: the first `limit` (None for all) and how many there are."""
     with catalog() as db:
         total = db.execute("SELECT count(*) AS n FROM entities WHERE parent_id = ?", (entity_id,)).fetchone()["n"]
-        rows = db.execute(f"SELECT {COLUMNS} FROM entities WHERE parent_id = ? ORDER BY label LIMIT ?", (entity_id, limit)).fetchall()
+        # SQLite's LIMIT -1 means no limit.
+        rows = db.execute(f"SELECT {COLUMNS} FROM entities WHERE parent_id = ? ORDER BY label LIMIT ?", (entity_id, -1 if limit is None else limit)).fetchall()
     return rows, total
 
 
-def describe(entity_id: str) -> dict:
+def describe(entity_id: str, limit: int | None = 50) -> dict:
     entity = get(entity_id)
-    kids, total = children(entity_id, limit=50)
+    kids, total = children(entity_id, limit)
     return {**entity, "ancestors": ancestors(entity_id), "children": kids, "children_total": total}
 
 
@@ -67,7 +69,7 @@ def _fold(text: str) -> str:
     return "".join(c for c in unicodedata.normalize("NFKD", text) if not unicodedata.combining(c)).lower()
 
 
-def search(query: str, levels: list[str] | None = None, limit: int = 10) -> list[dict]:
+def search(query: str, levels: list[str] | None = None, limit: int | None = 10) -> list[dict]:
     """
     Units by name, accents ignored: exact names first, then names starting with the query, then
     the rest; bigger units before smaller ones when they tie (the province of Madrid before…).
@@ -84,7 +86,6 @@ def search(query: str, levels: list[str] | None = None, limit: int = 10) -> list
             FROM entities_fts f JOIN entities e ON e.rowid = f.rowid JOIN levels l ON l.id = e.level
             LEFT JOIN entities p ON p.id = e.parent_id
             WHERE entities_fts MATCH ? {level_filter}
-            LIMIT 200
             """,
             [match, *(levels or [])],
         ).fetchall()

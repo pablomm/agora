@@ -11,6 +11,18 @@ def test_catalog_lists_variables_with_coverage(client):
     assert [level["id"] for level in catalog["levels"]][0] == "census_section"
 
 
+def test_catalog_datasets_have_tags_and_units(client):
+    catalog = client.get("/catalog").json()
+    levels = {level["id"]: level for level in catalog["levels"]}
+    assert levels["municipality"]["units"] > 8000
+    datasets = {dataset["id"]: dataset for dataset in catalog["datasets"]}
+    assert "imputed" in datasets["registered_unemployment"]["tags"]
+    assert "derived" in datasets["population_mean_age"]["tags"]
+    assert "single_edition" in datasets["dwellings_2021"]["tags"]
+    # Municipalities of 500 residents or more: about half of them.
+    assert datasets["population_education_detail"]["units"]["municipality"] < 0.6 * levels["municipality"]["units"]
+
+
 def test_observations_for_a_choropleth(client):
     body = client.get("/observations", params={"variable": "population", "level": "municipality", "period": 2025}).json()
     assert body["facet"]["id"] == "official"
@@ -275,3 +287,56 @@ def test_census_2021_detail(client):
     assert 1 < children < 1.5
     age = client.get(f"/entities/{MADRID}/value", params={"variable": "dwellings_mean_age_2021", "option": "dwelling:total"}).json()
     assert 40 < age["value"] < 55
+
+
+def test_dataset_described(client):
+    body = client.get("/datasets/population_sex_age").json()
+    assert [dimension["id"] for dimension in body["dimensions"]] == ["sex", "age"]
+    files = {file["name"]: file for file in body["files"]}
+    assert files["census_section"]["rows"] > 10_000_000 and files["census_section"]["periods"][-1] == 2025 and "value" in body["columns"]
+    assert any(dataset["id"] == "population_sex_age" for dataset in client.get("/datasets", params={"q": "poblacion sexo edad"}).json())
+
+
+def test_catalog_has_geometries_and_reference_tables(client):
+    datasets = {dataset["id"]: dataset for dataset in client.get("/catalog").json()["datasets"]}
+    assert datasets["ign_au_municipalities"]["kind"] == "geometry" and datasets["cnae2025"]["kind"] == "reference"
+    # Catastro's urban parcels: a file per province or Catastro office, without the foral ones'.
+    parcels = {file["name"]: file for file in datasets["catastro_urban_parcels"]["files"]}
+    assert len(parcels) == 52 and "31" not in parcels and parcels["53"]["label"] == "Cádiz (gerencia 53)"
+    assert [file["name"] for file in datasets["navarra_urban_parcels"]["files"]] == ["31"]
+    # Listed but not served: no license known.
+    assert not datasets["postal_code_areas_2024"]["downloadable"] and "no_license" in datasets["postal_code_areas_2024"]["tags"]
+    geometries = client.get("/datasets", params={"kind": "geometry"}).json()
+    assert {dataset["kind"] for dataset in geometries} == {"geometry"}
+
+
+def test_geometry_and_reference_downloads(client):
+    madrid = client.get("/datasets/ign_au_municipalities/municipalities.csv", params={"filter": "province_code:28"}).text.splitlines()
+    # Geometries as WKT in CSV, and with their GeoParquet metadata in a Parquet slice.
+    assert len(madrid) == 1 + 179 and ',"MULTIPOLYGON (((' in madrid[1]
+    sliced = client.get("/datasets/ign_au_provinces/provinces.parquet", params={"filter": "ccaa_code:13"}).content
+    assert sliced[:4] == b"PAR1" and b'"primary_column"' in sliced
+    sections = client.get("/datasets/cnae2025/items.csv", params={"filter": "level:1"}).text.splitlines()
+    assert sections[0].startswith("classification,code,label") and len(sections) == 1 + 22
+    units = client.get("/datasets/territorial_units/municipality.csv", params={"filter": "province_id:es:ine:prov:28"}).text.splitlines()
+    assert len(units) == 1 + 179 and any(",Getafe," in line for line in units)
+    assert client.get("/datasets/postal_code_areas_2024/postal_codes.parquet").status_code == 403
+    assert client.get("/datasets/ign_au_provinces/provinces.csv", params={"period": 2025}).status_code == 400
+
+
+def test_dataset_downloads(client, tmp_path):
+    whole = client.get("/datasets/population_sex_age/province.parquet")
+    assert whole.headers["content-type"] == "application/vnd.apache.parquet" and whole.content[:4] == b"PAR1"
+    # A slice as CSV with labels: Madrid's 179 municipalities, women of every age group, in 2025.
+    sliced = client.get(
+        "/datasets/population_sex_age/municipality.csv",
+        params={"period": 2025, "within": "es:ine:prov:28", "filter": ["sex:female", "age:total"], "labels": "true"},
+    )
+    lines = sliced.text.splitlines()
+    assert lines[0].split(",")[-2:] == ["sex_label", "age_label"] and len(lines) == 1 + 179
+    assert all(line.endswith(",Mujeres,Todas las edades") for line in lines[1:])
+    # The same slice twice is the same file, so readers fetching it in ranges see one version.
+    again = client.head("/datasets/population_sex_age/municipality.parquet", params={"period": 2025, "filter": "sex:female"})
+    assert again.headers["etag"] == client.head("/datasets/population_sex_age/municipality.parquet", params={"period": 2025, "filter": "sex:female"}).headers["etag"]
+    assert client.get("/datasets/population_sex_age/municipality.csv", params={"filter": "colour:red"}).status_code == 400
+    assert client.get("/datasets/population_sex_age/planet.csv").status_code == 404

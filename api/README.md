@@ -55,6 +55,20 @@ are that level's codes (labels come from the classification), `"groups_of": "<cl
 when they group its codes through the correspondences. Both are checked when building, and
 `/classifications/{id}/{code}` lists the dimensions that hold a code.
 
+Datasets carry tags: any a pipeline's `catalog.json` gives (`"tags": [...]`), and those found when
+building: `imputed` (a cell on disk with `origin = imputed`), `derived` (computed from other
+datasets), `experimental` (an experimental statistic), `single_edition` (one period only) and
+`no_license` (none known: listed, but its files aren't served).
+
+Datasets are of three kinds. **Statistics** (a `measure` in the `catalog.json`): values by unit
+and period, a file per level, which variables are computed from. **Geometries** (a `geometry`):
+boundaries, census sections, cadastre, postal codes, with their files: one per edition
+(`{year}`), per province (`{province}`, labelled after the province most of the rows are in), or
+one; an output's `"rows": {"source": "navarra"}` keeps a dataset's rows of files it shares with
+others. **Reference** tables: each classification (its items) and their correspondences, and
+`territorial_units` (every unit's codes, names, the units it's in and bounding box, a file per
+level), written next to the catalogue when building.
+
 A variable whose values are above or below zero (a gap between two groups) says
 `"palette": "diverging"`: the web colors it with two hues and gray around zero.
 
@@ -62,7 +76,7 @@ A variable whose values are above or below zero (a gap between two groups) says
 
 | Endpoint | Returns |
 |---|---|
-| `GET /catalog` | Levels, topics, variables (with each facet's levels and years), datasets, dimensions |
+| `GET /catalog` | Levels (with their units), topics, variables (with each facet's levels and years), datasets (with their levels, years, units per level and tags), dimensions |
 | `GET /variables/{id}` | One variable |
 | `GET /observations?variable&level&period&facet&within&option&change` | `{entity_id: value}` for every unit of a level, plus quantiles for a legend; `within` limits it to the units inside another (e.g. `es:ine:prov:28`); `change=true` gives each unit's change against the year before (the same month for monthly data): % for counts, a difference for the rest (points for rates) |
 | `GET /rank?variable&level&period&within&top&ascending&change` | Highest (or lowest) units, or changes |
@@ -74,6 +88,9 @@ A variable whose values are above or below zero (a gap between two groups) says
 | `GET /entities/{id}/value?variable&period` | One value |
 | `GET /entities/{id}/series?variable` | Values over the years, per source |
 | `GET /entities/{id}/breakdown?dataset&period` | Every cell of a dataset for the unit (population pyramid…) |
+| `GET /datasets?q&kind` | Datasets: statistics (dimensions, frequency, levels with years), geometries and reference tables (what their rows are, as of when, files, rows); tags and whether they can be downloaded |
+| `GET /datasets/{id}` | A dataset's columns (with what they mean), each dimension's codes and labels (statistics), and its files with rows and size (statistics: one per level, with its periods and units) |
+| `GET /datasets/{id}/{file}.{parquet\|csv}?period&within&entity&filter&labels` | One of the dataset's files (a level, an edition, a province…), as it is or a slice: statistics by periods, units inside another, some units and `filter=dimension:code` (repeatable), with `labels=true` adding `<dimension>_label` columns; the rest by `filter=column:value`. Geometries keep their GeoParquet metadata, and go as WKT in CSV. Answers HEAD and ranges, so DuckDB reads it straight from the URL; 403 for a dataset whose license isn't known |
 
 Unknown variables, units or years answer 404 with the reason; impossible requests (a level inside
 a smaller one) answer 400.
@@ -81,20 +98,26 @@ a smaller one) answer 400.
 ## MCP
 
 The same data as tools for agents, at `http://localhost:8000/mcp` (streamable HTTP), or over stdio
-with `python -m agora_api.mcp`. Results are small and self-explaining: labels, units, year, source
-and its attribution; rankings and comparisons are computed on the server, so an agent never gets
-thousands of rows.
+with `python -m agora_api.mcp`. Results are self-explaining: labels, units, year, source and its
+attribution; rankings and comparisons are computed on the server. Lists are short by default, but
+have no cap: `limit`, `top` or `children` set to null return everything. Whole tables don't go
+through the model: `download_dataset` hands it a link to the file, served by the REST API at
+`AGORA_PUBLIC_URL` (default `http://localhost:8000`), to read with its own tools.
 
 | Tool | |
 |---|---|
-| `search_entities(query, level?)` | Places by name → ids |
-| `describe_entity(entity_id)` | What it is, what it's inside, what it contains |
+| `search_entities(query, level?, limit?)` | Places by name → ids |
+| `describe_entity(entity_id, children?)` | What it is, what it's inside, what it contains |
 | `list_variables(topic?)` | Variables, units, and per source the levels and years |
 | `get_value(entity_id, variable, year?)` | One value, with its source |
 | `get_series(entity_id, variable)` | Values over the years, per source |
 | `get_breakdown(entity_id, dataset, year?)` | A full split (pyramid, nationality), with labels |
 | `rank(variable, level, year?, within?, top?, ascending?)` | Top places, optionally inside another |
 | `compare(entity_ids, variable, year?)` | The same variable for several places |
+| `classification(id, code?, query?, level?, limit?)` | Classification items, or one code with its correspondences |
+| `list_datasets(query?)` | The datasets the variables come from |
+| `describe_dataset(dataset)` | Columns, codes and labels, rows and size per level |
+| `download_dataset(dataset, level, periods?, within?, entity_ids?, filters?, format?, labels?)` | A link to the file (or a slice), its rows and columns, and how to read it |
 
 Expected failures (unknown place, no data that year) reach the agent with their message.
 

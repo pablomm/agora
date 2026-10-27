@@ -55,3 +55,16 @@ export function periodTime(period: number): number {
 }
 
 export const formatInteger = (value: number) => integer.format(value)
+
+const BYTE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB']
+
+/** A file's size, like ls -h: 900 KB, 64 MB, 2,6 GB. */
+export function formatBytes(bytes: number): string {
+  let value = bytes
+  let index = 0
+  while (value >= 1024 && index < BYTE_UNITS.length - 1) {
+    value /= 1024
+    index++
+  }
+  return `${new Intl.NumberFormat('es-ES', { maximumFractionDigits: value < 10 && index > 0 ? 1 : 0 }).format(value)} ${BYTE_UNITS[index]}`
+}

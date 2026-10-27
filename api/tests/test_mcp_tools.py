@@ -30,3 +30,15 @@ def test_options():
 def test_list_variables_is_compact():
     variables = {variable["id"]: variable for variable in tools.list_variables()}
     assert variables["population"]["sources"][0]["levels"]["municipality"] == "1996–2025"
+
+
+def test_download_link_and_shape():
+    result = tools.download_dataset("population_sex_age", "census_section", periods=[2025], within="es:ine:mun:28079", filters={"sex": "female"}, labels=True)
+    assert result["url"].startswith("http://localhost:8000/datasets/population_sex_age/census_section.parquet?period=2025")
+    # Madrid's sections, each with its 22 age groups.
+    assert result["rows"] % 22 == 0 and result["rows"] > 2000 * 22
+    assert {"sex_label", "age_label", "value"} <= set(result["columns"]) and "INE" in result["attribution"]
+
+
+def test_unlimited_results():
+    assert tools.rank("population", "municipality", top=None)["out_of"] == len(tools.rank("population", "municipality", top=None)["items"])

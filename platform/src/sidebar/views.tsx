@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { copy } from '../app/copy'
 
-export type ViewId = 'map'
+export type ViewId = 'map' | 'catalog'
 
 export interface SidebarView {
   id: ViewId
@@ -23,6 +23,16 @@ export const views: SidebarView[] = [
         strokeWidth="1.7"
         strokeLinejoin="round"
       />
+    ),
+  },
+  {
+    id: 'catalog',
+    label: copy.sidebar.views.catalog,
+    icon: (
+      <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round">
+        <ellipse cx="12" cy="5.5" rx="7" ry="2.5" />
+        <path d="M5 5.5v13c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-13M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5" />
+      </g>
     ),
   },
 ]

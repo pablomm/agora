@@ -205,6 +205,7 @@
       },
       "output": {
         "path": "processed/cadastre/cadastral_parcels_2023-04/{province}.parquet",
+        "rows": {"source": "catastro"},
         "format": "GeoParquet 1.1, one file per province",
         "fields": [
           {
@@ -305,6 +306,7 @@
       },
       "output": {
         "path": "processed/cadastre/cadastral_parcels_2023-04/{province}.parquet",
+        "rows": {"source": "navarra"},
         "format": "GeoParquet 1.1, one file per province",
         "fields": [
           {
@@ -391,6 +393,7 @@
       },
       "output": {
         "path": "processed/cadastre/cadastral_parcels_2023-04/{province}.parquet",
+        "rows": {"source": "bizkaia"},
         "format": "GeoParquet 1.1, one file per province",
         "fields": [
           {
@@ -478,6 +481,7 @@
       },
       "output": {
         "path": "processed/cadastre/cadastral_parcels_2023-04/{province}.parquet",
+        "rows": {"source": "gipuzkoa"},
         "format": "GeoParquet 1.1, one file per province",
         "fields": [
           {
@@ -559,6 +563,7 @@
       },
       "output": {
         "path": "processed/cadastre/cadastral_parcels_2023-04/{province}.parquet",
+        "rows": {"source": "alava"},
         "format": "GeoParquet 1.1, one file per province",
         "fields": [
           {

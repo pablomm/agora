@@ -394,15 +394,15 @@ def rank(
     level: str,
     period: int | None = None,
     within: str | None = None,
-    top: int = 10,
+    top: int | None = 10,
     ascending: bool = False,
     facet_id: str | None = None,
     options: dict[str, str] | None = None,
     change: bool = False,
 ) -> dict:
-    """The units of a level with the highest (or lowest) value, optionally inside another unit (or change against the year before)."""
+    """The units of a level with the highest (or lowest) value (the first `top`, None for all), optionally inside another unit (or change against the year before)."""
     result = observations(variable_id, level, period, facet_id, within, options, change)
-    ordered = sorted(result["values"].items(), key=lambda item: item[1], reverse=not ascending)[: max(1, min(top, 200))]
+    ordered = sorted(result["values"].items(), key=lambda item: item[1], reverse=not ascending)[: None if top is None else max(1, top)]
     labels = entities.names([entity_id for entity_id, _ in ordered])
     return {
         **{key: result[key] for key in ("variable", "label", "options", "unit", "change", "level", "period", "facet", "within")},

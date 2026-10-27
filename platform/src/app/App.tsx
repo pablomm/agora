@@ -1,5 +1,8 @@
 import type { Map as MaplibreMap } from 'maplibre-gl'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { CatalogFilters } from '../catalog/CatalogFilters'
+import { CatalogPage } from '../catalog/CatalogPage'
+import { catalogEntries, NO_FILTERS, type CatalogFilters as CatalogFilterState } from '../catalog/entries'
 import { ActivityBar } from '../components/ActivityBar'
 import { BoundariesMenu } from '../components/BoundariesMenu'
 import { DetailPanel } from '../components/DetailPanel'
@@ -32,6 +35,8 @@ const NO_PICK: { choices: Choices; facet?: string; change?: boolean } = { choice
 
 export default function App() {
   const [settings, setSettings] = useState(loadSettings)
+  // The page in the main area (the map or the catalogue), and the sidebar's panel, if open.
+  const [page, setPage] = useState<ViewId>('map')
   const [view, setView] = useState<ViewId | undefined>('map')
   const [map, setMap] = useState<MaplibreMap>()
   // The unit clicked on the map (or found by search), open in the detail panel.
@@ -49,6 +54,8 @@ export default function App() {
   useEffect(() => {
     api.catalog().then(setCatalog, () => setCatalogFailed(true))
   }, [])
+  const entries = useMemo(() => catalog && catalogEntries(catalog), [catalog])
+  const [catalogFilters, setCatalogFilters] = useState<CatalogFilterState>(NO_FILTERS)
 
   // The data layer: a variable painted on the boundary layer the map shows, in a year.
   const [variableId, setVariableId] = useState<string>()
@@ -135,8 +142,23 @@ export default function App() {
 
   return (
     <div className="app">
-      <ActivityBar active={view} onSelect={(id) => setView(view === id ? undefined : id)} />
-      {view && (
+      <ActivityBar
+        active={page}
+        onSelect={(id) => {
+          // The page shown toggles its panel; another page opens with its own.
+          if (id === page) setView(view === id ? undefined : id)
+          else {
+            setPage(id)
+            setView(id)
+          }
+        }}
+      />
+      {view === 'catalog' && (
+        <Sidebar viewId={view} onClose={() => setView(undefined)}>
+          <CatalogFilters catalog={catalog} catalogFailed={catalogFailed} entries={entries?.[catalogFilters.tab] ?? []} filters={catalogFilters} onChange={setCatalogFilters} />
+        </Sidebar>
+      )}
+      {view === 'map' && (
         <Sidebar viewId={view} onClose={() => setView(undefined)}>
           <MapView
             catalog={catalog}
@@ -162,7 +184,22 @@ export default function App() {
           />
         </Sidebar>
       )}
-      <main className="map-area">
+      {page === 'catalog' && (
+        <CatalogPage
+          catalog={catalog}
+          catalogFailed={catalogFailed}
+          entries={entries}
+          filters={catalogFilters}
+          onChange={setCatalogFilters}
+          onShowOnMap={(id) => {
+            setVariableId(id)
+            setPage('map')
+            setView('map')
+          }}
+        />
+      )}
+      {/* Hidden, not unmounted, while the catalogue is shown: the map keeps its view and tiles. */}
+      <main className="map-area" hidden={page !== 'map'}>
         <MainMap settings={mapSettings} selected={selected} onSelect={setSelected} choropleth={choropleth} onReady={setMap} />
         <div className="top-left">
           <Header onPlace={goTo} />
@@ -178,7 +215,7 @@ export default function App() {
           </div>
         )}
       </main>
-      {selected && <DetailPanel unit={selected} catalog={catalog} variableId={variableId} choices={choices} facetId={pick.facet} period={period} onClose={closeDetail} />}
+      {selected && page === 'map' && <DetailPanel unit={selected} catalog={catalog} variableId={variableId} choices={choices} facetId={pick.facet} period={period} onClose={closeDetail} />}
     </div>
   )
 }

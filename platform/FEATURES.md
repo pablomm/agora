@@ -2,6 +2,48 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-27 · Geometries and reference tables in the catalogue
+
+- The catalogue lists every table, not only statistics: **Geometrías** (autonomous communities,
+  provinces, municipalities, shared territories, census sections and districts, Catastro's
+  cadastral zones and urban parcels, a file per province, the foral cadastres' parcels, rural
+  polygons and postal code areas) and **Tablas de referencia** (CNAE-2025, CNAE-2009, CNO-11,
+  CNED-2014 A and F, CPA 2.2, their correspondences, and the territorial units with their codes,
+  names and what they're in).
+- New **Tipo** filter (Estadísticas, Geometrías, Tablas de referencia). Their cards say what
+  they're valid as of, how many rows and files, and their size.
+- Tables whose license isn't known (postal code areas, Gipuzkoa's parcels) are listed with
+  **Licencia desconocida**, but can't be downloaded.
+- The API and the MCP tools describe and serve all of them as files, Parquet or CSV (geometries as
+  GeoParquet, or WKT in CSV), whole or filtered by any column.
+
+## 2026-10-27 · Agents can download the data
+
+- The MCP tools have no caps on how much they return: places found, units inside a place, a
+  ranking (all 8,132 municipalities), classification items and places compared. Defaults stay
+  short; `null` asks for everything.
+- New MCP tools to work with the source tables: **list_datasets**, **describe_dataset** (columns,
+  codes with labels, rows and size per level) and **download_dataset**, which gives a link to the
+  file instead of its contents, so an agent reads it with its own tools (DuckDB, pandas…).
+- The API serves the files at `/datasets/{dataset}/{level}.parquet` or `.csv`: the pipeline's own
+  Parquet, or a slice by periods, place, units and codes, optionally with each code's label.
+  DuckDB reads them straight from the URL.
+
+## 2026-10-27 · Data catalogue
+
+- New **Catálogo** tab in the activity bar: the catalogue takes the map's place (the map stays as it
+  was), with its filters in the sidebar.
+- Two lists, one tab each: **Conjuntos de datos** (each a source table, with the same data at
+  several levels) and **Variables** (the map's layers, each computed from one or more of them).
+- Search by name, topic, breakdown, source or id (accents don't matter), sorted by relevance, name
+  or latest data.
+- Filters, each value with how many entries it would give: topic, territorial level (data at every
+  one chosen), source, frequency, characteristics (imputed values, derived, experimental, single
+  edition, partial coverage), breakdown, and years with data. The chosen ones show as chips.
+- Each card: topic, source, a strip of the levels from sections to Spain (full, partial or none,
+  with how many units), years, frequency, breakdowns and tags; datasets list their variables, and
+  variables go to the map with **Ver en el mapa**.
+
 ## 2026-10-27 · Tourist dwellings and companies
 
 - New topic **Vivienda**, from INE's experimental statistic on tourist dwellings (listed on three of

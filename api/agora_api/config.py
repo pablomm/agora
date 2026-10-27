@@ -14,3 +14,6 @@ PIPELINES_DIR = REPO / "pipelines" / "pipelines"
 
 #: The catalogue database, built by `python -m agora_api.catalog.build`.
 CATALOG_DB = Path(os.environ.get("AGORA_CATALOG_DB", REPO / "api" / "data" / "catalog.sqlite"))
+
+#: Where the API is reached from outside: download links handed to agents point here.
+PUBLIC_URL = os.environ.get("AGORA_PUBLIC_URL", "http://localhost:8000").rstrip("/")

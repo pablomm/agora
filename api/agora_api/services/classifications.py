@@ -32,7 +32,7 @@ def _items(classification_id: str) -> list[dict]:
         ).fetchall()
 
 
-def items(classification_id: str, level: int | None = None, parent: str | None = None, query: str | None = None, limit: int = 500) -> dict:
+def items(classification_id: str, level: int | None = None, parent: str | None = None, query: str | None = None, limit: int | None = 500) -> dict:
     """A classification's items in its order: of a level, under a parent, or whose code or label match every word of `query`."""
     rows = _items(classification_id)
     if level is not None:

@@ -2,15 +2,19 @@
 
 import json
 from functools import lru_cache
+from pathlib import Path
 
-from agora_api.config import PROCESSED_DIR
+from agora_api.config import CATALOG_DB, PROCESSED_DIR
 from agora_api.services.db import NotFound, catalog
 
 
 @lru_cache
 def levels() -> list[dict]:
+    """The levels, with how many units each has in the current cartography (`units`)."""
     with catalog() as db:
-        return db.execute("SELECT id, rank, label_es AS label FROM levels ORDER BY rank").fetchall()
+        return db.execute(
+            "SELECT id, rank, label_es AS label, (SELECT count(*) FROM entities WHERE entities.level = levels.id) AS units FROM levels ORDER BY rank"
+        ).fetchall()
 
 
 def level_ids() -> list[str]:
@@ -21,16 +25,27 @@ def level_ids() -> list[str]:
 def datasets() -> dict[str, dict]:
     with catalog() as db:
         rows = db.execute("SELECT * FROM datasets").fetchall()
-        coverage = db.execute("SELECT dataset_id, level, period FROM coverage ORDER BY period").fetchall()
+        coverage = db.execute("SELECT dataset_id, level, period, entities FROM coverage ORDER BY period").fetchall()
+        files = db.execute("SELECT dataset_id, name, label, path, filter, rows, bytes FROM dataset_files ORDER BY dataset_id, position").fetchall()
     out = {}
     for row in rows:
-        row["license"] = json.loads(row["license"] or "null")
-        row["source"] = json.loads(row["source"] or "null")
+        for key in ("license", "source", "validity", "fields"):
+            row[key] = json.loads(row[key] or "null")
         row["dimensions"] = json.loads(row["dimensions"])
+        row["tags"] = json.loads(row["tags"])
+        row["downloadable"] = bool(row["downloadable"])
+        row["files"] = []
         row["coverage"] = {}
+        # The most units a level has data for in any period (fewer than the level has: partial coverage).
+        row["units"] = {}
         out[row["id"]] = row
     for entry in coverage:
-        out[entry["dataset_id"]]["coverage"].setdefault(entry["level"], []).append(entry["period"])
+        dataset = out[entry["dataset_id"]]
+        dataset["coverage"].setdefault(entry["level"], []).append(entry["period"])
+        dataset["units"][entry["level"]] = max(dataset["units"].get(entry["level"], 0), entry["entities"])
+    for entry in files:
+        entry["filter"] = json.loads(entry["filter"] or "null")
+        out[entry.pop("dataset_id")]["files"].append(entry)
     return out
 
 
@@ -44,6 +59,22 @@ def dataset(dataset_id: str) -> dict:
 def dataset_path(dataset_id: str, level: str) -> str:
     template = dataset(dataset_id)["path_template"]
     return str(PROCESSED_DIR / template.replace("processed/", "", 1).format(level=level))
+
+
+def file_path(path: str) -> Path:
+    """Where a dataset file is: the pipelines' outputs (processed/…), or next to the catalogue."""
+    if path.startswith("processed/"):
+        return PROCESSED_DIR / path.removeprefix("processed/")
+    return CATALOG_DB.parent / path
+
+
+def dataset_file(dataset_id: str, name: str) -> dict:
+    """One of a dataset's files, by name (a level for statistics)."""
+    source = dataset(dataset_id)
+    for entry in source["files"]:
+        if entry["name"] == name:
+            return entry
+    raise NotFound(f"{dataset_id} has no file {name!r} (its files: {', '.join(entry['name'] for entry in source['files'])})")
 
 
 @lru_cache
@@ -147,7 +178,11 @@ def summary() -> dict:
         "topics": topics(),
         "variables": list(variables().values()),
         "datasets": [
-            {key: value for key, value in entry.items() if key != "path_template"} for entry in datasets().values()
+            {
+                **{key: value for key, value in entry.items() if key not in ("path_template", "files")},
+                "files": [{key: value for key, value in file.items() if key not in ("path", "filter")} for file in entry["files"]],
+            }
+            for entry in datasets().values()
         ],
         "dimensions": list(dimensions().values()),
     }

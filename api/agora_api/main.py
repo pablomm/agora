@@ -26,13 +26,18 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="Agora API", description="Spanish statistics by territory: the catalogue and its data.", lifespan=lifespan)
 # No authentication yet; open to any origin while it's only local.
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "HEAD"], allow_headers=["*"])
 app.include_router(router)
 
 
 @app.exception_handler(NotFound)
 async def not_found(_: Request, error: NotFound) -> JSONResponse:
     return JSONResponse({"detail": str(error)}, status_code=404)
+
+
+@app.exception_handler(PermissionError)
+async def forbidden(_: Request, error: PermissionError) -> JSONResponse:
+    return JSONResponse({"detail": str(error)}, status_code=403)
 
 
 @app.exception_handler(ValueError)

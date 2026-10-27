@@ -31,6 +31,8 @@ CREATE TABLE topics (
   position INTEGER NOT NULL DEFAULT 0  -- topics show by position, then id (a one-off census after the series)
 );
 
+-- Every table Agora has: statistics (values by unit and period, which variables are computed from),
+-- geometries (boundaries, cadastre…) and reference tables (classifications, territorial units).
 CREATE TABLE datasets (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
@@ -38,10 +40,30 @@ CREATE TABLE datasets (
   publisher TEXT,
   license TEXT,                 -- JSON: id, url, attribution
   source TEXT,                  -- JSON, as in the pipeline's catalog.json
-  dimensions TEXT NOT NULL,     -- JSON list of dimension ids
+  dimensions TEXT NOT NULL,     -- JSON list of dimension ids (statistics only)
   base_level TEXT,
-  frequency TEXT NOT NULL,      -- yearly (period 2025) | monthly (period 202509)
-  path_template TEXT NOT NULL   -- processed/…/{level}.parquet
+  frequency TEXT,               -- statistics: yearly (period 2025) | monthly (period 202509)
+  path_template TEXT NOT NULL,  -- processed/…/{level}.parquet, or the output's path as its catalog.json gives it
+  tags TEXT NOT NULL DEFAULT '[]',  -- JSON list: the catalog.json's, and imputed, derived, experimental, single_edition, no_license found when building
+  kind TEXT NOT NULL,           -- statistics | geometry | reference
+  entity_type TEXT,             -- geometry and reference: what each row is (municipality, cadastral_parcel, classification_item…)
+  validity TEXT,                -- JSON, as in the catalog.json: kind (current, snapshot, edition), as_of, description
+  fields TEXT,                  -- JSON: [{name, type, description}], as in the catalog.json
+  downloadable INTEGER NOT NULL -- 0 when its license isn't known: listed, but its files aren't served
+);
+
+-- The files a dataset's rows are in: one per level (statistics), edition or province (geometries),
+-- or one; `filter` keeps only its rows of a file it shares with others ({column: value}).
+CREATE TABLE dataset_files (
+  dataset_id TEXT NOT NULL REFERENCES datasets(id),
+  name TEXT NOT NULL,           -- census_section, 2026, 28, items…: the download's file name
+  label TEXT NOT NULL,
+  path TEXT NOT NULL,           -- processed/… (the pipelines' outputs), or next to the catalogue
+  filter TEXT,                  -- JSON {column: value}, or null for every row
+  rows INTEGER NOT NULL,
+  bytes INTEGER,                -- the file's size, when the dataset has all of it
+  position INTEGER NOT NULL,
+  PRIMARY KEY (dataset_id, name)
 );
 
 CREATE TABLE dimensions (
