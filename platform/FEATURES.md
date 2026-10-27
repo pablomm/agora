@@ -16,7 +16,7 @@ Log of what the platform does, newest first. Add an entry with every feature tha
     familiar (2021)**.
 - INE only shows sections of about 500 units or more; the rest take their district's split, fitted
   to their official total (marked as imputed). Every households table adds up to Spain's 18,539,223.
-- Nuclei and couples count as whole numbers.
+- Nuclei and couples count as whole numbers; children per nucleus shows two decimals.
 
 ## 2026-10-26 · Census 2021: dwellings and households
 

@@ -8,18 +8,22 @@ export const fold = (text: string) =>
 /** Numbers as Spanish readers write them (1.234.567; 12,5 %). */
 const integer = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 })
 const decimal = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+const decimal2 = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const compact = new Intl.NumberFormat('es-ES', { notation: 'compact', maximumFractionDigits: 1 })
 
 /** Units of counts (whole numbers); the rest are rates and ratios. */
 const COUNT_UNITS = new Set(['personas', 'contratos', 'viviendas', 'hogares', 'núcleos', 'parejas'])
 /** Amounts shown whole, with their unit. */
 const WHOLE_UNITS = new Set(['€', 'kWh'])
+/** Ratios that vary little between places, shown with two decimals. */
+const FINE_UNITS = new Set(['hijos por núcleo'])
 
-/** A variable's value with its unit's precision: counts as integers, the rest with one decimal. */
+/** A variable's value with its unit's precision: counts as integers, fine ratios with two decimals, the rest with one. */
 export function formatValue(value: number, unit: string): string {
   if (unit === '%') return `${decimal.format(value)} %`
   if (WHOLE_UNITS.has(unit)) return `${integer.format(value)} ${unit}`
   if (COUNT_UNITS.has(unit)) return integer.format(value)
+  if (FINE_UNITS.has(unit)) return decimal2.format(value)
   return decimal.format(value)
 }
 
@@ -28,6 +32,7 @@ export function formatCompact(value: number, unit: string): string {
   if (unit === '%') return `${decimal.format(value)} %`
   if (WHOLE_UNITS.has(unit)) return `${integer.format(value)} ${unit}`
   if (COUNT_UNITS.has(unit)) return Math.abs(value) < 1000 ? integer.format(Math.round(value)) : compact.format(value)
+  if (FINE_UNITS.has(unit)) return decimal2.format(value)
   return decimal.format(value)
 }
 
