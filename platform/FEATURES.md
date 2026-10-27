@@ -2,6 +2,44 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-27 · Descriptions, licenses and related data
+
+- Every dataset says what it measures, what it's for and how to read it (on its page and, in two
+  lines, on its card), with **Notas de elaboración** on how it was made, and keywords (searchable).
+- Columns of geometries and reference tables are described in Spanish.
+- New topics for geometries and reference tables: **Territorio y límites**, **Catastro** and
+  **Clasificaciones**.
+- Licenses have their page (`#license/{id}`): what the license is, what it allows, requires and
+  limits, its official texts, the sources using it and every dataset under it. A dataset's page
+  shows its license as open or restricted, with what it requires and a link to that page.
+- Files download only as stored (Parquet; geometries as GeoParquet), each with its sha256.
+- The Catastro's datasets (cadastral zones, urban parcels, rural polygons) are listed but not
+  downloadable (**Sin descarga**): its license doesn't allow redistributing the original
+  information. Their processing notes link where to download the originals.
+- **Primeras filas**: the first 20 rows of any file, as stored, before downloading it.
+- Exploring from a dataset: its variables as tiles (topic, unit, levels, years), going to the map;
+  for geometries and the territorial units, the variables with data at their level, by topic; and
+  related datasets, each saying why (what it's derived from or derives, geometries to map it, the
+  same topic, the classification of its codes, the datasets using a classification).
+- The preview shows the map and the evolution side by side, each with its title (no table).
+
+## 2026-10-27 · Dataset pages
+
+- Every dataset has its page (`#dataset/{id}`), opened from its card's title, from a variable's
+  card, or from another dataset it's derived from; back and forward follow it.
+- Key facts: period or validity, frequency, levels, base level, measure, rows and size.
+- A preview: geometries on a small map from the map's own tiles (layers only drawn up close, like
+  parcels, at the municipality with most of them); statistics as their first variable by provinces
+  in the latest period, and its evolution in Spain.
+- Coverage of statistics: a cell per level and period (months grouped by year), full, partial or
+  without data.
+- Structure: every column with its type and what it is, and each breakdown's codes.
+- The variables computed from it, to paint on the map.
+- Its files, each with rows and size, to download as Parquet or CSV, and how to read one from code.
+- Aside: the license with how to cite it (copyable) and its conditions; the origin (publisher,
+  operation, INE's tables linked, the datasets it's derived from, source links); when it was
+  processed, and its checks against what the source publishes.
+
 ## 2026-10-27 · Geometries and reference tables in the catalogue
 
 - The catalogue lists every table, not only statistics: **Geometrías** (autonomous communities,

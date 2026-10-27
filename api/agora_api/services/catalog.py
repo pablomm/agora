@@ -26,10 +26,10 @@ def datasets() -> dict[str, dict]:
     with catalog() as db:
         rows = db.execute("SELECT * FROM datasets").fetchall()
         coverage = db.execute("SELECT dataset_id, level, period, entities FROM coverage ORDER BY period").fetchall()
-        files = db.execute("SELECT dataset_id, name, label, path, filter, rows, bytes FROM dataset_files ORDER BY dataset_id, position").fetchall()
+        files = db.execute("SELECT dataset_id, name, label, path, filter, rows, bytes, sha256 FROM dataset_files ORDER BY dataset_id, position").fetchall()
     out = {}
     for row in rows:
-        for key in ("license", "source", "validity", "fields"):
+        for key in ("license", "source", "validity", "fields", "measure", "run", "extent", "focus", "description", "processing", "keywords", "topics"):
             row[key] = json.loads(row[key] or "null")
         row["dimensions"] = json.loads(row["dimensions"])
         row["tags"] = json.loads(row["tags"])
@@ -47,6 +47,28 @@ def datasets() -> dict[str, dict]:
         entry["filter"] = json.loads(entry["filter"] or "null")
         out[entry.pop("dataset_id")]["files"].append(entry)
     return out
+
+
+@lru_cache
+def licenses() -> dict[str, dict]:
+    """The licenses datasets are under, each with the ids of its datasets."""
+    with catalog() as db:
+        rows = db.execute("SELECT * FROM licenses ORDER BY id").fetchall()
+    out = {}
+    for row in rows:
+        for key in ("summary", "permissions", "conditions", "limitations"):
+            row[key] = json.loads(row[key])
+        row["open"] = bool(row["open"])
+        row["datasets"] = [entry["id"] for entry in datasets().values() if (entry["license"] or {}).get("id") == row["id"]]
+        out[row["id"]] = row
+    return out
+
+
+def license(license_id: str) -> dict:
+    try:
+        return licenses()[license_id]
+    except KeyError:
+        raise NotFound(f"Unknown license {license_id!r}") from None
 
 
 def dataset(dataset_id: str) -> dict:
@@ -179,12 +201,14 @@ def summary() -> dict:
         "variables": list(variables().values()),
         "datasets": [
             {
-                **{key: value for key, value in entry.items() if key not in ("path_template", "files")},
+                # The run (source tables, checks) is in each dataset's own description (/datasets/{id}).
+                **{key: value for key, value in entry.items() if key not in ("path_template", "files", "run")},
                 "files": [{key: value for key, value in file.items() if key not in ("path", "filter")} for file in entry["files"]],
             }
             for entry in datasets().values()
         ],
         "dimensions": list(dimensions().values()),
+        "licenses": list(licenses().values()),
     }
 
 

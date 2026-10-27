@@ -3,7 +3,9 @@ import { copy } from '../app/copy'
 import { formatBytes, formatPeriod } from '../app/format'
 import type { Catalog, DataLevel, Dataset } from '../data/api'
 import { Segmented } from '../sidebar/OptionControls'
-import { filterEntries, hasFilters, NO_FILTERS, type CatalogEntry, type CatalogFilters, type CatalogTab, type FilterGroup, type SortOrder } from './entries'
+import { DatasetPage } from './DatasetPage'
+import { LicensePage } from './LicensePage'
+import { datasetHref, filterEntries, hasFilters, type CatalogRoute, NO_FILTERS, type CatalogEntry, type CatalogFilters, type CatalogTab, type FilterGroup, type SortOrder } from './entries'
 
 interface Props {
   catalog: Catalog | undefined
@@ -13,16 +15,54 @@ interface Props {
   onChange: (filters: CatalogFilters) => void
   /** Paints a variable on the map (and goes there). */
   onShowOnMap: (variableId: string) => void
+  /** The page open in place of the list: a dataset's (#dataset/{id}) or a license's (#license/{id}). */
+  route?: CatalogRoute
 }
 
 /**
  * The data catalogue, in place of the map: a search over datasets or variables (one tab each),
  * the filters chosen in the sidebar as removable chips, and a card per entry.
  */
-export function CatalogPage({ catalog, catalogFailed, entries, filters, onChange, onShowOnMap }: Props) {
+export function CatalogPage({ catalog, catalogFailed, entries, filters, onChange, onShowOnMap, route }: Props) {
   const [sort, setSort] = useState<SortOrder>('relevance')
   if (catalogFailed) return <div className="catalog-page"><p className="catalog-message">{copy.mapView.unavailableApi}</p></div>
   if (!catalog || !entries) return <div className="catalog-page"><p className="catalog-message">{copy.mapView.loading}</p></div>
+  if (route?.kind === 'license') {
+    const license = catalog.licenses.find((item) => item.id === route.id)
+    return (
+      <div className="catalog-page">
+        {license ? (
+          <LicensePage key={license.id} catalog={catalog} license={license} />
+        ) : (
+          <div className="catalog-content">
+            <a href="#">{`← ${copy.license.back}`}</a>
+            <p className="catalog-message">{copy.license.notFound(route.id)}</p>
+          </div>
+        )}
+      </div>
+    )
+  }
+  if (route?.kind === 'dataset') {
+    const dataset = catalog.datasets.find((item) => item.id === route.id)
+    return (
+      <div className="catalog-page" key={route.id}>
+        {dataset ? (
+          <DatasetPage
+            key={dataset.id}
+            catalog={catalog}
+            dataset={dataset}
+            entry={entries.datasets.find((entry) => entry.id === dataset.id)}
+            onShowOnMap={onShowOnMap}
+          />
+        ) : (
+          <div className="catalog-content">
+            <a href="#">{`← ${copy.dataset.back}`}</a>
+            <p className="catalog-message">{copy.dataset.notFound(route.id)}</p>
+          </div>
+        )}
+      </div>
+    )
+  }
 
   const results = filterEntries(entries[filters.tab], filters, sort)
   const publishers = new Set(catalog.datasets.map((dataset) => dataset.publisher).filter(Boolean))
@@ -161,8 +201,8 @@ function EntryCard({ entry, catalog, onShowOnMap }: { entry: CatalogEntry; catal
         <span className="catalog-card-topic">{statistics ? topics || copy.catalog.noTopic : copy.catalog.kinds[entry.datasetKind]}</span>
         <span className="catalog-card-publisher">{entry.publishers.join(' · ')}</span>
       </div>
-      <h3>{entry.title}</h3>
-      {entry.kind === 'variables' && entry.description && <p className="catalog-card-description">{entry.description}</p>}
+      <h3>{entry.kind === 'datasets' ? <a href={datasetHref(entry.id)}>{entry.title}</a> : entry.title}</h3>
+      {entry.description && <p className={entry.kind === 'datasets' ? 'catalog-card-description is-clamped' : 'catalog-card-description'}>{entry.description}</p>}
       {entry.levels.length > 0 && <CoverageStrip entry={entry} catalog={catalog} />}
       {statistics || !dataset ? <PeriodMeta entry={entry} catalog={catalog} /> : <ExtentMeta dataset={dataset} />}
       {entry.dimensions.length > 0 && (
@@ -201,7 +241,12 @@ function EntryCard({ entry, catalog, onShowOnMap }: { entry: CatalogEntry; catal
         ) : (
           <>
             <span className="catalog-card-related">
-              {entry.related.map((id) => datasets.get(id)?.title ?? id).join(' · ')}
+              {entry.related.map((id, index) => (
+                <span key={id}>
+                  {index > 0 && ' · '}
+                  <a href={datasetHref(id)}>{datasets.get(id)?.title ?? id}</a>
+                </span>
+              ))}
             </span>
             <button type="button" className="catalog-card-action" onClick={() => onShowOnMap(entry.id)}>
               {copy.catalog.showOnMap}

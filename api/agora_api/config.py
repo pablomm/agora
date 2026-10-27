@@ -12,6 +12,9 @@ PROCESSED_DIR = DATA_DIR / "processed"
 #: Each pipeline's catalog.json: what it provides.
 PIPELINES_DIR = REPO / "pipelines" / "pipelines"
 
+#: The licenses datasets are under (their catalog.json names one by id).
+LICENSES = REPO / "pipelines" / "licenses.json"
+
 #: The catalogue database, built by `python -m agora_api.catalog.build`.
 CATALOG_DB = Path(os.environ.get("AGORA_CATALOG_DB", REPO / "api" / "data" / "catalog.sqlite"))
 

@@ -50,8 +50,22 @@
   "datasets": [
     {
       "id": "ign_au_municipalities",
+      "description": {
+        "es": "Límites de los 8.132 municipios vigentes, con su código INE (cinco dígitos) y su nombre oficial, bilingüe donde lo es. Es la geometría para cartografiar cualquier dato municipal: une por ine_code o por id.",
+        "en": "Boundaries of the 8,132 current municipalities, with their INE code (five digits) and official name, bilingual where official. It's the geometry to map any municipal data: join by ine_code or id."
+      },
+      "processing": {
+        "es": "Del servicio WFS INSPIRE de unidades administrativas del IGN, en WGS84 (EPSG:4326). Solo los municipios actuales; los territorios compartidos entre municipios van aparte.",
+        "en": "From IGN's INSPIRE administrative units WFS, in WGS84 (EPSG:4326). Current municipalities only; territories shared between municipalities are a dataset of their own."
+      },
+      "keywords": {
+        "es": ["límites municipales", "municipios", "términos municipales", "cartografía", "IGN"],
+        "en": ["municipal boundaries", "municipalities", "cartography", "IGN"]
+      },
+      "topics": ["territory"],
       "title": "Municipios de España (IGN, unidades administrativas INSPIRE)",
       "entity_type": "municipality",
+      "tiles": "municipalities",
       "publisher": { "name": "Instituto Geográfico Nacional (IGN)", "url": "https://www.ign.es" },
       "source": {
         "kind": "wfs",
@@ -64,7 +78,7 @@
       "validity": {
         "kind": "current",
         "as_of": "retrieval",
-        "description": "The service publishes the current municipalities and boundaries, without validity dates; the data is valid as of its retrieval date. Municipalities that no longer exist are not included; their history will come from INE's registry."
+        "description": {"es": "El servicio publica los municipios y límites actuales, sin fechas de vigencia: los datos son válidos a la fecha de su descarga. No incluye los municipios que ya no existen; su historia vendrá del registro del INE.", "en": "The service publishes the current municipalities and boundaries, without validity dates; the data is valid as of its retrieval date. Municipalities that no longer exist are not included; their history will come from INE's registry."}
       },
       "coverage": {
         "country": "ES",
@@ -87,22 +101,36 @@
         "path": "processed/municipalities/municipalities.parquet",
         "format": "GeoParquet 1.1",
         "fields": [
-          { "name": "id", "type": "string", "description": "Catalogue id of the municipality (es:ine:mun:{ine_code})." },
-          { "name": "ine_code", "type": "string", "description": "INE municipality code (five digits, no control digit)." },
-          { "name": "name", "type": "string", "description": "Official name as published by IGN; bilingual where official." },
-          { "name": "province_code", "type": "string", "description": "INE province code." },
-          { "name": "ccaa_code", "type": "string", "description": "INE autonomous community code." },
-          { "name": "parent_id", "type": "string", "description": "Catalogue id of the province (es:ine:prov:{province_code})." },
-          { "name": "ign_code", "type": "string", "description": "IGN national code (34 + CCAA + province + INE code)." },
-          { "name": "geometry", "type": "geometry", "description": "Municipal boundary." }
+          { "name": "id", "type": "string", "description": {"es": "Id del municipio en el catálogo (es:ine:mun:{ine_code}).", "en": "Catalogue id of the municipality (es:ine:mun:{ine_code})."} },
+          { "name": "ine_code", "type": "string", "description": {"es": "Código INE del municipio (cinco dígitos, sin dígito de control).", "en": "INE municipality code (five digits, no control digit)."} },
+          { "name": "name", "type": "string", "description": {"es": "Nombre oficial tal como lo publica el IGN; bilingüe donde lo es.", "en": "Official name as published by IGN; bilingual where official."} },
+          { "name": "province_code", "type": "string", "description": {"es": "Código INE de la provincia.", "en": "INE province code."} },
+          { "name": "ccaa_code", "type": "string", "description": {"es": "Código INE de la comunidad autónoma.", "en": "INE autonomous community code."} },
+          { "name": "parent_id", "type": "string", "description": {"es": "Id de la provincia en el catálogo (es:ine:prov:{province_code}).", "en": "Catalogue id of the province (es:ine:prov:{province_code})."} },
+          { "name": "ign_code", "type": "string", "description": {"es": "Código nacional del IGN (34 + comunidad + provincia + código INE).", "en": "IGN national code (34 + CCAA + province + INE code)."} },
+          { "name": "geometry", "type": "geometry", "description": {"es": "Límite municipal.", "en": "Municipal boundary."} }
         ]
       },
       "update_frequency": "yearly or on demand (municipalities are created, merged and renamed a few times a year)"
     },
     {
       "id": "ign_au_shared_territories",
+      "description": {
+        "es": "Territorios que pertenecen a varios municipios a la vez (facerías, comunidades de pastos o montes de aprovechamiento común), que no forman parte de ningún término municipal. Son 81 y completan el mapa municipal.",
+        "en": "Territories belonging to several municipalities at once (joint pastures or commons), outside any single municipality. There are 81 and they complete the municipal map."
+      },
+      "processing": {
+        "es": "Del servicio WFS INSPIRE de unidades administrativas del IGN, en WGS84 (EPSG:4326).",
+        "en": "From IGN's INSPIRE administrative units WFS, in WGS84 (EPSG:4326)."
+      },
+      "keywords": {
+        "es": ["territorios compartidos", "facerías", "comunidades de pastos", "IGN"],
+        "en": ["shared territories", "commons", "IGN"]
+      },
+      "topics": ["territory"],
       "title": "Territorios compartidos entre municipios (IGN, unidades administrativas INSPIRE)",
       "entity_type": "shared_territory",
+      "tiles": "municipalities",
       "publisher": { "name": "Instituto Geográfico Nacional (IGN)", "url": "https://www.ign.es" },
       "source": {
         "kind": "wfs",
@@ -115,7 +143,7 @@
       "validity": {
         "kind": "current",
         "as_of": "retrieval",
-        "description": "Current state as published by IGN; valid as of its retrieval date."
+        "description": {"es": "Estado actual tal como lo publica el IGN; válido a la fecha de su descarga.", "en": "Current state as published by IGN; valid as of its retrieval date."}
       },
       "coverage": { "country": "ES", "count": 81 },
       "geometry": { "crs": "EPSG:4326", "type": "MultiPolygon", "resolution": "full (as published by IGN, not simplified)" },
@@ -123,13 +151,13 @@
         "path": "processed/municipalities/shared_territories.parquet",
         "format": "GeoParquet 1.1",
         "fields": [
-          { "name": "id", "type": "string", "description": "Catalogue id (es:ign:au:{ign_code})." },
-          { "name": "name", "type": "string", "description": "Name as published by IGN; some list the INE codes of the municipalities that share it." },
-          { "name": "province_code", "type": "string", "description": "INE code of the province IGN files it under." },
-          { "name": "ccaa_code", "type": "string", "description": "INE autonomous community code." },
-          { "name": "parent_id", "type": "string", "description": "Catalogue id of that province." },
-          { "name": "ign_code", "type": "string", "description": "IGN national code." },
-          { "name": "geometry", "type": "geometry", "description": "Boundary of the shared territory." }
+          { "name": "id", "type": "string", "description": {"es": "Id en el catálogo (es:ign:au:{ign_code}).", "en": "Catalogue id (es:ign:au:{ign_code})."} },
+          { "name": "name", "type": "string", "description": {"es": "Nombre tal como lo publica el IGN; algunos enumeran los códigos INE de los municipios que lo comparten.", "en": "Name as published by IGN; some list the INE codes of the municipalities that share it."} },
+          { "name": "province_code", "type": "string", "description": {"es": "Código INE de la provincia en la que lo incluye el IGN.", "en": "INE code of the province IGN files it under."} },
+          { "name": "ccaa_code", "type": "string", "description": {"es": "Código INE de la comunidad autónoma.", "en": "INE autonomous community code."} },
+          { "name": "parent_id", "type": "string", "description": {"es": "Id de esa provincia en el catálogo.", "en": "Catalogue id of that province."} },
+          { "name": "ign_code", "type": "string", "description": {"es": "Código nacional del IGN.", "en": "IGN national code."} },
+          { "name": "geometry", "type": "geometry", "description": {"es": "Límite del territorio compartido.", "en": "Boundary of the shared territory."} }
         ]
       },
       "update_frequency": "with the municipalities"

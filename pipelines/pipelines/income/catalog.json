@@ -161,6 +161,18 @@
   "datasets": [
     {
       "id": "income_levels",
+      "description": {
+        "es": "Indicadores de renta: renta neta y bruta media por persona y por hogar, y renta media y mediana por unidad de consumo, hasta la sección censal. Es la mejor medida disponible del nivel de renta de cada barrio. La renta por unidad de consumo tiene en cuenta el tamaño y la composición del hogar, y es la adecuada para comparar niveles de vida.",
+        "en": "Income indicators: mean net and gross income per person and per household, and mean and median income per consumption unit, down to census sections. It's the best available measure of each neighbourhood's income. Income per consumption unit accounts for household size and make-up, and is the one to compare living standards."
+      },
+      "processing": {
+        "es": "Del Atlas de distribución de renta de los hogares del INE, elaborado con datos fiscales de la AEAT y de las haciendas forales. El año es el de la renta declarada, que el INE publica con unos dos años de retraso. El INE oculta las unidades con pocas declaraciones (entre el 3 y el 11 % de municipios y secciones, y la mayoría de secciones en los desgloses por edad y nacionalidad). Ninguna queda vacía: se imputan de arriba abajo (provincia, municipio, distrito, sección) y quedan marcadas como imputadas. El INE también recorta los extremos: cada año unas 170 secciones comparten el valor máximo de cada indicador.",
+        "en": "From INE's Household Income Distribution Atlas, built from tax records (AEAT and the foral treasuries). The year is that of the income declared, which INE publishes about two years later. INE hides units with few tax returns (3–11% of municipalities and sections, and most sections in the breakdowns by age and nationality). None is left blank: they're imputed from the top down (province, municipality, district, section) and flagged as imputed. INE also caps the extremes: each year some 170 sections share the top value of each indicator."
+      },
+      "keywords": {
+        "es": ["renta", "ingresos", "renta media", "renta mediana", "nivel de vida", "Atlas de renta"],
+        "en": ["income", "mean income", "median income", "living standards", "income atlas"]
+      },
       "title": "Indicadores de renta media y mediana (Atlas de distribución de renta de los hogares)",
       "publisher": {
         "name": "INE",
@@ -202,6 +214,18 @@
     },
     {
       "id": "income_sources",
+      "description": {
+        "es": "De dónde sale la renta de cada zona: el porcentaje que suponen los salarios, las pensiones, las prestaciones por desempleo, otras prestaciones y otros ingresos. Distingue zonas que viven del trabajo, de las pensiones o de otras rentas.",
+        "en": "Where each area's income comes from: the share of wages, pensions, unemployment benefits, other benefits and other income. It tells areas living on work, pensions or other income apart."
+      },
+      "processing": {
+        "es": "Del Atlas de distribución de renta de los hogares del INE, elaborado con datos fiscales de la AEAT y de las haciendas forales. El año es el de la renta declarada, que el INE publica con unos dos años de retraso. El INE oculta las unidades con pocas declaraciones (entre el 3 y el 11 % de municipios y secciones, y la mayoría de secciones en los desgloses por edad y nacionalidad). Ninguna queda vacía: se imputan de arriba abajo (provincia, municipio, distrito, sección) y quedan marcadas como imputadas. El INE también recorta los extremos: cada año unas 170 secciones comparten el valor máximo de cada indicador.",
+        "en": "From INE's Household Income Distribution Atlas, built from tax records (AEAT and the foral treasuries). The year is that of the income declared, which INE publishes about two years later. INE hides units with few tax returns (3–11% of municipalities and sections, and most sections in the breakdowns by age and nationality). None is left blank: they're imputed from the top down (province, municipality, district, section) and flagged as imputed. INE also caps the extremes: each year some 170 sections share the top value of each indicator."
+      },
+      "keywords": {
+        "es": ["fuentes de renta", "salarios", "pensiones", "prestaciones", "Atlas de renta"],
+        "en": ["income sources", "wages", "pensions", "benefits", "income atlas"]
+      },
       "title": "Distribución de la renta por fuente de ingresos (Atlas de distribución de renta de los hogares)",
       "publisher": {
         "name": "INE",
@@ -243,6 +267,18 @@
     },
     {
       "id": "income_inequality",
+      "description": {
+        "es": "Desigualdad de la renta dentro de cada zona: el índice de Gini (0, todos igual; 100, uno lo tiene todo) y la ratio P80/P20 (cuántas veces más ingresa el percentil 80 que el 20).",
+        "en": "Income inequality within each area: the Gini index (0, everyone equal; 100, one has everything) and the P80/P20 ratio (how many times more the 80th percentile earns than the 20th)."
+      },
+      "processing": {
+        "es": "Del Atlas de distribución de renta de los hogares del INE, elaborado con datos fiscales de la AEAT y de las haciendas forales. El año es el de la renta declarada, que el INE publica con unos dos años de retraso. El INE oculta las unidades con pocas declaraciones (entre el 3 y el 11 % de municipios y secciones, y la mayoría de secciones en los desgloses por edad y nacionalidad). Ninguna queda vacía: se imputan de arriba abajo (provincia, municipio, distrito, sección) y quedan marcadas como imputadas. El INE también recorta los extremos: cada año unas 170 secciones comparten el valor máximo de cada indicador.",
+        "en": "From INE's Household Income Distribution Atlas, built from tax records (AEAT and the foral treasuries). The year is that of the income declared, which INE publishes about two years later. INE hides units with few tax returns (3–11% of municipalities and sections, and most sections in the breakdowns by age and nationality). None is left blank: they're imputed from the top down (province, municipality, district, section) and flagged as imputed. INE also caps the extremes: each year some 170 sections share the top value of each indicator."
+      },
+      "keywords": {
+        "es": ["desigualdad", "Gini", "P80/P20", "Atlas de renta"],
+        "en": ["inequality", "Gini", "P80/P20", "income atlas"]
+      },
       "title": "Índice de Gini y distribución de la renta P80/P20 (Atlas de distribución de renta de los hogares)",
       "publisher": {
         "name": "INE",
@@ -284,6 +320,18 @@
     },
     {
       "id": "income_demographics",
+      "description": {
+        "es": "Indicadores demográficos del Atlas de renta: edad media, porcentaje de menores de 18 y de mayores de 65, tamaño medio del hogar, porcentaje de hogares unipersonales y población. Están calculados sobre la misma población que la renta, así que sirven para interpretarla.",
+        "en": "Demographic indicators from the income atlas: mean age, share under 18 and over 65, mean household size, share of single-person households and population. They're computed on the same population as the income, so they help read it."
+      },
+      "processing": {
+        "es": "Del Atlas de distribución de renta de los hogares del INE, elaborado con datos fiscales de la AEAT y de las haciendas forales. El año es el de la renta declarada, que el INE publica con unos dos años de retraso. El INE oculta las unidades con pocas declaraciones (entre el 3 y el 11 % de municipios y secciones, y la mayoría de secciones en los desgloses por edad y nacionalidad). Ninguna queda vacía: se imputan de arriba abajo (provincia, municipio, distrito, sección) y quedan marcadas como imputadas. El INE también recorta los extremos: cada año unas 170 secciones comparten el valor máximo de cada indicador.",
+        "en": "From INE's Household Income Distribution Atlas, built from tax records (AEAT and the foral treasuries). The year is that of the income declared, which INE publishes about two years later. INE hides units with few tax returns (3–11% of municipalities and sections, and most sections in the breakdowns by age and nationality). None is left blank: they're imputed from the top down (province, municipality, district, section) and flagged as imputed. INE also caps the extremes: each year some 170 sections share the top value of each indicator."
+      },
+      "keywords": {
+        "es": ["demografía", "hogares unipersonales", "edad media", "Atlas de renta"],
+        "en": ["demography", "single-person households", "mean age", "income atlas"]
+      },
       "title": "Indicadores demográficos (Atlas de distribución de renta de los hogares)",
       "publisher": {
         "name": "INE",
@@ -325,6 +373,18 @@
     },
     {
       "id": "income_relative",
+      "description": {
+        "es": "Porcentaje de población con ingresos por unidad de consumo por debajo del 40, 50 o 60 % de la mediana de España, o por encima del 140, 160 o 200 %, por sexo, edad o nacionalidad. Por debajo del 60 % es el umbral de riesgo de pobreza; por encima del 200 %, la población de rentas altas.",
+        "en": "Share of the population with income per consumption unit below 40, 50 or 60% of Spain's median, or above 140, 160 or 200%, by sex, age or nationality. Below 60% is the at-risk-of-poverty threshold; above 200%, the high-income population."
+      },
+      "processing": {
+        "es": "Del Atlas de distribución de renta de los hogares del INE, elaborado con datos fiscales de la AEAT y de las haciendas forales. El año es el de la renta declarada, que el INE publica con unos dos años de retraso. El INE oculta las unidades con pocas declaraciones (entre el 3 y el 11 % de municipios y secciones, y la mayoría de secciones en los desgloses por edad y nacionalidad). Ninguna queda vacía: se imputan de arriba abajo (provincia, municipio, distrito, sección) y quedan marcadas como imputadas. El INE también recorta los extremos: cada año unas 170 secciones comparten el valor máximo de cada indicador.",
+        "en": "From INE's Household Income Distribution Atlas, built from tax records (AEAT and the foral treasuries). The year is that of the income declared, which INE publishes about two years later. INE hides units with few tax returns (3–11% of municipalities and sections, and most sections in the breakdowns by age and nationality). None is left blank: they're imputed from the top down (province, municipality, district, section) and flagged as imputed. INE also caps the extremes: each year some 170 sections share the top value of each indicator."
+      },
+      "keywords": {
+        "es": ["riesgo de pobreza", "pobreza relativa", "rentas altas", "Atlas de renta"],
+        "en": ["at risk of poverty", "relative poverty", "high income", "income atlas"]
+      },
       "title": "Población con ingresos por unidad de consumo por debajo o encima de umbrales relativos, por sexo, edad o nacionalidad (Atlas de distribución de renta de los hogares)",
       "publisher": {
         "name": "INE",
@@ -368,6 +428,18 @@
     },
     {
       "id": "income_fixed",
+      "description": {
+        "es": "Porcentaje de población con ingresos por unidad de consumo por debajo de 5.000, 7.500 o 10.000 € al año, por sexo, edad o nacionalidad. A diferencia de los umbrales relativos, son importes fijos: comparables entre años sin depender de la mediana.",
+        "en": "Share of the population with income per consumption unit below 5,000, 7,500 or 10,000 € a year, by sex, age or nationality. Unlike relative thresholds, they're fixed amounts: comparable across years regardless of the median."
+      },
+      "processing": {
+        "es": "Del Atlas de distribución de renta de los hogares del INE, elaborado con datos fiscales de la AEAT y de las haciendas forales. El año es el de la renta declarada, que el INE publica con unos dos años de retraso. El INE oculta las unidades con pocas declaraciones (entre el 3 y el 11 % de municipios y secciones, y la mayoría de secciones en los desgloses por edad y nacionalidad). Ninguna queda vacía: se imputan de arriba abajo (provincia, municipio, distrito, sección) y quedan marcadas como imputadas. El INE también recorta los extremos: cada año unas 170 secciones comparten el valor máximo de cada indicador.",
+        "en": "From INE's Household Income Distribution Atlas, built from tax records (AEAT and the foral treasuries). The year is that of the income declared, which INE publishes about two years later. INE hides units with few tax returns (3–11% of municipalities and sections, and most sections in the breakdowns by age and nationality). None is left blank: they're imputed from the top down (province, municipality, district, section) and flagged as imputed. INE also caps the extremes: each year some 170 sections share the top value of each indicator."
+      },
+      "keywords": {
+        "es": ["pobreza", "bajos ingresos", "umbrales de renta", "Atlas de renta"],
+        "en": ["poverty", "low income", "income thresholds", "income atlas"]
+      },
       "title": "Población con ingresos por unidad de consumo por debajo de umbrales fijos, por sexo, edad o nacionalidad (Atlas de distribución de renta de los hogares)",
       "publisher": {
         "name": "INE",

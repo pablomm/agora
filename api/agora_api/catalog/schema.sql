@@ -44,12 +44,37 @@ CREATE TABLE datasets (
   base_level TEXT,
   frequency TEXT,               -- statistics: yearly (period 2025) | monthly (period 202509)
   path_template TEXT NOT NULL,  -- processed/…/{level}.parquet, or the output's path as its catalog.json gives it
-  tags TEXT NOT NULL DEFAULT '[]',  -- JSON list: the catalog.json's, and imputed, derived, experimental, single_edition, no_license found when building
+  tags TEXT NOT NULL DEFAULT '[]',  -- JSON list: the catalog.json's, and imputed, derived, experimental, single_edition, no_license, not_downloadable found when building
   kind TEXT NOT NULL,           -- statistics | geometry | reference
   entity_type TEXT,             -- geometry and reference: what each row is (municipality, cadastral_parcel, classification_item…)
   validity TEXT,                -- JSON, as in the catalog.json: kind (current, snapshot, edition), as_of, description
   fields TEXT,                  -- JSON: [{name, type, description}], as in the catalog.json
-  downloadable INTEGER NOT NULL -- 0 when its license isn't known: listed, but its files aren't served
+  downloadable INTEGER NOT NULL, -- 0 when its license isn't known or doesn't allow redistributing it: listed, but its files aren't served
+  publisher_url TEXT,
+  measure TEXT,                 -- statistics: JSON {id, unit, aggregation}, what `value` is
+  run TEXT,                     -- JSON, from the output's meta.json: generated_at, retrieved_at, source_url, tables, checks
+  tiles TEXT,                   -- geometries: the vector tile layer that draws them
+  extent TEXT,                  -- geometries: JSON [west, south, east, north] (EPSG:4326)
+  focus TEXT,                   -- geometries: JSON bbox of the municipality with most rows, to show layers only seen up close
+  description TEXT,             -- JSON {es, en}: what it measures, what it's for and how to read it
+  processing TEXT,              -- JSON {es, en}: how it was made (sources joined, imputation, checks)
+  keywords TEXT,                -- JSON {es: [...], en: [...]}
+  topics TEXT NOT NULL DEFAULT '[]'  -- JSON list of topic ids (statistics also take their variables')
+);
+
+-- The licenses datasets are under (pipelines/licenses.json); a dataset's license names one by id.
+CREATE TABLE licenses (
+  id TEXT PRIMARY KEY,          -- CC-BY-4.0, DGC-INSPIRE-2016
+  short TEXT NOT NULL,
+  title_es TEXT NOT NULL,
+  title_en TEXT NOT NULL,
+  url TEXT,
+  legal_url TEXT,
+  open INTEGER NOT NULL,        -- 1 for an open license (reuse and redistribution allowed)
+  summary TEXT NOT NULL,        -- JSON {es, en}
+  permissions TEXT NOT NULL,    -- JSON {es: [...], en: [...]}
+  conditions TEXT NOT NULL,     -- JSON {es: [...], en: [...]}
+  limitations TEXT NOT NULL     -- JSON {es: [...], en: [...]}
 );
 
 -- The files a dataset's rows are in: one per level (statistics), edition or province (geometries),
@@ -63,6 +88,8 @@ CREATE TABLE dataset_files (
   rows INTEGER NOT NULL,
   bytes INTEGER,                -- the file's size, when the dataset has all of it
   position INTEGER NOT NULL,
+  sha256 TEXT,                  -- the file's checksum, when the dataset has all of it
+  modified INTEGER,             -- the file's modification time (ns), to reuse its checksum in the next build
   PRIMARY KEY (dataset_id, name)
 );
 

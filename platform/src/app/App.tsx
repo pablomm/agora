@@ -2,7 +2,7 @@ import type { Map as MaplibreMap } from 'maplibre-gl'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CatalogFilters } from '../catalog/CatalogFilters'
 import { CatalogPage } from '../catalog/CatalogPage'
-import { catalogEntries, NO_FILTERS, type CatalogFilters as CatalogFilterState } from '../catalog/entries'
+import { catalogEntries, NO_FILTERS, routeOf, type CatalogFilters as CatalogFilterState } from '../catalog/entries'
 import { ActivityBar } from '../components/ActivityBar'
 import { BoundariesMenu } from '../components/BoundariesMenu'
 import { DetailPanel } from '../components/DetailPanel'
@@ -30,14 +30,28 @@ function finestWithData(variable: Variable, shown: BoundaryLayer): BoundaryLayer
   return DATA_LAYERS.slice(start).find((layer) => facetsAt(variable, LAYER_LEVEL[layer]!).length > 0) ?? shown
 }
 
+/** The catalogue page the address opens (#dataset/{id}, #license/{id}). */
+const routeInHash = () => routeOf(window.location.hash)
+
 /** A variable with nothing picked yet: its default options and source (one object, so effects see no change). */
 const NO_PICK: { choices: Choices; facet?: string; change?: boolean } = { choices: {} }
 
 export default function App() {
   const [settings, setSettings] = useState(loadSettings)
   // The page in the main area (the map or the catalogue), and the sidebar's panel, if open.
-  const [page, setPage] = useState<ViewId>('map')
-  const [view, setView] = useState<ViewId | undefined>('map')
+  const [page, setPage] = useState<ViewId>(() => (routeInHash() ? 'catalog' : 'map'))
+  const [view, setView] = useState<ViewId | undefined>(() => (routeInHash() ? 'catalog' : 'map'))
+  // A dataset's or license's page, from the address: links set it, and back and forward follow it.
+  const [route, setRoute] = useState(routeInHash)
+  useEffect(() => {
+    const follow = () => {
+      const next = routeInHash()
+      setRoute(next)
+      if (next) setPage('catalog')
+    }
+    window.addEventListener('hashchange', follow)
+    return () => window.removeEventListener('hashchange', follow)
+  }, [])
   const [map, setMap] = useState<MaplibreMap>()
   // The unit clicked on the map (or found by search), open in the detail panel.
   const [selected, setSelected] = useState<SelectedUnit>()
@@ -191,6 +205,7 @@ export default function App() {
           entries={entries}
           filters={catalogFilters}
           onChange={setCatalogFilters}
+          route={route}
           onShowOnMap={(id) => {
             setVariableId(id)
             setPage('map')

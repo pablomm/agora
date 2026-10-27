@@ -129,6 +129,23 @@ def get_dataset(dataset_id: str) -> dict:
     return downloads.describe(dataset_id)
 
 
+@router.get("/datasets/{dataset_id}/{file}/head")
+def get_dataset_head(dataset_id: str, file: str, limit: int = Query(20, le=100)) -> dict:
+    """The first rows of one of a dataset's files, to look at before downloading it."""
+    return downloads.head(dataset_id, file, limit)
+
+
+@router.get("/licenses")
+def get_licenses() -> list[dict]:
+    """The licenses datasets are under: what each allows and requires, and its datasets."""
+    return list(catalog.licenses().values())
+
+
+@router.get("/licenses/{license_id}")
+def get_license(license_id: str) -> dict:
+    return catalog.license(license_id)
+
+
 # HEAD too: readers like DuckDB ask for the size first, then read the file in ranges.
 @router.api_route("/datasets/{dataset_id}/{file}.{format}", methods=["GET", "HEAD"])
 def download_dataset(

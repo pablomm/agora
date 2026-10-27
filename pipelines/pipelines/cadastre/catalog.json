@@ -1,4 +1,7 @@
 {
+  "topics": [
+    {"id": "cadastre", "label": {"es": "Catastro", "en": "Cadastre"}, "position": 2}
+  ],
   "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in the output's .meta.json.",
   "entity_types": [
     {
@@ -94,6 +97,20 @@
   "datasets": [
     {
       "id": "catastro_cadastral_zones",
+      "downloadable": false,
+      "description": {
+        "es": "Masas catastrales: las manzanas urbanas y los polígonos rústicos en que el Catastro divide el territorio, con su referencia. Son la escala intermedia entre la parcela y el municipio.",
+        "en": "Cadastral zones: the urban blocks and rural polygons the Catastro divides land into, with their reference. They're the scale between the parcel and the municipality."
+      },
+      "processing": {
+        "es": "De las descargas INSPIRE del Catastro de abril de 2023 (se actualizan dos veces al año), reproyectadas a WGS84 y con el código INE del municipio. No incluye País Vasco ni Navarra, que tienen catastros propios. No se puede descargar desde Agora: la licencia del Catastro no permite redistribuir su información original. Los ficheros originales se descargan de el servicio INSPIRE del Catastro (https://www.catastro.hacienda.gob.es/webinspire/index.html), por municipio y gratis, en su canal ATOM de parcelas catastrales.",
+        "en": "From the Catastro's INSPIRE downloads of April 2023 (updated twice a year), reprojected to WGS84 and with the municipality's INE code. The Basque Country and Navarra, with their own cadastres, aren't included. It can't be downloaded from Agora: the Catastro's license doesn't allow redistributing its original information. The original files can be downloaded from the Catastro's INSPIRE service (https://www.catastro.hacienda.gob.es/webinspire/index.html), by municipality and free, in its cadastral parcels ATOM feed."
+      },
+      "keywords": {
+        "es": ["catastro", "manzanas", "polígonos", "masas catastrales"],
+        "en": ["cadastre", "urban blocks", "cadastral zones"]
+      },
+      "topics": ["cadastre"],
       "title": "Masas catastrales: manzanas urbanas y polígonos rústicos (Catastro, INSPIRE, abril de 2023)",
       "entity_type": "cadastral_zone",
       "publisher": {
@@ -121,7 +138,7 @@
       "validity": {
         "kind": "snapshot",
         "as_of": "2023-04-03",
-        "description": "Catastro's INSPIRE downloads as of April 2023 (they're updated twice a year)."
+        "description": {"es": "Descargas INSPIRE del Catastro de abril de 2023 (se actualizan dos veces al año).", "en": "Catastro's INSPIRE downloads as of April 2023 (they're updated twice a year)."}
       },
       "coverage": {
         "country": "ES",
@@ -149,47 +166,47 @@
           {
             "name": "id",
             "type": "string",
-            "description": "Catalogue id."
+            "description": {"es": "Id en el catálogo.", "en": "Catalogue id."}
           },
           {
             "name": "reference",
             "type": "string",
-            "description": "Catastro's zoning reference."
+            "description": {"es": "Referencia de la masa en el Catastro.", "en": "Catastro's zoning reference."}
           },
           {
             "name": "zone_type",
             "type": "string",
-            "description": "urban_block (MANZANA) or rural_polygon (POLIGONO)."
+            "description": {"es": "urban_block (manzana) o rural_polygon (polígono).", "en": "urban_block (MANZANA) or rural_polygon (POLIGONO)."}
           },
           {
             "name": "label",
             "type": "string",
-            "description": "Block or polygon number as Catastro labels it."
+            "description": {"es": "Número de manzana o de polígono, como lo rotula el Catastro.", "en": "Block or polygon number as Catastro labels it."}
           },
           {
             "name": "catastro_municipality_code",
             "type": "string",
-            "description": "Catastro's own municipality code (not INE's)."
+            "description": {"es": "Código de municipio propio del Catastro (no el del INE).", "en": "Catastro's own municipality code (not INE's)."}
           },
           {
             "name": "valid_from",
             "type": "date",
-            "description": "Catastro's beginLifespanVersion."
+            "description": {"es": "Inicio de la versión vigente en el Catastro (beginLifespanVersion).", "en": "Catastro's beginLifespanVersion."}
           },
           {
             "name": "municipality_code",
             "type": "string",
-            "description": "INE code of the municipality it lies in."
+            "description": {"es": "Código INE del municipio en el que está.", "en": "INE code of the municipality it lies in."}
           },
           {
             "name": "parent_id",
             "type": "string",
-            "description": "Catalogue id of that municipality."
+            "description": {"es": "Id de ese municipio en el catálogo.", "en": "Catalogue id of that municipality."}
           },
           {
             "name": "geometry",
             "type": "geometry",
-            "description": "Zone boundary."
+            "description": {"es": "Límite de la masa.", "en": "Zone boundary."}
           }
         ]
       },
@@ -197,8 +214,23 @@
     },
     {
       "id": "catastro_urban_parcels",
+      "downloadable": false,
+      "description": {
+        "es": "Parcelas catastrales urbanas de toda España salvo País Vasco y Navarra, con su referencia catastral y superficie, un fichero por provincia. Es el nivel más fino: el solar de cada edificio. Sirve para cruzar datos con edificios concretos o calcular superficies.",
+        "en": "Urban cadastral parcels of all of Spain but the Basque Country and Navarra, with their cadastral reference and area, a file per province. It's the finest level: each building's plot. Use it to join data to specific buildings or compute areas."
+      },
+      "processing": {
+        "es": "De las descargas INSPIRE del Catastro de abril de 2023, reproyectadas a WGS84, con el código INE del municipio y la manzana a la que pertenecen. Los ficheros siguen las provincias del Catastro, que incluyen sus gerencias 51 a 56. No se puede descargar desde Agora: la licencia del Catastro no permite redistribuir su información original. Los ficheros originales se descargan de el servicio INSPIRE del Catastro (https://www.catastro.hacienda.gob.es/webinspire/index.html), por municipio y gratis, en su canal ATOM de parcelas catastrales.",
+        "en": "From the Catastro's INSPIRE downloads of April 2023, reprojected to WGS84, with the municipality's INE code and their block. Files follow the Catastro's provinces, which include its offices 51 to 56. It can't be downloaded from Agora: the Catastro's license doesn't allow redistributing its original information. The original files can be downloaded from the Catastro's INSPIRE service (https://www.catastro.hacienda.gob.es/webinspire/index.html), by municipality and free, in its cadastral parcels ATOM feed."
+      },
+      "keywords": {
+        "es": ["parcelas", "catastro", "referencia catastral", "solares", "edificios"],
+        "en": ["parcels", "cadastre", "cadastral reference", "plots", "buildings"]
+      },
+      "topics": ["cadastre"],
       "title": "Parcelas catastrales urbanas (Catastro, INSPIRE, abril de 2023)",
       "entity_type": "cadastral_parcel",
+      "tiles": "cadastral_parcels",
       "geometry": {
         "crs": "EPSG:4326",
         "type": "Polygon or MultiPolygon"
@@ -211,52 +243,52 @@
           {
             "name": "id",
             "type": "string",
-            "description": "Catalogue id."
+            "description": {"es": "Id en el catálogo.", "en": "Catalogue id."}
           },
           {
             "name": "reference",
             "type": "string",
-            "description": "The source's parcel reference."
+            "description": {"es": "Referencia de la parcela en la fuente.", "en": "The source's parcel reference."}
           },
           {
             "name": "area_m2",
             "type": "integer",
-            "description": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."
+            "description": {"es": "Superficie: la del Catastro (sumada entre sus partes) o medida sobre la geometría (catastros forales).", "en": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."}
           },
           {
             "name": "valid_from",
             "type": "date",
-            "description": "Start of the parcel's current version, where the source gives it."
+            "description": {"es": "Inicio de la versión vigente de la parcela, donde la fuente lo da.", "en": "Start of the parcel's current version, where the source gives it."}
           },
           {
             "name": "catastro_municipality_code",
             "type": "string",
-            "description": "Catastro's municipality code (state Catastro only)."
+            "description": {"es": "Código de municipio del Catastro (solo el Catastro estatal).", "en": "Catastro's municipality code (state Catastro only)."}
           },
           {
             "name": "municipality_code",
             "type": "string",
-            "description": "INE code of the municipality it lies in."
+            "description": {"es": "Código INE del municipio en el que está.", "en": "INE code of the municipality it lies in."}
           },
           {
             "name": "zone_id",
             "type": "string",
-            "description": "Catalogue id of its urban block (state Catastro only)."
+            "description": {"es": "Id de su manzana en el catálogo (solo el Catastro estatal).", "en": "Catalogue id of its urban block (state Catastro only)."}
           },
           {
             "name": "parent_id",
             "type": "string",
-            "description": "Its block, or its municipality."
+            "description": {"es": "Su manzana, o su municipio.", "en": "Its block, or its municipality."}
           },
           {
             "name": "source",
             "type": "string",
-            "description": "catastro, navarra, bizkaia, gipuzkoa or alava."
+            "description": {"es": "catastro, navarra, bizkaia, gipuzkoa o alava.", "en": "catastro, navarra, bizkaia, gipuzkoa or alava."}
           },
           {
             "name": "geometry",
             "type": "geometry",
-            "description": "Parcel boundary."
+            "description": {"es": "Límite de la parcela.", "en": "Parcel boundary."}
           }
         ]
       },
@@ -298,8 +330,22 @@
     },
     {
       "id": "navarra_urban_parcels",
+      "description": {
+        "es": "Parcelas urbanas del Catastro de Navarra, con el mismo formato que las del Catastro estatal.",
+        "en": "Urban parcels from Navarra's cadastre, in the same format as the state Catastro's."
+      },
+      "processing": {
+        "es": "De la descarga del Catastro de Navarra (abril de 2023), reproyectada a WGS84; la superficie se mide sobre la geometría.",
+        "en": "From Navarra's cadastre download (April 2023), reprojected to WGS84; area measured on the geometry."
+      },
+      "keywords": {
+        "es": ["parcelas", "catastro", "Navarra"],
+        "en": ["parcels", "cadastre", "Navarra"]
+      },
+      "topics": ["cadastre"],
       "title": "Parcelas urbanas del Catastro de Navarra (abril de 2023)",
       "entity_type": "cadastral_parcel",
+      "tiles": "cadastral_parcels",
       "geometry": {
         "crs": "EPSG:4326",
         "type": "Polygon or MultiPolygon"
@@ -312,52 +358,52 @@
           {
             "name": "id",
             "type": "string",
-            "description": "Catalogue id."
+            "description": {"es": "Id en el catálogo.", "en": "Catalogue id."}
           },
           {
             "name": "reference",
             "type": "string",
-            "description": "The source's parcel reference."
+            "description": {"es": "Referencia de la parcela en la fuente.", "en": "The source's parcel reference."}
           },
           {
             "name": "area_m2",
             "type": "integer",
-            "description": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."
+            "description": {"es": "Superficie: la del Catastro (sumada entre sus partes) o medida sobre la geometría (catastros forales).", "en": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."}
           },
           {
             "name": "valid_from",
             "type": "date",
-            "description": "Start of the parcel's current version, where the source gives it."
+            "description": {"es": "Inicio de la versión vigente de la parcela, donde la fuente lo da.", "en": "Start of the parcel's current version, where the source gives it."}
           },
           {
             "name": "catastro_municipality_code",
             "type": "string",
-            "description": "Catastro's municipality code (state Catastro only)."
+            "description": {"es": "Código de municipio del Catastro (solo el Catastro estatal).", "en": "Catastro's municipality code (state Catastro only)."}
           },
           {
             "name": "municipality_code",
             "type": "string",
-            "description": "INE code of the municipality it lies in."
+            "description": {"es": "Código INE del municipio en el que está.", "en": "INE code of the municipality it lies in."}
           },
           {
             "name": "zone_id",
             "type": "string",
-            "description": "Catalogue id of its urban block (state Catastro only)."
+            "description": {"es": "Id de su manzana en el catálogo (solo el Catastro estatal).", "en": "Catalogue id of its urban block (state Catastro only)."}
           },
           {
             "name": "parent_id",
             "type": "string",
-            "description": "Its block, or its municipality."
+            "description": {"es": "Su manzana, o su municipio.", "en": "Its block, or its municipality."}
           },
           {
             "name": "source",
             "type": "string",
-            "description": "catastro, navarra, bizkaia, gipuzkoa or alava."
+            "description": {"es": "catastro, navarra, bizkaia, gipuzkoa o alava.", "en": "catastro, navarra, bizkaia, gipuzkoa or alava."}
           },
           {
             "name": "geometry",
             "type": "geometry",
-            "description": "Parcel boundary."
+            "description": {"es": "Límite de la parcela.", "en": "Parcel boundary."}
           }
         ]
       },
@@ -385,8 +431,22 @@
     },
     {
       "id": "bizkaia_urban_parcels",
+      "description": {
+        "es": "Parcelas urbanas del Catastro de Bizkaia, con el mismo formato que las del Catastro estatal.",
+        "en": "Urban parcels from Bizkaia's cadastre, in the same format as the state Catastro's."
+      },
+      "processing": {
+        "es": "De la descarga de la Diputación Foral de Bizkaia (mayo de 2023), reproyectada a WGS84; la superficie se mide sobre la geometría.",
+        "en": "From the Diputación Foral de Bizkaia's download (May 2023), reprojected to WGS84; area measured on the geometry."
+      },
+      "keywords": {
+        "es": ["parcelas", "catastro", "Bizkaia"],
+        "en": ["parcels", "cadastre", "Bizkaia"]
+      },
+      "topics": ["cadastre"],
       "title": "Parcelas urbanas del Catastro de Bizkaia (mayo de 2023)",
       "entity_type": "cadastral_parcel",
+      "tiles": "cadastral_parcels",
       "geometry": {
         "crs": "EPSG:4326",
         "type": "Polygon or MultiPolygon"
@@ -399,52 +459,52 @@
           {
             "name": "id",
             "type": "string",
-            "description": "Catalogue id."
+            "description": {"es": "Id en el catálogo.", "en": "Catalogue id."}
           },
           {
             "name": "reference",
             "type": "string",
-            "description": "The source's parcel reference."
+            "description": {"es": "Referencia de la parcela en la fuente.", "en": "The source's parcel reference."}
           },
           {
             "name": "area_m2",
             "type": "integer",
-            "description": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."
+            "description": {"es": "Superficie: la del Catastro (sumada entre sus partes) o medida sobre la geometría (catastros forales).", "en": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."}
           },
           {
             "name": "valid_from",
             "type": "date",
-            "description": "Start of the parcel's current version, where the source gives it."
+            "description": {"es": "Inicio de la versión vigente de la parcela, donde la fuente lo da.", "en": "Start of the parcel's current version, where the source gives it."}
           },
           {
             "name": "catastro_municipality_code",
             "type": "string",
-            "description": "Catastro's municipality code (state Catastro only)."
+            "description": {"es": "Código de municipio del Catastro (solo el Catastro estatal).", "en": "Catastro's municipality code (state Catastro only)."}
           },
           {
             "name": "municipality_code",
             "type": "string",
-            "description": "INE code of the municipality it lies in."
+            "description": {"es": "Código INE del municipio en el que está.", "en": "INE code of the municipality it lies in."}
           },
           {
             "name": "zone_id",
             "type": "string",
-            "description": "Catalogue id of its urban block (state Catastro only)."
+            "description": {"es": "Id de su manzana en el catálogo (solo el Catastro estatal).", "en": "Catalogue id of its urban block (state Catastro only)."}
           },
           {
             "name": "parent_id",
             "type": "string",
-            "description": "Its block, or its municipality."
+            "description": {"es": "Su manzana, o su municipio.", "en": "Its block, or its municipality."}
           },
           {
             "name": "source",
             "type": "string",
-            "description": "catastro, navarra, bizkaia, gipuzkoa or alava."
+            "description": {"es": "catastro, navarra, bizkaia, gipuzkoa o alava.", "en": "catastro, navarra, bizkaia, gipuzkoa or alava."}
           },
           {
             "name": "geometry",
             "type": "geometry",
-            "description": "Parcel boundary."
+            "description": {"es": "Límite de la parcela.", "en": "Parcel boundary."}
           }
         ]
       },
@@ -461,7 +521,7 @@
         "id": "CC-BY-4.0",
         "url": "https://creativecommons.org/licenses/by/4.0/",
         "attribution": "Diputación Foral de Bizkaia",
-        "note": "Per datos.gob.es; exact attribution wording not confirmed."
+        "note": {"es": "Según datos.gob.es; el texto exacto de la atribución no está confirmado.", "en": "Per datos.gob.es; exact attribution wording not confirmed."}
       },
       "validity": {
         "kind": "snapshot",
@@ -473,8 +533,22 @@
     },
     {
       "id": "gipuzkoa_urban_parcels",
+      "description": {
+        "es": "Parcelas urbanas del Catastro de Gipuzkoa, con el mismo formato que las del Catastro estatal.",
+        "en": "Urban parcels from Gipuzkoa's cadastre, in the same format as the state Catastro's."
+      },
+      "processing": {
+        "es": "De la descarga de la Diputación Foral de Gipuzkoa (marzo de 2023), reproyectada a WGS84. Su licencia está pendiente de documentar, por eso no se puede descargar. La fuente original se descarga del portal cartográfico de la Diputación Foral de Gipuzkoa (https://b5m.gipuzkoa.eus).",
+        "en": "From the Diputación Foral de Gipuzkoa's download (March 2023), reprojected to WGS84. Its license is still to be documented, so it can't be downloaded. The original source can be downloaded from the Diputación Foral de Gipuzkoa's mapping portal (https://b5m.gipuzkoa.eus)."
+      },
+      "keywords": {
+        "es": ["parcelas", "catastro", "Gipuzkoa"],
+        "en": ["parcels", "cadastre", "Gipuzkoa"]
+      },
+      "topics": ["cadastre"],
       "title": "Parcelas urbanas del Catastro de Gipuzkoa (marzo de 2023)",
       "entity_type": "cadastral_parcel",
+      "tiles": "cadastral_parcels",
       "geometry": {
         "crs": "EPSG:4326",
         "type": "Polygon or MultiPolygon"
@@ -487,52 +561,52 @@
           {
             "name": "id",
             "type": "string",
-            "description": "Catalogue id."
+            "description": {"es": "Id en el catálogo.", "en": "Catalogue id."}
           },
           {
             "name": "reference",
             "type": "string",
-            "description": "The source's parcel reference."
+            "description": {"es": "Referencia de la parcela en la fuente.", "en": "The source's parcel reference."}
           },
           {
             "name": "area_m2",
             "type": "integer",
-            "description": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."
+            "description": {"es": "Superficie: la del Catastro (sumada entre sus partes) o medida sobre la geometría (catastros forales).", "en": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."}
           },
           {
             "name": "valid_from",
             "type": "date",
-            "description": "Start of the parcel's current version, where the source gives it."
+            "description": {"es": "Inicio de la versión vigente de la parcela, donde la fuente lo da.", "en": "Start of the parcel's current version, where the source gives it."}
           },
           {
             "name": "catastro_municipality_code",
             "type": "string",
-            "description": "Catastro's municipality code (state Catastro only)."
+            "description": {"es": "Código de municipio del Catastro (solo el Catastro estatal).", "en": "Catastro's municipality code (state Catastro only)."}
           },
           {
             "name": "municipality_code",
             "type": "string",
-            "description": "INE code of the municipality it lies in."
+            "description": {"es": "Código INE del municipio en el que está.", "en": "INE code of the municipality it lies in."}
           },
           {
             "name": "zone_id",
             "type": "string",
-            "description": "Catalogue id of its urban block (state Catastro only)."
+            "description": {"es": "Id de su manzana en el catálogo (solo el Catastro estatal).", "en": "Catalogue id of its urban block (state Catastro only)."}
           },
           {
             "name": "parent_id",
             "type": "string",
-            "description": "Its block, or its municipality."
+            "description": {"es": "Su manzana, o su municipio.", "en": "Its block, or its municipality."}
           },
           {
             "name": "source",
             "type": "string",
-            "description": "catastro, navarra, bizkaia, gipuzkoa or alava."
+            "description": {"es": "catastro, navarra, bizkaia, gipuzkoa o alava.", "en": "catastro, navarra, bizkaia, gipuzkoa or alava."}
           },
           {
             "name": "geometry",
             "type": "geometry",
-            "description": "Parcel boundary."
+            "description": {"es": "Límite de la parcela.", "en": "Parcel boundary."}
           }
         ]
       },
@@ -555,8 +629,22 @@
     },
     {
       "id": "alava_urban_parcels",
+      "description": {
+        "es": "Parcelas urbanas del Catastro de Álava, con el mismo formato que las del Catastro estatal.",
+        "en": "Urban parcels from Álava's cadastre, in the same format as the state Catastro's."
+      },
+      "processing": {
+        "es": "De la descarga de la Diputación Foral de Álava (abril de 2023), reproyectada a WGS84; la superficie se mide sobre la geometría.",
+        "en": "From the Diputación Foral de Álava's download (April 2023), reprojected to WGS84; area measured on the geometry."
+      },
+      "keywords": {
+        "es": ["parcelas", "catastro", "Álava", "Araba"],
+        "en": ["parcels", "cadastre", "Álava", "Araba"]
+      },
+      "topics": ["cadastre"],
       "title": "Parcelas urbanas del Catastro de Álava (abril de 2023)",
       "entity_type": "cadastral_parcel",
+      "tiles": "cadastral_parcels",
       "geometry": {
         "crs": "EPSG:4326",
         "type": "Polygon or MultiPolygon"
@@ -569,52 +657,52 @@
           {
             "name": "id",
             "type": "string",
-            "description": "Catalogue id."
+            "description": {"es": "Id en el catálogo.", "en": "Catalogue id."}
           },
           {
             "name": "reference",
             "type": "string",
-            "description": "The source's parcel reference."
+            "description": {"es": "Referencia de la parcela en la fuente.", "en": "The source's parcel reference."}
           },
           {
             "name": "area_m2",
             "type": "integer",
-            "description": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."
+            "description": {"es": "Superficie: la del Catastro (sumada entre sus partes) o medida sobre la geometría (catastros forales).", "en": "Area: Catastro's (summed over pieces) or measured on the geometry (foral)."}
           },
           {
             "name": "valid_from",
             "type": "date",
-            "description": "Start of the parcel's current version, where the source gives it."
+            "description": {"es": "Inicio de la versión vigente de la parcela, donde la fuente lo da.", "en": "Start of the parcel's current version, where the source gives it."}
           },
           {
             "name": "catastro_municipality_code",
             "type": "string",
-            "description": "Catastro's municipality code (state Catastro only)."
+            "description": {"es": "Código de municipio del Catastro (solo el Catastro estatal).", "en": "Catastro's municipality code (state Catastro only)."}
           },
           {
             "name": "municipality_code",
             "type": "string",
-            "description": "INE code of the municipality it lies in."
+            "description": {"es": "Código INE del municipio en el que está.", "en": "INE code of the municipality it lies in."}
           },
           {
             "name": "zone_id",
             "type": "string",
-            "description": "Catalogue id of its urban block (state Catastro only)."
+            "description": {"es": "Id de su manzana en el catálogo (solo el Catastro estatal).", "en": "Catalogue id of its urban block (state Catastro only)."}
           },
           {
             "name": "parent_id",
             "type": "string",
-            "description": "Its block, or its municipality."
+            "description": {"es": "Su manzana, o su municipio.", "en": "Its block, or its municipality."}
           },
           {
             "name": "source",
             "type": "string",
-            "description": "catastro, navarra, bizkaia, gipuzkoa or alava."
+            "description": {"es": "catastro, navarra, bizkaia, gipuzkoa o alava.", "en": "catastro, navarra, bizkaia, gipuzkoa or alava."}
           },
           {
             "name": "geometry",
             "type": "geometry",
-            "description": "Parcel boundary."
+            "description": {"es": "Límite de la parcela.", "en": "Parcel boundary."}
           }
         ]
       },
@@ -641,8 +729,23 @@
     },
     {
       "id": "cadastral_polygons_2023",
+      "downloadable": false,
+      "description": {
+        "es": "Polígonos catastrales rústicos de toda España, incluidos los de los catastros forales: la división del suelo rústico en la que se agrupan las parcelas agrarias. Cubre los 8.132 municipios.",
+        "en": "Rural cadastral polygons of all of Spain, the foral cadastres' included: the division of rural land the agricultural parcels are grouped in. It covers all 8,132 municipalities."
+      },
+      "processing": {
+        "es": "Elaboración de Agora: los polígonos rústicos del Catastro estatal más los de Navarra, Álava y Bizkaia tal como los publican, y los de Gipuzkoa uniendo sus parcelas rústicas por polígono. Cada fuente conserva su licencia. No se puede descargar desde Agora: combina datos del Catastro, cuya licencia no permite redistribuir la información original, y del catastro de Gipuzkoa, sin licencia documentada. Las fuentes se descargan de el servicio INSPIRE del Catastro (https://www.catastro.hacienda.gob.es/webinspire/index.html), por municipio y gratis, en su canal ATOM de parcelas catastrales, y de los portales de los catastros forales: Navarra (https://idena.navarra.es), Álava (https://geo.araba.eus), Bizkaia (https://geo.bizkaia.eus) y Gipuzkoa (https://b5m.gipuzkoa.eus).",
+        "en": "Made by Agora: the state Catastro's rural polygons plus Navarra's, Álava's and Bizkaia's as published, and Gipuzkoa's by joining its rural parcels by polygon. Each source keeps its license. It can't be downloaded from Agora: it combines data from the Catastro, whose license doesn't allow redistributing the original information, and from Gipuzkoa's cadastre, with no documented license. The sources can be downloaded from the Catastro's INSPIRE service (https://www.catastro.hacienda.gob.es/webinspire/index.html), by municipality and free, in its cadastral parcels ATOM feed, and from the foral cadastres' portals: Navarra (https://idena.navarra.es), Álava (https://geo.araba.eus), Bizkaia (https://geo.bizkaia.eus) and Gipuzkoa (https://b5m.gipuzkoa.eus)."
+      },
+      "keywords": {
+        "es": ["polígonos rústicos", "catastro", "suelo rústico", "parcelas agrarias"],
+        "en": ["rural polygons", "cadastre", "rural land"]
+      },
+      "topics": ["cadastre"],
       "title": "Polígonos catastrales de España (Catastro y catastros forales, 2023)",
       "entity_type": "rural_polygon",
+      "tiles": "rural_polygons",
       "source": {
         "kind": "derived",
         "from": [
@@ -654,7 +757,7 @@
         ]
       },
       "license": {
-        "note": "Each source's own: see catastro_cadastral_zones and the foral parcel datasets."
+        "note": {"es": "La de cada fuente: la del Catastro (ver sus masas catastrales) y las de los catastros forales (ver sus parcelas).", "en": "Each source's own: see catastro_cadastral_zones and the foral parcel datasets."}
       },
       "validity": {
         "kind": "snapshot",
@@ -686,17 +789,17 @@
           {
             "name": "polygon",
             "type": "string",
-            "description": "Polygon number."
+            "description": {"es": "Número de polígono.", "en": "Polygon number."}
           },
           {
             "name": "source_municipality_code",
             "type": "string",
-            "description": "The source's own municipality code."
+            "description": {"es": "Código de municipio propio de la fuente.", "en": "The source's own municipality code."}
           },
           {
             "name": "municipality_code",
             "type": "string",
-            "description": "INE municipality it lies in."
+            "description": {"es": "Municipio del INE en el que está.", "en": "INE municipality it lies in."}
           },
           {
             "name": "source",

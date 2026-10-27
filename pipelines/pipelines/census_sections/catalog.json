@@ -63,8 +63,22 @@
   "datasets": [
     {
       "id": "ine_census_sections",
+      "description": {
+        "es": "Límites de las secciones censales, la unidad más pequeña de la estadística oficial (entre 1.000 y 2.500 habitantes), en la edición de 2026. Sirve para cartografiar los datos por sección. Los códigos de sección se reutilizan con otros límites en otras ediciones: una geometría solo tiene sentido con su año.",
+        "en": "Boundaries of census sections, the smallest unit of official statistics (1,000 to 2,500 residents), in the 2026 edition. Use it to map data by section. Section codes are reused with other boundaries in other editions: a geometry only makes sense with its year."
+      },
+      "processing": {
+        "es": "De la cartografía digitalizada del INE (shapefile en ETRS89 / UTM 30N), reproyectada a WGS84 (EPSG:4326). El mapa de la plataforma usa una versión ajustada a los límites municipales del IGN, para que encajen.",
+        "en": "From INE's digitised cartography (shapefile in ETRS89 / UTM 30N), reprojected to WGS84 (EPSG:4326). The platform's map uses a version fitted to IGN's municipal boundaries, so they match."
+      },
+      "keywords": {
+        "es": ["secciones censales", "seccionado", "cartografía censal", "INE"],
+        "en": ["census sections", "census tracts", "census cartography", "INE"]
+      },
+      "topics": ["territory"],
       "title": "Secciones censales de España (INE, cartografía digitalizada)",
       "entity_type": "census_section",
+      "tiles": "census_sections",
       "publisher": {
         "name": "Instituto Nacional de Estadística (INE)",
         "url": "https://www.ine.es"
@@ -83,7 +97,7 @@
       "validity": {
         "kind": "edition",
         "as_of": "{year}-01-01",
-        "description": "Each edition is the sectioning in force on 1 January of its year. Section codes can be reused with different boundaries in other editions: a geometry is only meaningful with its year."
+        "description": {"es": "Cada edición es el seccionado vigente a 1 de enero de su año. Los códigos de sección se reutilizan con otros límites en otras ediciones: una geometría solo tiene sentido con su año.", "en": "Each edition is the sectioning in force on 1 January of its year. Section codes can be reused with different boundaries in other editions: a geometry is only meaningful with its year."}
       },
       "editions": [
         2026
@@ -112,57 +126,57 @@
           {
             "name": "id",
             "type": "string",
-            "description": "Catalogue id (es:ine:sec:{ine_code})."
+            "description": {"es": "Id en el catálogo (es:ine:sec:{ine_code}).", "en": "Catalogue id (es:ine:sec:{ine_code})."}
           },
           {
             "name": "ine_code",
             "type": "string",
-            "description": "INE section code (CUSEC, ten digits)."
+            "description": {"es": "Código INE de la sección (CUSEC, diez dígitos).", "en": "INE section code (CUSEC, ten digits)."}
           },
           {
             "name": "section_code",
             "type": "string",
-            "description": "Section number within its district (three digits)."
+            "description": {"es": "Número de la sección dentro de su distrito (tres dígitos).", "en": "Section number within its district (three digits)."}
           },
           {
             "name": "district_code",
             "type": "string",
-            "description": "District number within its municipality (two digits)."
+            "description": {"es": "Número del distrito dentro de su municipio (dos dígitos).", "en": "District number within its municipality (two digits)."}
           },
           {
             "name": "municipality_code",
             "type": "string",
-            "description": "INE municipality code."
+            "description": {"es": "Código INE del municipio.", "en": "INE municipality code."}
           },
           {
             "name": "province_code",
             "type": "string",
-            "description": "INE province code."
+            "description": {"es": "Código INE de la provincia.", "en": "INE province code."}
           },
           {
             "name": "ccaa_code",
             "type": "string",
-            "description": "INE autonomous community code."
+            "description": {"es": "Código INE de la comunidad autónoma.", "en": "INE autonomous community code."}
           },
           {
             "name": "municipality_name",
             "type": "string",
-            "description": "Municipality name as INE writes it (articles at the end)."
+            "description": {"es": "Nombre del municipio como lo escribe el INE (con el artículo al final).", "en": "Municipality name as INE writes it (articles at the end)."}
           },
           {
             "name": "parent_id",
             "type": "string",
-            "description": "Catalogue id of the district (es:ine:dist:{code})."
+            "description": {"es": "Id del distrito en el catálogo (es:ine:dist:{code}).", "en": "Catalogue id of the district (es:ine:dist:{code})."}
           },
           {
             "name": "year",
             "type": "integer",
-            "description": "Edition: the sectioning as of 1 January of this year."
+            "description": {"es": "Edición: el seccionado a 1 de enero de este año.", "en": "Edition: the sectioning as of 1 January of this year."}
           },
           {
             "name": "geometry",
             "type": "geometry",
-            "description": "Section boundary."
+            "description": {"es": "Límite de la sección.", "en": "Section boundary."}
           }
         ]
       },
@@ -170,8 +184,22 @@
     },
     {
       "id": "ine_census_districts",
+      "description": {
+        "es": "Límites de los distritos censales, que agrupan secciones dentro de un municipio, en la edición de 2026. El INE no publica sus límites: se construyen uniendo las secciones de cada distrito.",
+        "en": "Boundaries of census districts, which group sections within a municipality, in the 2026 edition. INE doesn't publish their boundaries: they're built by joining each district's sections."
+      },
+      "processing": {
+        "es": "Unión de las secciones de cada distrito de la cartografía del INE, en WGS84 (EPSG:4326).",
+        "en": "Union of each district's sections from INE's cartography, in WGS84 (EPSG:4326)."
+      },
+      "keywords": {
+        "es": ["distritos censales", "cartografía censal", "INE"],
+        "en": ["census districts", "census cartography", "INE"]
+      },
+      "topics": ["territory"],
       "title": "Distritos censales de España (derivados de las secciones censales del INE)",
       "entity_type": "census_district",
+      "tiles": "census_districts",
       "publisher": {
         "name": "Instituto Nacional de Estadística (INE)",
         "url": "https://www.ine.es"
@@ -190,7 +218,7 @@
       "validity": {
         "kind": "edition",
         "as_of": "{year}-01-01",
-        "description": "Same edition as the sections it's built from."
+        "description": {"es": "La misma edición que las secciones de las que se construye.", "en": "Same edition as the sections it's built from."}
       },
       "editions": [
         2026
@@ -219,52 +247,52 @@
           {
             "name": "id",
             "type": "string",
-            "description": "Catalogue id (es:ine:dist:{ine_code})."
+            "description": {"es": "Id en el catálogo (es:ine:dist:{ine_code}).", "en": "Catalogue id (es:ine:dist:{ine_code})."}
           },
           {
             "name": "ine_code",
             "type": "string",
-            "description": "INE district code (seven digits)."
+            "description": {"es": "Código INE del distrito (siete dígitos).", "en": "INE district code (seven digits)."}
           },
           {
             "name": "district_code",
             "type": "string",
-            "description": "District number within its municipality (two digits)."
+            "description": {"es": "Número del distrito dentro de su municipio (dos dígitos).", "en": "District number within its municipality (two digits)."}
           },
           {
             "name": "municipality_code",
             "type": "string",
-            "description": "INE municipality code."
+            "description": {"es": "Código INE del municipio.", "en": "INE municipality code."}
           },
           {
             "name": "province_code",
             "type": "string",
-            "description": "INE province code."
+            "description": {"es": "Código INE de la provincia.", "en": "INE province code."}
           },
           {
             "name": "ccaa_code",
             "type": "string",
-            "description": "INE autonomous community code."
+            "description": {"es": "Código INE de la comunidad autónoma.", "en": "INE autonomous community code."}
           },
           {
             "name": "municipality_name",
             "type": "string",
-            "description": "Municipality name as INE writes it."
+            "description": {"es": "Nombre del municipio como lo escribe el INE.", "en": "Municipality name as INE writes it."}
           },
           {
             "name": "parent_id",
             "type": "string",
-            "description": "Catalogue id of the municipality (es:ine:mun:{code})."
+            "description": {"es": "Id del municipio en el catálogo (es:ine:mun:{code}).", "en": "Catalogue id of the municipality (es:ine:mun:{code})."}
           },
           {
             "name": "year",
             "type": "integer",
-            "description": "Edition."
+            "description": {"es": "Edición.", "en": "Edition."}
           },
           {
             "name": "geometry",
             "type": "geometry",
-            "description": "District boundary."
+            "description": {"es": "Límite del distrito.", "en": "District boundary."}
           }
         ]
       },

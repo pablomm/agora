@@ -1,0 +1,59 @@
+{
+  "$comment": "The licenses datasets are under (a dataset's catalog.json names one by its id, with its own attribution). The catalogue build checks every id a dataset names is here.",
+  "licenses": [
+    {
+      "id": "CC-BY-4.0",
+      "short": "CC BY 4.0",
+      "title": {
+        "es": "Creative Commons Atribución 4.0 Internacional",
+        "en": "Creative Commons Attribution 4.0 International"
+      },
+      "url": "https://creativecommons.org/licenses/by/4.0/deed.es",
+      "legal_url": "https://creativecommons.org/licenses/by/4.0/legalcode.es",
+      "open": true,
+      "summary": {
+        "es": "Una licencia abierta: permite copiar, redistribuir y transformar los datos para cualquier fin, también comercial, siempre que se cite la fuente, se enlace la licencia y se indique si se han hecho cambios. Es la que usan el INE, el IGN, el SEPE y la mayoría de las administraciones españolas para sus datos abiertos, de acuerdo con la normativa de reutilización de la información del sector público.",
+        "en": "An open license: it allows copying, redistributing and transforming the data for any purpose, commercial too, as long as the source is credited, the license linked and any changes indicated. It's the one INE, IGN, SEPE and most Spanish administrations use for their open data, under the rules for reusing public sector information."
+      },
+      "permissions": {
+        "es": ["Uso comercial", "Redistribución", "Modificación y obras derivadas"],
+        "en": ["Commercial use", "Redistribution", "Modification and derived works"]
+      },
+      "conditions": {
+        "es": ["Citar la fuente con la atribución que indica", "Enlazar la licencia", "Indicar si se han hecho cambios"],
+        "en": ["Credit the source with the attribution it gives", "Link the license", "Indicate if changes were made"]
+      },
+      "limitations": {
+        "es": ["Sin garantía sobre los datos", "No se puede sugerir que la fuente respalda el uso que se hace de ellos", "No se pueden añadir restricciones que impidan a otros lo que la licencia permite"],
+        "en": ["No warranty on the data", "It can't be suggested the source endorses the use made of them", "No restrictions can be added that stop others doing what the license allows"]
+      }
+    },
+    {
+      "id": "DGC-INSPIRE-2016",
+      "short": "Licencia INSPIRE del Catastro",
+      "title": {
+        "es": "Licencia de acceso y uso de los servicios y conjuntos de datos INSPIRE de la Dirección General del Catastro (v1.0, julio de 2016)",
+        "en": "License for access to and use of the Directorate General for Cadastre's INSPIRE services and datasets (v1.0, July 2016)"
+      },
+      "url": "https://www.catastro.hacienda.gob.es/webinspire/documentos/Licencia.pdf",
+      "legal_url": "https://www.catastro.hacienda.gob.es/webinspire/documentos/Licencia.pdf",
+      "open": false,
+      "summary": {
+        "es": "La licencia propia de la Dirección General del Catastro para los datos que publica según la directiva europea INSPIRE (parcelas, edificios, direcciones). Permite el uso público, también comercial, de información transformada a partir de ellos, citando la fuente; lo que no permite es redistribuir la información original tal cual. Los productos derivados no pueden presentarse como cartografía o información catastral, y el Catastro puede revocar el uso si se hace un mal uso.",
+        "en": "The Directorate General for Cadastre's own license for the data it publishes under the European INSPIRE directive (parcels, buildings, addresses). It allows public use, commercial too, of information transformed from them, crediting the source; what it doesn't allow is redistributing the original information as it is. Derived products can't be presented as cadastral cartography or information, and the Catastro can revoke the use for misuse."
+      },
+      "permissions": {
+        "es": ["Uso público, también comercial, de información transformada", "Obras derivadas"],
+        "en": ["Public use, commercial too, of transformed information", "Derived works"]
+      },
+      "conditions": {
+        "es": ["Citar la fuente: «Dirección General del Catastro»", "No redistribuir la información original tal cual", "No presentar los productos derivados como «cartografía catastral», «información catastral» o términos equivalentes"],
+        "en": ["Credit the source: «Dirección General del Catastro»", "Don't redistribute the original information as it is", "Don't present derived products as «cartografía catastral», «información catastral» or equivalent terms"]
+      },
+      "limitations": {
+        "es": ["Revocable por mal uso", "Sin garantía sobre los datos"],
+        "en": ["Revocable for misuse", "No warranty on the data"]
+      }
+    }
+  ]
+}

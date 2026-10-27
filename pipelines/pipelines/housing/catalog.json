@@ -18,6 +18,18 @@
   "datasets": [
     {
       "id": "tourist_dwellings",
+      "description": {
+        "es": "Viviendas turísticas anunciadas en las principales plataformas de alquiler de corta duración, sus plazas y su porcentaje sobre el total de viviendas, dos veces al año desde agosto de 2020. Sirve para medir la presión del alquiler turístico hasta la sección censal. Es una estadística experimental del INE: cuenta anuncios activos, no licencias.",
+        "en": "Tourist dwellings listed on the main short-term rental platforms, their beds and their share of all dwellings, twice a year since August 2020. It measures the pressure of tourist rentals down to census sections. It's an experimental INE statistic: it counts active listings, not licences."
+      },
+      "processing": {
+        "es": "De la medición experimental del INE de viviendas turísticas. Cada nivel tal como lo publica el INE, sin imputar; los recuentos suman exactamente de secciones a España en cada periodo (comprobado). Las secciones son las de cada periodo (las de 2011 hasta febrero de 2023 y después las nuevas), así que una sección puede cambiar de límites entre periodos. El porcentaje es sobre las viviendas del censo (2011 hasta 2023, 2021 después) y el INE lo oculta donde el censo contó pocas.",
+        "en": "From INE's experimental measurement of tourist dwellings. Every level as INE publishes it, nothing imputed; counts add up exactly from sections to Spain in every period (checked). Sections are each period's (2011's until February 2023, the new ones since), so a section's boundaries can change between periods. The share is over the census's dwellings (2011 until 2023, 2021 since) and INE hides it where the census counted few."
+      },
+      "keywords": {
+        "es": ["viviendas turísticas", "alquiler vacacional", "turismo", "plazas", "estadística experimental"],
+        "en": ["tourist dwellings", "short-term rentals", "tourism", "beds", "experimental statistics"]
+      },
       "title": "Viviendas turísticas, plazas y porcentaje sobre el total de viviendas (estadística experimental)",
       "publisher": {"name": "INE", "url": "https://www.ine.es"},
       "source": {

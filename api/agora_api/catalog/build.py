@@ -6,6 +6,7 @@ dataset really has on disk).
     python -m agora_api.catalog.build
 """
 
+import hashlib
 import json
 import logging
 import sqlite3
@@ -17,7 +18,7 @@ import duckdb
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from agora_api.config import CATALOG_DB, PIPELINES_DIR, PROCESSED_DIR
+from agora_api.config import CATALOG_DB, LICENSES, PIPELINES_DIR, PROCESSED_DIR
 
 log = logging.getLogger(__name__)
 
@@ -84,7 +85,7 @@ def coverage(con: duckdb.DuckDBPyConnection, dataset: str, template: str) -> lis
 
 
 #: Tags found when building, besides the ones a catalog.json gives a dataset.
-AUTO_TAGS = ("imputed", "derived", "experimental", "single_edition", "no_license")
+AUTO_TAGS = ("imputed", "derived", "experimental", "single_edition", "no_license", "not_downloadable")
 
 
 def dataset_tags(con: duckdb.DuckDBPyConnection, dataset: dict, rows: list[tuple] | None = None) -> list[str]:
@@ -113,18 +114,95 @@ def dataset_tags(con: duckdb.DuckDBPyConnection, dataset: dict, rows: list[tuple
         tags.append("single_edition")
     if not dataset.get("license"):
         tags.append("no_license")
+    if not downloadable(dataset):
+        tags.append("not_downloadable")
     return tags
+
+
+def downloadable(dataset: dict) -> bool:
+    """
+    Whether its files are handed out: not when its license isn't known, nor when its catalog.json
+    says so (`"downloadable": false`, a license not allowing to redistribute it; its processing notes
+    say where to get it).
+    """
+    return bool(dataset.get("license")) and dataset.get("downloadable", True)
 
 
 DATASET_COLUMNS = (
     "id", "title", "pipeline", "publisher", "license", "source", "dimensions", "base_level", "frequency",
     "path_template", "tags", "kind", "entity_type", "validity", "fields", "downloadable",
+    "publisher_url", "measure", "run", "tiles", "extent", "focus", "description", "processing", "keywords", "topics",
 )
 
+#: The licenses pipelines/licenses.json has, which datasets' licenses must name.
+KNOWN_LICENSES: set[str] = set()
 
-def insert_dataset(db: sqlite3.Connection, con: duckdb.DuckDBPyConnection, dataset: dict, pipeline: str, kind: str, files: list[tuple], coverage_rows: list[tuple] | None = None) -> None:
-    """A dataset (as a catalog.json gives it) and its files ((name, label, path, filter, rows, bytes))."""
+#: Checksums of the last build's files, by (path, size, modification time): a file not changed isn't read again.
+CHECKSUMS: dict[tuple[str, int, int], str] = {}
+
+
+def previous_checksums(target: Path) -> dict[tuple[str, int, int], str]:
+    """The checksums the catalogue being replaced has (none if it's older than them)."""
+    if not target.exists():
+        return {}
+    db = sqlite3.connect(f"file:{target}?mode=ro", uri=True)
+    try:
+        rows = db.execute("SELECT path, bytes, modified, sha256 FROM dataset_files WHERE sha256 IS NOT NULL").fetchall()
+    except sqlite3.OperationalError:
+        return {}
+    finally:
+        db.close()
+    return {(path, size, modified): checksum for path, size, modified, checksum in rows}
+
+
+def checksum(path: Path) -> tuple[str, int]:
+    """A file's sha256 and modification time, from the last build's if it hasn't changed."""
+    stat = path.stat()
+    key = (str(path), stat.st_size, stat.st_mtime_ns)
+    if key not in CHECKSUMS:
+        digest = hashlib.sha256()
+        with path.open("rb") as file:
+            while chunk := file.read(1 << 22):
+                digest.update(chunk)
+        CHECKSUMS[key] = digest.hexdigest()
+    return CHECKSUMS[key], stat.st_mtime_ns
+
+
+def load_licenses(db: sqlite3.Connection) -> set[str]:
+    """The licenses in pipelines/licenses.json; their ids."""
+    entries = json.loads(LICENSES.read_text())["licenses"]
+    db.executemany(
+        "INSERT INTO licenses VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            (
+                entry["id"], entry["short"], label(entry["title"], "es"), label(entry["title"], "en"), entry.get("url"), entry.get("legal_url"), int(entry["open"]),
+                *(json.dumps(entry[key], ensure_ascii=False) for key in ("summary", "permissions", "conditions", "limitations")),
+            )
+            for entry in entries
+        ],
+    )
+    return {entry["id"] for entry in entries}
+
+
+def insert_dataset(
+    db: sqlite3.Connection,
+    con: duckdb.DuckDBPyConnection,
+    dataset: dict,
+    pipeline: str,
+    kind: str,
+    files: list[tuple],
+    coverage_rows: list[tuple] | None = None,
+    places: dict[str, tuple] | None = None,
+) -> None:
+    """
+    A dataset (as a catalog.json gives it) and its files ((name, label, path, filter, rows, bytes));
+    `places` (municipality code → bounding box) to find a geometry's focus.
+    """
     output = dataset["output"]
+    extent, focus = spatial_extent(con, files, places or {}) if kind == "geometry" else (None, None)
+    license_id = (dataset.get("license") or {}).get("id")
+    if license_id and license_id not in KNOWN_LICENSES:
+        raise ValueError(f"{dataset['id']}: license {license_id!r} isn't in {LICENSES.name}")
     row = {
         "id": dataset["id"],
         "title": label(dataset["title"], "es"),
@@ -141,11 +219,87 @@ def insert_dataset(db: sqlite3.Connection, con: duckdb.DuckDBPyConnection, datas
         "entity_type": dataset.get("entity_type"),
         "validity": json.dumps(validity(dataset), ensure_ascii=False) if kind != "statistics" else None,
         "fields": json.dumps(output.get("fields"), ensure_ascii=False) if isinstance(output, dict) and output.get("fields") else None,
-        # Files whose license isn't known aren't handed out (they're listed, with the no_license tag).
-        "downloadable": int(bool(dataset.get("license"))),
+        # Listed, but not handed out (with the not_downloadable tag): see `downloadable`.
+        "downloadable": int(downloadable(dataset)),
+        "publisher_url": (dataset.get("publisher") or {}).get("url"),
+        "measure": json.dumps(dataset.get("measure"), ensure_ascii=False) if dataset.get("measure") else None,
+        "run": json.dumps(run_metadata(dataset, files), ensure_ascii=False),
+        "tiles": dataset.get("tiles"),
+        "extent": json.dumps(extent) if extent else None,
+        "focus": json.dumps(focus) if focus else None,
+        "description": json.dumps(dataset.get("description"), ensure_ascii=False) if dataset.get("description") else None,
+        "processing": json.dumps(dataset.get("processing"), ensure_ascii=False) if dataset.get("processing") else None,
+        "keywords": json.dumps(dataset.get("keywords"), ensure_ascii=False) if dataset.get("keywords") else None,
+        "topics": json.dumps(dataset.get("topics", [])),
     }
     db.execute(f"INSERT INTO datasets ({', '.join(DATASET_COLUMNS)}) VALUES ({', '.join('?' * len(DATASET_COLUMNS))})", [row[column] for column in DATASET_COLUMNS])
-    db.executemany("INSERT INTO dataset_files VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [(dataset["id"], *file, position) for position, file in enumerate(files)])
+    rows = []
+    for position, file in enumerate(files):
+        # Checksums of files the dataset has whole (not a classification's share of the items).
+        sha256, modified = checksum(file_location(file[2])) if file[5] is not None else (None, None)
+        rows.append((dataset["id"], *file, position, sha256, modified))
+    db.executemany("INSERT INTO dataset_files VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", rows)
+
+
+def file_location(path: str) -> Path:
+    """Where a dataset file is: the pipelines' outputs (processed/…), or next to the catalogue (see services.catalog.file_path)."""
+    return PROCESSED_DIR / path.removeprefix("processed/") if path.startswith("processed/") else CATALOG_DB.parent / path
+
+
+def run_metadata(dataset: dict, files: list[tuple]) -> dict | None:
+    """
+    What the pipeline's run says about the output (its meta.json): when it was made and its source
+    downloaded, the source's URL and tables, and the checks between levels. The meta.json is the
+    output folder's, or the file's or folder's own (<name>.meta.json); one naming another dataset
+    isn't taken.
+    """
+    if not files:
+        return None
+    first = Path(files[0][2])
+    if not str(first).startswith("processed/"):
+        return None
+    path = PROCESSED_DIR / str(first).removeprefix("processed/")
+    for candidate in (path.parent / "meta.json", path.with_suffix(".meta.json"), path.parent.with_suffix(".meta.json")):
+        if not candidate.exists():
+            continue
+        meta = json.loads(candidate.read_text())
+        if meta.get("dataset", dataset["id"]) != dataset["id"] and candidate.name != "meta.json":
+            continue
+        source = meta.get("source") or {}
+        tables = source.get("tables")
+        checks = [
+            {key: check.get(key) for key in ("level", "compared", "mismatches", "max_difference")}
+            for check in meta.get("checks", [])
+            if isinstance(check, dict) and "mismatches" in check
+        ]
+        out = {
+            "generated_at": meta.get("generated_at"),
+            "retrieved_at": meta.get("retrieved_at"),
+            "source_url": source.get("url"),
+            "tables": tables if isinstance(tables, list) else None,
+            "checks": checks or None,
+        }
+        return {key: value for key, value in out.items() if value} or None
+    return None
+
+
+def spatial_extent(con: duckdb.DuckDBPyConnection, files: list[tuple], places: dict[str, tuple]) -> tuple[list | None, list | None]:
+    """
+    A geometry's bounding box over its files, and its focus: the bounding box of the municipality
+    with most of its rows (where a map shows layers only drawn up close, like parcels).
+    """
+    paths = [str(PROCESSED_DIR / relative.removeprefix("processed/")) for _, _, relative, *_ in files if relative.startswith("processed/")]
+    if not paths:
+        return None, None
+    columns = {row[0] for row in con.execute("DESCRIBE SELECT * FROM read_parquet(?)", [paths[0]]).fetchall()}
+    extent = focus = None
+    if "bbox" in columns:
+        box = con.execute("SELECT min(bbox.xmin), min(bbox.ymin), max(bbox.xmax), max(bbox.ymax) FROM read_parquet(?)", [paths]).fetchone()
+        extent = [round(value, 5) for value in box] if None not in box else None
+    if "municipality_code" in columns:
+        code = con.execute("SELECT mode(municipality_code) FROM read_parquet(?)", [paths]).fetchone()[0]
+        focus = list(places[code]) if code in places else None
+    return extent, focus
 
 
 def validity(dataset: dict) -> dict | None:
@@ -241,6 +395,31 @@ def territorial_units(db: sqlite3.Connection, con: duckdb.DuckDBPyConnection, en
         "id": "territorial_units",
         "title": "Unidades territoriales: códigos, nombres y jerarquía (secciones censales, distritos, municipios, provincias y comunidades autónomas)",
         "entity_type": "territorial_unit",
+        "description": {
+            "es": "Todas las unidades territoriales de la plataforma (secciones, distritos, municipios, provincias, comunidades y España) con su id, código INE, nombre, la unidad en la que está cada una y su caja envolvente. Es el nomenclátor que une el resto de tablas: sirve para poner nombre a un código, saber a qué municipio o provincia pertenece una sección, o agregar datos hacia arriba.",
+            "en": "Every territorial unit of the platform (sections, districts, municipalities, provinces, communities and Spain) with its id, INE code, name, the units it's in and its bounding box. It's the gazetteer joining all other tables: use it to name a code, find which municipality or province a section is in, or sum data up."
+        },
+        "processing": {
+            "es": "Elaboración de Agora al construir el catálogo: los límites vigentes del IGN y las secciones censales del INE de 2026, con la jerarquía resuelta.",
+            "en": "Made by Agora when building the catalogue: IGN's current boundaries and INE's 2026 census sections, with the hierarchy resolved."
+        },
+        "keywords": {
+            "es": [
+                "nomenclátor",
+                "códigos INE",
+                "unidades territoriales",
+                "jerarquía"
+            ],
+            "en": [
+                "gazetteer",
+                "INE codes",
+                "territorial units",
+                "hierarchy"
+            ]
+        },
+        "topics": [
+            "territory"
+        ],
         "publisher": {"name": "Agora"},
         "source": {"kind": "derived", "from": ["ign_au_autonomous_communities", "ign_au_provinces", "ign_au_municipalities", "ine_census_sections", "ine_census_districts"]},
         "license": {"id": "CC-BY-4.0", "url": "https://creativecommons.org/licenses/by/4.0/", "attribution": f"CC BY 4.0 ign.es · {ine}"},
@@ -249,17 +428,17 @@ def territorial_units(db: sqlite3.Connection, con: duckdb.DuckDBPyConnection, en
             "path": TERRITORIAL_UNITS,
             "format": "Parquet, one file per level",
             "fields": [
-                {"name": "id", "type": "string", "description": "Catalogue id (es:ine:mun:28079)."},
-                {"name": "level", "type": "string", "description": "census_section, census_district, municipality, province, autonomous_community or country."},
-                {"name": "code", "type": "string", "description": "INE code (es for Spain)."},
-                {"name": "name", "type": "string", "description": "Name; census units, their number (Sección 001)."},
-                {"name": "label", "type": "string", "description": "What to show: census units with their district and municipality."},
-                {"name": "parent_id", "type": "string", "description": "The unit it's directly in."},
-                {"name": "census_district_id", "type": "string", "description": "The census district it's in (census sections)."},
-                {"name": "municipality_id", "type": "string", "description": "The municipality it's in."},
-                {"name": "province_id", "type": "string", "description": "The province it's in."},
-                {"name": "autonomous_community_id", "type": "string", "description": "The autonomous community it's in."},
-                {"name": "west", "type": "double", "description": "Bounding box, EPSG:4326 (also south, east, north)."},
+                {"name": "id", "type": "string", "description": {"es": "Id en el catálogo (es:ine:mun:28079).", "en": "Catalogue id (es:ine:mun:28079)."}},
+                {"name": "level", "type": "string", "description": {"es": "census_section, census_district, municipality, province, autonomous_community o country.", "en": "census_section, census_district, municipality, province, autonomous_community or country."}},
+                {"name": "code", "type": "string", "description": {"es": "Código INE (es para España).", "en": "INE code (es for Spain)."}},
+                {"name": "name", "type": "string", "description": {"es": "Nombre; las unidades censales, su número (Sección 001).", "en": "Name; census units, their number (Sección 001)."}},
+                {"name": "label", "type": "string", "description": {"es": "Cómo mostrarla: las unidades censales, con su distrito y municipio.", "en": "What to show: census units with their district and municipality."}},
+                {"name": "parent_id", "type": "string", "description": {"es": "La unidad en la que está directamente.", "en": "The unit it's directly in."}},
+                {"name": "census_district_id", "type": "string", "description": {"es": "El distrito censal en el que está (secciones censales).", "en": "The census district it's in (census sections)."}},
+                {"name": "municipality_id", "type": "string", "description": {"es": "El municipio en el que está.", "en": "The municipality it's in."}},
+                {"name": "province_id", "type": "string", "description": {"es": "La provincia en la que está.", "en": "The province it's in."}},
+                {"name": "autonomous_community_id", "type": "string", "description": {"es": "La comunidad autónoma en la que está.", "en": "The autonomous community it's in."}},
+                {"name": "west", "type": "double", "description": {"es": "Caja envolvente, EPSG:4326 (también south, east y north).", "en": "Bounding box, EPSG:4326 (also south, east, north)."}},
             ],
         },
     }
@@ -268,13 +447,13 @@ def territorial_units(db: sqlite3.Connection, con: duckdb.DuckDBPyConnection, en
 
 
 CLASSIFICATION_FIELDS = [
-    {"name": "classification", "type": "string", "description": "Classification id (cnae2025…)."},
-    {"name": "code", "type": "string", "description": "The item's code."},
-    {"name": "label", "type": "string", "description": "Its name."},
-    {"name": "level", "type": "integer", "description": "Its level, 1 = the top."},
-    {"name": "level_name", "type": "string", "description": "The level's name (Sección, División…)."},
-    {"name": "parent", "type": "string", "description": "The code of the item it belongs to."},
-    {"name": "position", "type": "integer", "description": "The publisher's order."},
+    {"name": "classification", "type": "string", "description": {"es": "Id de la clasificación (cnae2025…).", "en": "Classification id (cnae2025…)."}},
+    {"name": "code", "type": "string", "description": {"es": "El código del elemento.", "en": "The item's code."}},
+    {"name": "label", "type": "string", "description": {"es": "Su nombre.", "en": "Its name."}},
+    {"name": "level", "type": "integer", "description": {"es": "Su nivel; 1 es el superior.", "en": "Its level, 1 = the top."}},
+    {"name": "level_name", "type": "string", "description": {"es": "El nombre del nivel (Sección, División…).", "en": "The level's name (Sección, División…)."}},
+    {"name": "parent", "type": "string", "description": {"es": "El código del elemento al que pertenece.", "en": "The code of the item it belongs to."}},
+    {"name": "position", "type": "integer", "description": {"es": "El orden del publicador.", "en": "The publisher's order."}},
 ]
 
 
@@ -297,6 +476,33 @@ def classification_datasets(db: sqlite3.Connection, con: duckdb.DuckDBPyConnecti
         "id": "classification_correspondences",
         "title": "Correspondencias entre clasificaciones (CNAE-2009 ↔ CNAE-2025, CNO-11 → CIUO-08, CNED-A → CINE-A…)",
         "entity_type": "classification_correspondence",
+        "description": {
+            "es": "Correspondencias entre clasificaciones: de cada código, a qué códigos de otra clasificación equivale (CNAE-2009 y CNAE-2025, CNO-11 y CIUO-08, CNED-A y CINE-A, y los niveles de estudios del censo). Un código puede corresponder a varios. Sirve para comparar datos codificados con versiones distintas.",
+            "en": "Correspondences between classifications: which codes of another classification each code matches (CNAE-2009 and CNAE-2025, CNO-11 and ISCO-08, CNED-A and ISCED-A, and the census's education levels). A code can match several. Use it to compare data coded with different versions."
+        },
+        "processing": {
+            "es": "Las tablas de correspondencia de cada publicador, tal como las da, una fila por pareja.",
+            "en": "Each publisher's correspondence tables, as given, one row per pair."
+        },
+        "keywords": {
+            "es": [
+                "correspondencias",
+                "tablas de equivalencia",
+                "CNAE",
+                "CNO",
+                "CNED"
+            ],
+            "en": [
+                "correspondences",
+                "concordance tables",
+                "CNAE",
+                "ISCO",
+                "ISCED"
+            ]
+        },
+        "topics": [
+            "classifications"
+        ],
         "publisher": first.get("publisher"),
         "license": first.get("license"),
         "source": {"kind": "file", "note": "The correspondence tables each classification's publisher gives."},
@@ -305,12 +511,12 @@ def classification_datasets(db: sqlite3.Connection, con: duckdb.DuckDBPyConnecti
             "path": path,
             "format": "Parquet",
             "fields": [
-                {"name": "from_classification", "type": "string", "description": "Classification (or platform dimension) of the code matched."},
-                {"name": "from_code", "type": "string", "description": "Its code."},
-                {"name": "to_classification", "type": "string", "description": "Classification it's matched to."},
-                {"name": "to_code", "type": "string", "description": "The code it matches (an item can match several)."},
-                {"name": "to_label", "type": "string", "description": "That code's name, for classifications not in the catalogue."},
-                {"name": "note", "type": "string", "description": "The publisher's note, if any."},
+                {"name": "from_classification", "type": "string", "description": {"es": "Clasificación (o dimensión de la plataforma) del código de origen.", "en": "Classification (or platform dimension) of the code matched."}},
+                {"name": "from_code", "type": "string", "description": {"es": "Su código.", "en": "Its code."}},
+                {"name": "to_classification", "type": "string", "description": {"es": "Clasificación de destino.", "en": "Classification it's matched to."}},
+                {"name": "to_code", "type": "string", "description": {"es": "El código al que corresponde (un elemento puede corresponder a varios).", "en": "The code it matches (an item can match several)."}},
+                {"name": "to_label", "type": "string", "description": {"es": "El nombre de ese código, para clasificaciones que no están en el catálogo.", "en": "That code's name, for classifications not in the catalogue."}},
+                {"name": "note", "type": "string", "description": {"es": "La nota del publicador, si la hay.", "en": "The publisher's note, if any."}},
             ],
         },
     }
@@ -435,6 +641,8 @@ def build(target: Path = CATALOG_DB) -> Path:
     db.executescript(resources.files("agora_api.catalog").joinpath("schema.sql").read_text())
     con = duckdb.connect()
 
+    CHECKSUMS.update(previous_checksums(target))
+    KNOWN_LICENSES.update(load_licenses(db))
     db.executemany("INSERT INTO levels VALUES (?, ?, ?, ?)", [(level, rank, es, en) for rank, (level, es, en) in enumerate(LEVELS)])
     entities = territorial_entities(con)
     db.executemany(
@@ -445,6 +653,7 @@ def build(target: Path = CATALOG_DB) -> Path:
     log.info("%d territorial units", len(entities))
     territorial_units(db, con, entities, target.parent)
     province_names = {row[2]: row[3] for row in entities if row[1] == "province"}
+    places = {row[2]: row[7:11] for row in entities if row[1] == "municipality"}
 
     load_classifications(db, con)
     for path in sorted(PIPELINES_DIR.glob("*/catalog.json")):
@@ -481,7 +690,7 @@ def build(target: Path = CATALOG_DB) -> Path:
                 if not files:
                     log.warning("%s: no files on disk, left out", dataset["id"])
                     continue
-                insert_dataset(db, con, dataset, pipeline, "geometry", files)
+                insert_dataset(db, con, dataset, pipeline, "geometry", files, places=places)
                 log.info("%s: %d files", dataset["id"], len(files))
         for variable in catalog.get("variables", []):
             db.execute(

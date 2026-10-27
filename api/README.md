@@ -69,6 +69,21 @@ others. **Reference** tables: each classification (its items) and their correspo
 `territorial_units` (every unit's codes, names, the units it's in and bounding box, a file per
 level), written next to the catalogue when building.
 
+Every dataset carries, in its `catalog.json`, a `description` (what it measures, what it's for and
+how to read it) and `processing` notes (how it was made: sources joined, imputation, checks), both
+`{es, en}`, `keywords` (`{es: [...], en: [...]}`) and, for geometries and reference tables, its
+`topics`; the fields of geometries describe themselves in both languages too. Licenses are entities
+of their own, in `pipelines/licenses.json` (title, summary, what they allow, require and limit, in
+both languages): a dataset's license names one by `id`, with its own attribution, and the build
+fails on an id that isn't there. Each file a dataset has whole carries its sha256, reused from the
+previous build while the file is unchanged.
+
+For each dataset's page, the catalogue also keeps its measure (statistics: unit and aggregation),
+its publisher's URL, what its pipeline's run says (the output's `meta.json`: when it was made and
+its source downloaded, the source's URL and tables, and its checks against what's published), and
+for geometries the vector tile layer that draws them (`"tiles"` in the `catalog.json`), their
+extent, and a focus (the municipality with most rows) for layers only drawn up close.
+
 A variable whose values are above or below zero (a gap between two groups) says
 `"palette": "diverging"`: the web colors it with two hues and gray around zero.
 
@@ -90,6 +105,8 @@ A variable whose values are above or below zero (a gap between two groups) says
 | `GET /entities/{id}/breakdown?dataset&period` | Every cell of a dataset for the unit (population pyramid…) |
 | `GET /datasets?q&kind` | Datasets: statistics (dimensions, frequency, levels with years), geometries and reference tables (what their rows are, as of when, files, rows); tags and whether they can be downloaded |
 | `GET /datasets/{id}` | A dataset's columns (with what they mean), each dimension's codes and labels (statistics), and its files with rows and size (statistics: one per level, with its periods and units) |
+| `GET /datasets/{id}/{file}/head?limit` | The first rows of a file (up to 100), as stored: geometries as the start of their WKT |
+| `GET /licenses`, `GET /licenses/{id}` | The licenses: what each allows, requires and limits, and its datasets |
 | `GET /datasets/{id}/{file}.{parquet\|csv}?period&within&entity&filter&labels` | One of the dataset's files (a level, an edition, a province…), as it is or a slice: statistics by periods, units inside another, some units and `filter=dimension:code` (repeatable), with `labels=true` adding `<dimension>_label` columns; the rest by `filter=column:value`. Geometries keep their GeoParquet metadata, and go as WKT in CSV. Answers HEAD and ranges, so DuckDB reads it straight from the URL; 403 for a dataset whose license isn't known |
 
 Unknown variables, units or years answer 404 with the reason; impossible requests (a level inside

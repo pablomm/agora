@@ -46,6 +46,18 @@
   "datasets": [
     {
       "id": "companies",
+      "description": {
+        "es": "Empresas activas con sede en cada municipio a 1 de enero, en total y por actividad principal: industria, construcción, comercio, transporte y hostelería, y los demás servicios en seis grupos. Sirve para medir el tejido empresarial de un lugar y su especialización, por ejemplo con las empresas por cada 1.000 habitantes o el peso de cada actividad. Cada empresa cuenta una vez, en el municipio de su sede social, aunque tenga locales en otros: no mide empleo ni tamaño.",
+        "en": "Active companies with their registered seat in each municipality on 1 January, in total and by main activity: industry, construction, trade, transport and hospitality, and the other services in six groups. It measures a place's business fabric and its specialisation, for instance as companies per 1,000 residents or the weight of each activity. Each company counts once, where its seat is, even with premises elsewhere: it doesn't measure jobs or size."
+      },
+      "processing": {
+        "es": "Del Directorio Central de Empresas (DIRCE) del INE, tabla 4721. Los totales municipales que el INE oculta por secreto estadístico (menos de 4 empresas, unos 1.200 municipios al año) se imputan repartiendo lo que su provincia tiene de más sobre los municipios publicados, según la población y sin pasar de 3; los grupos de actividad ocultos, con el reparto de su provincia. Cada desglose suma exactamente su total (comprobado); provincias, comunidades y España son las del INE.",
+        "en": "From INE's Central Business Register (DIRCE), table 4721. Municipal totals INE hides for statistical secrecy (under 4 companies, about 1,200 municipalities a year) are imputed by sharing out what their province has beyond its published municipalities, by population and none above 3; hidden activity groups, by their province's mix. Each breakdown adds up exactly to its total (checked); provinces, communities and Spain are INE's."
+      },
+      "keywords": {
+        "es": ["empresas", "DIRCE", "tejido empresarial", "actividad económica", "sede social"],
+        "en": ["companies", "DIRCE", "business register", "economic activity"]
+      },
       "title": "Empresas por municipio y actividad principal (Directorio Central de Empresas, DIRCE)",
       "publisher": {"name": "INE", "url": "https://www.ine.es"},
       "source": {

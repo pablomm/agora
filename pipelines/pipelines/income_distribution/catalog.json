@@ -18,6 +18,18 @@
   "datasets": [
     {
       "id": "income_distribution",
+      "description": {
+        "es": "La distribución completa de la renta por unidad de consumo de cada unidad y año, como los tres parámetros de una distribución de Dagum. Con ellos se puede responder lo que el INE no publica: el porcentaje bajo cualquier umbral, cualquier percentil, la polarización o la renta de áreas que no son unidades censales. No tiene capa en el mapa: es para análisis.",
+        "en": "The full distribution of income per consumption unit of every unit and year, as the three parameters of a Dagum distribution. With them you can answer what INE doesn't publish: the share below any threshold, any percentile, polarisation or the income of areas that aren't census units. It has no map layer: it's for analysis."
+      },
+      "processing": {
+        "es": "Elaboración de Agora: la distribución de Dagum F(x) = (1 + (x/b)^-a)^-p se ajusta por mínimos cuadrados ponderados a nueve puntos que publica el Atlas de renta del INE (umbrales fijos y relativos, media y mediana). No usa cifras ocultas ni imputadas; las unidades con menos de 4 cifras heredan el ajuste de la unidad superior.",
+        "en": "Made by Agora: the Dagum distribution F(x) = (1 + (x/b)^-a)^-p is fitted by weighted least squares to nine points INE's income atlas publishes (fixed and relative thresholds, mean and median). Hidden and imputed figures aren't used; units with fewer than 4 figures inherit the fit of the unit above."
+      },
+      "keywords": {
+        "es": ["distribución de la renta", "Dagum", "percentiles", "modelo", "Atlas de renta"],
+        "en": ["income distribution", "Dagum", "percentiles", "model", "income atlas"]
+      },
       "title": "Distribución de la renta por unidad de consumo, ajustada a una Dagum (a partir del Atlas de distribución de renta de los hogares)",
       "publisher": {
         "name": "INE",

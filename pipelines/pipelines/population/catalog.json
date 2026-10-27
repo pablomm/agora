@@ -1073,6 +1073,18 @@
   "datasets": [
     {
       "id": "population_official",
+      "description": {
+        "es": "Cifras oficiales de población de los municipios a 1 de enero, por sexo, desde 1996 (sin 1997): las que resultan de la revisión anual del Padrón y tienen valor legal. Es la serie de población más larga. No llega a secciones censales: para eso está el Censo de Población anual.",
+        "en": "Official population figures of the municipalities on 1 January, by sex, since 1996 (no 1997): those resulting from the yearly revision of the municipal register, with legal standing. It's the longest population series. It doesn't reach census sections: the yearly Population Census does."
+      },
+      "processing": {
+        "es": "Del INE (Cifras oficiales de población de los municipios españoles). Los municipios tal como los publica el INE; provincias, comunidades y España se suman de los municipios y se comprueban contra sus cifras.",
+        "en": "From INE (official population figures of Spanish municipalities). Municipalities as INE publishes them; provinces, communities and Spain summed from municipalities and checked against INE's figures."
+      },
+      "keywords": {
+        "es": ["población", "padrón", "cifras oficiales", "habitantes", "serie histórica"],
+        "en": ["population", "municipal register", "official figures", "residents", "time series"]
+      },
       "title": "Cifras oficiales de población de los municipios (Revisión del Padrón Municipal)",
       "publisher": {
         "name": "INE",
@@ -1118,6 +1130,18 @@
     },
     {
       "id": "population_sex_age",
+      "description": {
+        "es": "Población por sexo y grupos de edad de cinco años, a 1 de enero, hasta la sección censal. Es la base de la pirámide de población y de indicadores como el envejecimiento o la dependencia.",
+        "en": "Population by sex and five-year age groups, on 1 January, down to census sections. It's the basis of the population pyramid and of indicators such as ageing or dependency."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures."
+      },
+      "keywords": {
+        "es": ["población", "edad", "sexo", "pirámide de población", "envejecimiento", "censo anual"],
+        "en": ["population", "age", "sex", "population pyramid", "ageing", "yearly census"]
+      },
       "title": "Población por sexo y edad (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1161,6 +1185,18 @@
     },
     {
       "id": "population_sex_age_nationality",
+      "description": {
+        "es": "Población por sexo, grupo de edad y nacionalidad (española o extranjera), a 1 de enero. Sirve para ver la estructura de edades de la población extranjera frente a la española.",
+        "en": "Population by sex, age group and nationality (Spanish or foreign), on 1 January. It compares the age structure of the foreign population with the Spanish one."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures."
+      },
+      "keywords": {
+        "es": ["población extranjera", "nacionalidad", "edad", "censo anual"],
+        "en": ["foreign population", "nationality", "age", "yearly census"]
+      },
       "title": "Población por sexo, edad y nacionalidad (española/extranjera) (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1205,6 +1241,18 @@
     },
     {
       "id": "population_mean_age",
+      "description": {
+        "es": "Edad media de la población por sexo, hasta la sección censal. Resume en un número lo envejecida o joven que es una zona. Es una media de cada unidad: no se suma entre unidades.",
+        "en": "Mean age of the population by sex, down to census sections. It sums up how old or young an area is in one number. It's each unit's mean: it doesn't add up across units."
+      },
+      "processing": {
+        "es": "Elaboración de Agora a partir de la población por sexo y edad del Censo anual: cada grupo de cinco años en su punto medio (100 y más, en 102,5). Comprobada contra la edad media por provincia que publica el INE (tabla 68527).",
+        "en": "Made by Agora from the yearly census population by sex and age: each five-year group at its midpoint (100 and over at 102.5). Checked against INE's mean age by province (table 68527)."
+      },
+      "keywords": {
+        "es": ["edad media", "envejecimiento", "censo anual"],
+        "en": ["mean age", "ageing", "yearly census"]
+      },
       "title": "Edad media de la población por sexo (a partir del Censo de Población anual por edad quinquenal)",
       "publisher": {
         "name": "INE",
@@ -1247,6 +1295,18 @@
     },
     {
       "id": "population_nationality",
+      "description": {
+        "es": "Población por sexo y país de nacionalidad (los principales países), a 1 de enero, hasta la sección censal. Muestra qué nacionalidades se concentran en cada barrio.",
+        "en": "Population by sex and country of nationality (the main countries), on 1 January, down to census sections. It shows which nationalities gather in each neighbourhood."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures."
+      },
+      "keywords": {
+        "es": ["nacionalidad", "extranjeros", "inmigración", "censo anual"],
+        "en": ["nationality", "foreigners", "immigration", "yearly census"]
+      },
       "title": "Población por sexo y país de nacionalidad (principales países) (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1343,6 +1403,18 @@
     },
     {
       "id": "population_nationality_detail",
+      "description": {
+        "es": "Población por sexo y nacionalidad con más países y los grandes grupos (UE, resto de Europa, África, América, Asia…), a 1 de enero, por municipio.",
+        "en": "Population by sex and nationality with more countries and the large groups (EU, rest of Europe, Africa, America, Asia…), on 1 January, by municipality."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures."
+      },
+      "keywords": {
+        "es": ["nacionalidad", "extranjeros", "inmigración", "censo anual"],
+        "en": ["nationality", "foreigners", "immigration", "yearly census"]
+      },
       "title": "Población por sexo y país de nacionalidad (principales nacionalidades y grandes grupos) (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1387,6 +1459,18 @@
     },
     {
       "id": "population_birth_country",
+      "description": {
+        "es": "Población por sexo y país de nacimiento (los principales países), a 1 de enero, hasta la sección censal. A diferencia de la nacionalidad, no cambia al nacionalizarse: mide mejor el origen migratorio.",
+        "en": "Population by sex and country of birth (the main countries), on 1 January, down to census sections. Unlike nationality, it doesn't change on naturalisation: it measures migrant origin better."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures."
+      },
+      "keywords": {
+        "es": ["país de nacimiento", "inmigración", "origen", "censo anual"],
+        "en": ["country of birth", "immigration", "origin", "yearly census"]
+      },
       "title": "Población por sexo y país de nacimiento (principales países) (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1483,6 +1567,18 @@
     },
     {
       "id": "population_birth_country_detail",
+      "description": {
+        "es": "Población por sexo y país de nacimiento con más países y los grandes grupos, a 1 de enero, por municipio.",
+        "en": "Population by sex and country of birth with more countries and the large groups, on 1 January, by municipality."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures."
+      },
+      "keywords": {
+        "es": ["país de nacimiento", "inmigración", "censo anual"],
+        "en": ["country of birth", "immigration", "yearly census"]
+      },
       "title": "Población por sexo y país de nacimiento (principales países y grandes grupos) (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1527,6 +1623,18 @@
     },
     {
       "id": "population_birthplace",
+      "description": {
+        "es": "Población por sexo y relación entre su lugar de nacimiento y el de residencia: en el mismo municipio, en otro de la provincia, en otra provincia de la comunidad, en otra comunidad o en el extranjero. Mide el arraigo y las migraciones interiores.",
+        "en": "Population by sex and how their birthplace relates to where they live: same municipality, another in the province, another province of the community, another community or abroad. It measures rootedness and internal migration."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures."
+      },
+      "keywords": {
+        "es": ["lugar de nacimiento", "migración interior", "arraigo", "censo anual"],
+        "en": ["birthplace", "internal migration", "yearly census"]
+      },
       "title": "Población por sexo y relación entre lugar de nacimiento y lugar de residencia (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1623,6 +1731,18 @@
     },
     {
       "id": "population_arrival_spain",
+      "description": {
+        "es": "Población nacida en el extranjero por año de llegada a España (en periodos) y sexo, a 1 de enero. Distingue la inmigración reciente de la asentada.",
+        "en": "Population born abroad by year of arrival in Spain (in periods) and sex, on 1 January. It tells recent immigration from settled immigration."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE. Las secciones y municipios que el INE oculta por ser pequeños se imputan repartiendo el resto de la unidad superior según su población, y quedan marcados como imputados (origin = imputed).",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures. Sections and municipalities INE hides for being small are imputed by sharing out the remainder of the unit above by population, and flagged as imputed (origin = imputed)."
+      },
+      "keywords": {
+        "es": ["llegada a España", "inmigración reciente", "censo anual"],
+        "en": ["arrival in Spain", "recent immigration", "yearly census"]
+      },
       "title": "Población por año de llegada a España (agregado) y sexo (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1719,6 +1839,18 @@
     },
     {
       "id": "population_previous_residence",
+      "description": {
+        "es": "Población por residencia anterior (otro municipio de la provincia, de otra provincia, del extranjero…), sexo y gran grupo de edad. Indica de dónde viene la gente que se ha mudado a cada municipio.",
+        "en": "Population by previous residence (another municipality of the province, another province, abroad…), sex and broad age group. It shows where people who moved into each municipality came from."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Solo municipios de 500 habitantes o más (unos 4.100) y sin agregar a niveles superiores: el INE no publica el resto.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Only municipalities of 500 residents or more (about 4,100), not summed up: INE doesn't publish the rest."
+      },
+      "keywords": {
+        "es": ["residencia anterior", "migraciones", "movilidad residencial", "censo anual"],
+        "en": ["previous residence", "migration", "residential mobility", "yearly census"]
+      },
       "title": "Población por residencia anterior (agregada), sexo y edad (grandes grupos), municipios de 500 habitantes o más (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1760,6 +1892,18 @@
     },
     {
       "id": "population_arrival_municipality",
+      "description": {
+        "es": "Población por año de llegada al municipio, sexo y grupo de edad. Mide la rotación residencial: qué parte de los vecinos llegó hace poco.",
+        "en": "Population by year of arrival in the municipality, sex and age group. It measures residential turnover: how many residents arrived recently."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Solo capitales de provincia y principales ciudades, y sin agregar a niveles superiores: el INE no publica el resto.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Only provincial capitals and main cities, not summed up: INE doesn't publish the rest."
+      },
+      "keywords": {
+        "es": ["llegada al municipio", "rotación residencial", "movilidad", "censo anual"],
+        "en": ["arrival in the municipality", "residential turnover", "mobility", "yearly census"]
+      },
       "title": "Población por año de llegada al municipio, sexo y grupo de edad, capitales de provincia y principales ciudades (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1801,6 +1945,18 @@
     },
     {
       "id": "population_residence_year_ago",
+      "description": {
+        "es": "Población según dónde residía un año antes (el mismo municipio, otro, el extranjero), por sexo, gran grupo de edad y nacionalidad. Mide la movilidad residencial del último año.",
+        "en": "Population by where they lived a year earlier (same municipality, another, abroad), by sex, broad age group and nationality. It measures residential mobility in the last year."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Solo capitales de provincia y principales ciudades, y sin agregar a niveles superiores: el INE no publica el resto.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Only provincial capitals and main cities, not summed up: INE doesn't publish the rest."
+      },
+      "keywords": {
+        "es": ["residencia hace un año", "movilidad residencial", "migraciones", "censo anual"],
+        "en": ["residence a year ago", "residential mobility", "migration", "yearly census"]
+      },
       "title": "Población por residencia hace un año, sexo, edad (grandes grupos) y nacionalidad, capitales de provincia y principales ciudades (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1843,6 +1999,18 @@
     },
     {
       "id": "population_education",
+      "description": {
+        "es": "Población de 15 años o más por sexo y nivel de estudios alcanzado (agrupado: hasta primaria, secundaria, superiores…), hasta la sección censal. Es la medida del nivel educativo de cada barrio.",
+        "en": "Population aged 15 and over by sex and level of education attained (grouped: up to primary, secondary, higher…), down to census sections. It measures each neighbourhood's educational level."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE. Las secciones y municipios que el INE oculta por ser pequeños se imputan repartiendo el resto de la unidad superior según su población, y quedan marcados como imputados (origin = imputed).",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures. Sections and municipalities INE hides for being small are imputed by sharing out the remainder of the unit above by population, and flagged as imputed (origin = imputed)."
+      },
+      "keywords": {
+        "es": ["nivel de estudios", "educación", "estudios superiores", "censo anual"],
+        "en": ["educational attainment", "education", "higher education", "yearly census"]
+      },
       "title": "Población de 15 y más años por sexo y nivel de estudios (agrupado) (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -1939,6 +2107,18 @@
     },
     {
       "id": "population_education_born",
+      "description": {
+        "es": "Población de 15 años o más según haya nacido en España o en el extranjero y su nivel de estudios (agrupado), hasta la sección censal.",
+        "en": "Population aged 15 and over by whether born in Spain or abroad and their level of education (grouped), down to census sections."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE. Las secciones y municipios que el INE oculta por ser pequeños se imputan repartiendo el resto de la unidad superior según su población, y quedan marcados como imputados (origin = imputed).",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures. Sections and municipalities INE hides for being small are imputed by sharing out the remainder of the unit above by population, and flagged as imputed (origin = imputed)."
+      },
+      "keywords": {
+        "es": ["nivel de estudios", "nacidos en el extranjero", "censo anual"],
+        "en": ["educational attainment", "born abroad", "yearly census"]
+      },
       "title": "Población de 15 y más años por país de nacimiento (España/extranjero) y nivel de estudios (agrupado) (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -2035,6 +2215,18 @@
     },
     {
       "id": "population_education_gender_gap",
+      "description": {
+        "es": "Brecha de género en el nivel de estudios, en puntos porcentuales: el porcentaje de mujeres de 15 años o más con cada nivel menos el de hombres. Un valor positivo en estudios superiores indica más mujeres que hombres tituladas en esa zona.",
+        "en": "Gender gap in education, in percentage points: the share of women aged 15 and over with each level minus that of men. A positive value for higher education means more women than men are graduates in that area."
+      },
+      "processing": {
+        "es": "Derivado de population_education, en cada unidad y año.",
+        "en": "Derived from population_education, in every unit and year."
+      },
+      "keywords": {
+        "es": ["brecha de género", "educación", "censo anual"],
+        "en": ["gender gap", "education", "yearly census"]
+      },
       "title": "Brecha de género en nivel de estudios (a partir del Censo de Población anual por sección)",
       "publisher": {
         "name": "INE",
@@ -2077,6 +2269,18 @@
     },
     {
       "id": "population_education_detail",
+      "description": {
+        "es": "Población de 15 años o más por sexo, lugar de nacimiento o nacionalidad y nivel de estudios en detalle (anidado en los grupos), por municipio.",
+        "en": "Population aged 15 and over by sex, birthplace or nationality and detailed level of education (nested in the groups), by municipality."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Solo municipios de 500 habitantes o más (unos 4.100) y sin agregar a niveles superiores: el INE no publica el resto.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Only municipalities of 500 residents or more (about 4,100), not summed up: INE doesn't publish the rest."
+      },
+      "keywords": {
+        "es": ["nivel de estudios", "CNED", "educación", "censo anual"],
+        "en": ["educational attainment", "CNED", "education", "yearly census"]
+      },
       "title": "Población de 15 y más años por sexo, lugar de nacimiento o nacionalidad y nivel de estudios (detalle), municipios de 500 habitantes o más (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -2119,6 +2323,18 @@
     },
     {
       "id": "population_studying",
+      "description": {
+        "es": "Población de 15 años o más por sexo, lugar de nacimiento o nacionalidad y estudios que está cursando (o ninguno), por municipio.",
+        "en": "Population aged 15 and over by sex, birthplace or nationality and the studies they're taking (or none), by municipality."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Solo municipios de 500 habitantes o más (unos 4.100) y sin agregar a niveles superiores: el INE no publica el resto.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Only municipalities of 500 residents or more (about 4,100), not summed up: INE doesn't publish the rest."
+      },
+      "keywords": {
+        "es": ["estudiantes", "estudios en curso", "educación", "censo anual"],
+        "en": ["students", "studies in progress", "education", "yearly census"]
+      },
       "title": "Población de 15 y más años por sexo, lugar de nacimiento o nacionalidad y nivel de estudios en curso, municipios de 500 habitantes o más (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -2161,6 +2377,18 @@
     },
     {
       "id": "population_education_age",
+      "description": {
+        "es": "Población de 15 años o más por sexo, grupo de edad y nivel de estudios (agrupado), por municipio. Permite separar el efecto de la edad: comparar el nivel educativo de los jóvenes entre municipios.",
+        "en": "Population aged 15 and over by sex, age group and level of education (grouped), by municipality. It separates the effect of age: compare young people's education across municipalities."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Solo municipios de 500 habitantes o más (unos 4.100) y sin agregar a niveles superiores: el INE no publica el resto.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Only municipalities of 500 residents or more (about 4,100), not summed up: INE doesn't publish the rest."
+      },
+      "keywords": {
+        "es": ["nivel de estudios", "edad", "educación", "censo anual"],
+        "en": ["educational attainment", "age", "education", "yearly census"]
+      },
       "title": "Población de 15 y más años por sexo, edad y nivel de estudios (agrupado), municipios de 500 habitantes o más (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -2202,6 +2430,18 @@
     },
     {
       "id": "population_marital_status",
+      "description": {
+        "es": "Población de 16 años o más por sexo y estado civil (soltera, casada, viuda, separada o divorciada), a 1 de enero.",
+        "en": "Population aged 16 and over by sex and marital status (single, married, widowed, separated or divorced), on 1 January."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE. Las secciones y municipios que el INE oculta por ser pequeños se imputan repartiendo el resto de la unidad superior según su población, y quedan marcados como imputados (origin = imputed).",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures. Sections and municipalities INE hides for being small are imputed by sharing out the remainder of the unit above by population, and flagged as imputed (origin = imputed)."
+      },
+      "keywords": {
+        "es": ["estado civil", "matrimonio", "divorcio", "censo anual"],
+        "en": ["marital status", "marriage", "divorce", "yearly census"]
+      },
       "title": "Población de 16 y más años por sexo y estado civil (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -2248,6 +2488,18 @@
     },
     {
       "id": "population_marital_status_age",
+      "description": {
+        "es": "Población de 16 años o más por sexo, grupo de edad y estado civil, por municipio.",
+        "en": "Population aged 16 and over by sex, age group and marital status, by municipality."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Solo municipios de 500 habitantes o más (unos 4.100) y sin agregar a niveles superiores: el INE no publica el resto.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Only municipalities of 500 residents or more (about 4,100), not summed up: INE doesn't publish the rest."
+      },
+      "keywords": {
+        "es": ["estado civil", "edad", "censo anual"],
+        "en": ["marital status", "age", "yearly census"]
+      },
       "title": "Población de 16 y más años por sexo, edad y estado civil, municipios de 500 habitantes o más (Censo de Población anual)",
       "publisher": {
         "name": "INE",

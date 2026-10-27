@@ -254,7 +254,10 @@ def test_income_distribution(client):
 
 def test_census_2021(client):
     # A one-off census: one period, down to sections, in its own topic after the yearly ones.
-    topics = [topic["id"] for topic in client.get("/catalog").json()["topics"]]
+    catalog = client.get("/catalog").json()
+    # Among the topics with variables (geometries' and classifications' come after them).
+    used = {variable["topic"] for variable in catalog["variables"]}
+    topics = [topic["id"] for topic in catalog["topics"] if topic["id"] in used]
     assert topics[-1] == "census_2021"
     empty = client.get("/observations", params={"variable": "dwellings_2021_share", "level": "census_section", "option": "dwelling:non_principal"}).json()
     assert empty["period"] == 2021 and empty["stats"]["count"] > 35_000
@@ -340,3 +343,40 @@ def test_dataset_downloads(client, tmp_path):
     assert again.headers["etag"] == client.head("/datasets/population_sex_age/municipality.parquet", params={"period": 2025, "filter": "sex:female"}).headers["etag"]
     assert client.get("/datasets/population_sex_age/municipality.csv", params={"filter": "colour:red"}).status_code == 400
     assert client.get("/datasets/population_sex_age/planet.csv").status_code == 404
+
+
+def test_dataset_metadata_for_its_page(client):
+    datasets = {dataset["id"]: dataset for dataset in client.get("/catalog").json()["datasets"]}
+    parcels = datasets["navarra_urban_parcels"]
+    # Drawn by the map's parcels layer; its focus is the municipality with most parcels (Pamplona).
+    assert parcels["tiles"] == "cadastral_parcels" and parcels["extent"][0] < parcels["focus"][0] < parcels["focus"][2] < parcels["extent"][2]
+    assert datasets["population_sex_age"]["measure"] == {"id": "population", "unit": "personas", "aggregation": "sum"}
+    body = client.get("/datasets/population_sex_age").json()
+    assert 65034 in body["run"]["tables"] and all(check["mismatches"] == 0 for check in body["run"]["checks"])
+    files = {file["name"]: file for file in body["files"]}
+    assert files["municipality"]["units_by_period"]["2025"] > 8000
+    assert client.get("/datasets/ine_census_sections").json()["validity"]["as_of"] == "2026-01-01"
+
+
+def test_licenses_metadata_and_checksums(client):
+    licenses = {entry["id"]: entry for entry in client.get("/licenses").json()}
+    assert licenses["CC-BY-4.0"]["open"] and not licenses["DGC-INSPIRE-2016"]["open"]
+    assert set(licenses["DGC-INSPIRE-2016"]["datasets"]) == {"catastro_cadastral_zones", "catastro_urban_parcels"}
+    assert client.get("/licenses/CC-BY-4.0").json()["conditions"]["es"][0].startswith("Citar")
+    body = client.get("/datasets/ign_au_provinces").json()
+    assert body["description"]["es"].startswith("Límites") and "IGN" in body["keywords"]["es"] and body["topics"] == ["territory"]
+    assert body["fields"]["name"]["es"].startswith("Nombre oficial")
+    assert len(body["files"][0]["sha256"]) == 64
+    head = client.get("/datasets/ign_au_provinces/provinces/head", params={"limit": 3}).json()
+    assert len(head["rows"]) == 3 and head["rows"][0]["geometry"].startswith(("POLYGON", "MULTIPOLYGON"))
+    assert client.get("/datasets/postal_code_areas_2024/postal_codes/head").status_code == 403
+
+
+def test_cadastre_listed_but_not_served(client):
+    # The Catastro's license doesn't allow redistributing its original information: its notes say where to get it.
+    for dataset_id, file in (("catastro_urban_parcels", "28"), ("catastro_cadastral_zones", "cadastral_zones_2023-04"), ("cadastral_polygons_2023", "rural_polygons_2023")):
+        body = client.get(f"/datasets/{dataset_id}").json()
+        assert not body["downloadable"] and "not_downloadable" in body["tags"]
+        assert "catastro.hacienda.gob.es/webinspire" in body["processing"]["es"]
+        assert client.get(f"/datasets/{dataset_id}/{file}.parquet").status_code == 403
+    assert client.get("/datasets/navarra_urban_parcels/31.parquet").status_code == 200

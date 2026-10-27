@@ -11,13 +11,15 @@ interface Props {
   series: Series
   /** The year shown on the map, marked on the chart. */
   period: number | undefined
+  /** The values as a table under the chart, folded (where the chart stands alone). */
+  table?: boolean
 }
 
 /**
  * A unit's values over the years: one line per source (each its own series, never joined),
  * categorical colors in fixed order, a legend when there are two, and a crosshair tooltip.
  */
-export function SeriesChart({ series, period }: Props) {
+export function SeriesChart({ series, period, table = true }: Props) {
   const [hoverYear, setHoverYear] = useState<number>()
   const lines = series.facets.filter((facet) => facet.values.length)
   const points = lines.flatMap((line) => line.values)
@@ -121,6 +123,7 @@ export function SeriesChart({ series, period }: Props) {
           </div>
         )}
       </div>
+      {table && (
       <details className="chart-table">
         <summary>{copy.detail.seriesTable}</summary>
         <table>
@@ -145,6 +148,7 @@ export function SeriesChart({ series, period }: Props) {
           </tbody>
         </table>
       </details>
+      )}
     </figure>
   )
 }

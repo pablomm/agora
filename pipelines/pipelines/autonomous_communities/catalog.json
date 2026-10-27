@@ -1,4 +1,7 @@
 {
+  "topics": [
+    {"id": "territory", "label": {"es": "Territorio y límites", "en": "Territory and boundaries"}, "position": 2}
+  ],
   "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details (retrieval date, checksum) are in the output's autonomous_communities.meta.json.",
   "entity_types": [
     {
@@ -20,8 +23,22 @@
   "datasets": [
     {
       "id": "ign_au_autonomous_communities",
+      "description": {
+        "es": "Límites de las 17 comunidades autónomas y las ciudades autónomas de Ceuta y Melilla, con su código INE y su nombre oficial. Sirve para cartografiar y unir datos por comunidad.",
+        "en": "Boundaries of the 17 autonomous communities and the autonomous cities of Ceuta and Melilla, with their INE code and official name. Use it to map and join data by community."
+      },
+      "processing": {
+        "es": "Del servicio WFS INSPIRE de unidades administrativas del IGN, en WGS84 (EPSG:4326). Se excluyen los territorios que el IGN no asocia a ninguna comunidad.",
+        "en": "From IGN's INSPIRE administrative units WFS, in WGS84 (EPSG:4326). Territories IGN doesn't assign to any community are left out."
+      },
+      "keywords": {
+        "es": ["límites administrativos", "comunidades autónomas", "cartografía", "IGN"],
+        "en": ["administrative boundaries", "autonomous communities", "cartography", "IGN"]
+      },
+      "topics": ["territory"],
       "title": "Comunidades autónomas de España (IGN, unidades administrativas INSPIRE)",
       "entity_type": "autonomous_community",
+      "tiles": "autonomous_communities",
       "publisher": {
         "name": "Instituto Geográfico Nacional (IGN)",
         "url": "https://www.ign.es"
@@ -41,7 +58,7 @@
       "validity": {
         "kind": "current",
         "as_of": "retrieval",
-        "description": "The service publishes the current state of IGN's administrative boundaries, without validity dates; the data is valid as of its retrieval date."
+        "description": {"es": "El servicio publica el estado actual de los límites administrativos del IGN, sin fechas de vigencia: los datos son válidos a la fecha de su descarga.", "en": "The service publishes the current state of IGN's administrative boundaries, without validity dates; the data is valid as of its retrieval date."}
       },
       "coverage": {
         "country": "ES",
@@ -63,11 +80,11 @@
         "path": "processed/autonomous_communities/autonomous_communities.parquet",
         "format": "GeoParquet 1.1",
         "fields": [
-          { "name": "id", "type": "string", "description": "Catalogue id of the autonomous community (es:ine:ccaa:{ine_code})." },
-          { "name": "ine_code", "type": "string", "description": "INE autonomous community code." },
-          { "name": "name", "type": "string", "description": "Official name as published by IGN; bilingual where official (e.g. 'Cataluña/Catalunya')." },
-          { "name": "ign_code", "type": "string", "description": "IGN national code (34 + CCAA + 0000000)." },
-          { "name": "geometry", "type": "geometry", "description": "Boundary of the autonomous community." }
+          { "name": "id", "type": "string", "description": {"es": "Id de la comunidad autónoma en el catálogo (es:ine:ccaa:{ine_code}).", "en": "Catalogue id of the autonomous community (es:ine:ccaa:{ine_code})."} },
+          { "name": "ine_code", "type": "string", "description": {"es": "Código INE de la comunidad autónoma.", "en": "INE autonomous community code."} },
+          { "name": "name", "type": "string", "description": {"es": "Nombre oficial tal como lo publica el IGN; bilingüe donde lo es (por ejemplo, 'Cataluña/Catalunya').", "en": "Official name as published by IGN; bilingual where official (e.g. 'Cataluña/Catalunya')."} },
+          { "name": "ign_code", "type": "string", "description": {"es": "Código nacional del IGN (34 + comunidad + 0000000).", "en": "IGN national code (34 + CCAA + 0000000)."} },
+          { "name": "geometry", "type": "geometry", "description": {"es": "Límite de la comunidad autónoma.", "en": "Boundary of the autonomous community."} }
         ]
       },
       "update_frequency": "on demand (boundaries change rarely)"

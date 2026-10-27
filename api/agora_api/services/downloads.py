@@ -16,7 +16,7 @@ from pathlib import Path
 from urllib.parse import quote, urlencode
 
 from agora_api.config import PUBLIC_URL
-from agora_api.services import catalog, data
+from agora_api.services import catalog, data, db
 from agora_api.services.db import NotFound, query
 
 FORMATS = {"parquet": "application/vnd.apache.parquet", "csv": "text/csv"}
@@ -28,7 +28,7 @@ CACHE_SECONDS = 3600
 
 
 class NotDownloadable(PermissionError):
-    """A dataset whose license isn't known: it's listed, but its files aren't handed out."""
+    """A dataset whose license isn't known or doesn't allow redistributing it: listed, but its files aren't handed out."""
 
 
 def _fold(text: str) -> str:
@@ -79,17 +79,21 @@ def describe(dataset_id: str) -> dict:
     """
     source = catalog.dataset(dataset_id)
     dimensions = catalog.dimensions()
+    units = _units_by_period(dataset_id) if source["kind"] == "statistics" else {}
     first = catalog.file_path(source["files"][0]["path"]) if source["files"] else None
     columns = {row["column_name"]: _type(row["column_type"]) for row in query(f"DESCRIBE SELECT * FROM read_parquet('{str(first).replace(chr(39), chr(39) * 2)}')")} if first else {}
     files = []
     for entry in source["files"]:
-        file = {"name": entry["name"], "label": entry["label"], "rows": entry["rows"], "bytes": entry["bytes"]}
+        file = {"name": entry["name"], "label": entry["label"], "rows": entry["rows"], "bytes": entry["bytes"], "sha256": entry["sha256"]}
         if source["kind"] == "statistics":
-            file |= {"periods": source["coverage"][entry["name"]], "units": source["units"].get(entry["name"])}
+            file |= {"periods": source["coverage"][entry["name"]], "units": source["units"].get(entry["name"]), "units_by_period": units.get(entry["name"], {})}
         files.append(file)
     out = {
         key: source[key]
-        for key in ("id", "title", "kind", "publisher", "license", "source", "validity", "entity_type", "frequency", "tags", "downloadable")
+        for key in (
+            "id", "title", "kind", "pipeline", "publisher", "publisher_url", "license", "source", "validity", "entity_type", "frequency",
+            "measure", "base_level", "tags", "downloadable", "run", "tiles", "extent", "focus", "description", "processing", "keywords", "topics",
+        )
         if source[key] is not None
     }
     out["columns"] = columns
@@ -101,6 +105,15 @@ def describe(dataset_id: str) -> dict:
             for dimension in source["dimensions"]
         ]
     out["files"] = files
+    return out
+
+
+def _units_by_period(dataset_id: str) -> dict[str, dict[int, int]]:
+    """How many units a statistical dataset has data for, per level and period."""
+    out: dict[str, dict[int, int]] = {}
+    with db.catalog() as connection:
+        for row in connection.execute("SELECT level, period, entities FROM coverage WHERE dataset_id = ? ORDER BY period", [dataset_id]):
+            out.setdefault(row["level"], {})[row["period"]] = row["entities"]
     return out
 
 
@@ -116,7 +129,8 @@ def _select(
     """The SQL for a slice of a dataset's file, its parameters, whether it's all of the file as it is, and the file."""
     source = catalog.dataset(dataset_id)
     if not source["downloadable"]:
-        raise NotDownloadable(f"{dataset_id} can't be downloaded: its license isn't known")
+        reason = "its license isn't known" if not source["license"] else "its license doesn't allow redistributing it"
+        raise NotDownloadable(f"{dataset_id} can't be downloaded from Agora: {reason} (its processing notes say where to get it)")
     entry = catalog.dataset_file(dataset_id, file)
     location = catalog.file_path(entry["path"])
     path = str(location).replace("'", "''")
@@ -158,11 +172,36 @@ def _select(
     return sql, parameters, not labels and not conditions, location
 
 
-def preview(dataset_id: str, file: str, periods=None, within=None, entity_ids=None, filters=None, labels=False) -> dict:
+def shape(dataset_id: str, file: str, periods=None, within=None, entity_ids=None, filters=None, labels=False) -> dict:
     """A slice's rows and columns, without making its file (and, by asking, that it's a valid one)."""
     sql, parameters, _, _ = _select(dataset_id, file, periods, within, entity_ids, filters, labels)
     columns = {row["column_name"]: _type(row["column_type"]) for row in query(f"DESCRIBE {sql}", parameters)}
     return {"rows": query(f"SELECT count(*) AS n FROM ({sql})", parameters)[0]["n"], "columns": columns}
+
+
+#: The longest text a preview cell shows (a geometry's WKT is cut).
+PREVIEW_TEXT = 120
+
+
+def head(dataset_id: str, file: str, limit: int = 20) -> dict:
+    """
+    The first rows of one of a dataset's files, as they are on disk, to look at before
+    downloading it: geometries as the start of their WKT, nested values as text.
+    """
+    sql, parameters, _, _ = _select(dataset_id, file, None, None, None, None, False)
+    described = query(f"DESCRIBE {sql}", parameters)
+    columns = []
+    for row in described:
+        name, kind = row["column_name"], row["column_type"]
+        quoted = '"' + name.replace('"', '""') + '"'
+        if kind.startswith(("GEOMETRY", "STRUCT", "MAP", "LIST")) or kind.endswith("[]"):
+            columns.append(f"left(CAST({quoted} AS VARCHAR), {PREVIEW_TEXT}) AS {quoted}")
+        elif kind.startswith(("DATE", "TIMESTAMP", "TIME")):
+            columns.append(f"CAST({quoted} AS VARCHAR) AS {quoted}")
+        else:
+            columns.append(quoted)
+    rows = query(f"SELECT {', '.join(columns)} FROM ({sql}) LIMIT ?", [*parameters, min(max(limit, 1), 100)])
+    return {"columns": {row["column_name"]: _type(row["column_type"]) for row in described}, "rows": rows}
 
 
 def _prune() -> None:

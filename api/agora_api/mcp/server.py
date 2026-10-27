@@ -247,7 +247,7 @@ def download_dataset(
     or read it straight from DuckDB, pandas or GeoPandas)."""
     if format not in downloads.FORMATS:
         raise ValueError(f"Format {format!r} isn't one of {list(downloads.FORMATS)}")
-    shape = downloads.preview(dataset, file, periods, within, entity_ids, filters, labels)
+    shape = downloads.shape(dataset, file, periods, within, entity_ids, filters, labels)
     source = catalog.dataset(dataset)
     link = downloads.url(dataset, file, format, periods, within, entity_ids, filters, labels)
     reader = f"pd.read_parquet('{link}')" if format == "parquet" else f"pd.read_csv('{link}')"

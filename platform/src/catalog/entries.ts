@@ -6,7 +6,25 @@ import type { Catalog, DataLevel, Dataset, DatasetKind, Variable } from '../data
 export type CatalogTab = 'datasets' | 'variables'
 
 /** Below this share of a level's units, a dataset's coverage of it is partial (municipalities of 500 residents or more). */
-const PARTIAL_BELOW = 0.9
+export const PARTIAL_BELOW = 0.9
+
+/** A dataset's page address: cards and pages link to it, and the app opens the page from it. */
+export const datasetHref = (id: string) => `#dataset/${encodeURIComponent(id)}`
+
+/** A license's page address. */
+export const licenseHref = (id: string) => `#license/${encodeURIComponent(id)}`
+
+/** A page of the catalogue other than the list: a dataset's or a license's. */
+export interface CatalogRoute {
+  kind: 'dataset' | 'license'
+  id: string
+}
+
+/** The page an address opens (#dataset/{id}, #license/{id}). */
+export function routeOf(hash: string): CatalogRoute | undefined {
+  const match = /^#(dataset|license)\/(.+)$/.exec(hash)
+  return match ? { kind: match[1] as CatalogRoute['kind'], id: decodeURIComponent(match[2]) } : undefined
+}
 
 /** Tags shown and filtered by: the datasets', and partial coverage, worked out here. */
 export const PARTIAL_TAG = 'partial'
@@ -109,7 +127,7 @@ export function catalogEntries(catalog: Catalog): Record<CatalogTab, CatalogEntr
 
   const datasetEntries = catalog.datasets.map((dataset): CatalogEntry => {
     const variables = [...new Set(variablesOf.get(dataset.id) ?? [])]
-    const topics = [...new Set(variables.map((variable) => variable.topic).filter((topic): topic is string => Boolean(topic)))]
+    const topics = [...new Set([...dataset.topics, ...variables.map((variable) => variable.topic)].filter((topic): topic is string => Boolean(topic)))]
     const coverage = dataset.kind === 'statistics' ? coverageOf([dataset], catalog) : extentOf(dataset, catalog)
     const resolvedTopics = topics.length || dataset.kind !== 'statistics' ? topics : [...(pipelineTopics.get(dataset.pipeline) ?? [])]
     return {
@@ -117,7 +135,7 @@ export function catalogEntries(catalog: Catalog): Record<CatalogTab, CatalogEntr
       datasetKind: dataset.kind,
       id: dataset.id,
       title: dataset.title,
-      description: dataset.source?.method ?? null,
+      description: dataset.description?.es ?? null,
       topics: resolvedTopics,
       publishers: dataset.publisher ? [dataset.publisher] : [],
       tags: tagsOf(dataset, coverage.partialLevels.length > 0),
@@ -131,6 +149,8 @@ export function catalogEntries(catalog: Catalog): Record<CatalogTab, CatalogEntr
         dataset.publisher,
         dataset.source?.operation,
         copy.catalog.kinds[dataset.kind],
+        ...(dataset.keywords?.es ?? []),
+        dataset.description?.es,
         ...resolvedTopics.map((topic) => topicLabels.get(topic)),
         ...dataset.dimensions.map((dimension) => dimensionLabels.get(dimension)),
         ...variables.map((variable) => variable.label),

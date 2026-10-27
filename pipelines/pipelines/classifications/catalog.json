@@ -1,8 +1,24 @@
 {
+  "topics": [
+    {"id": "classifications", "label": {"es": "Clasificaciones", "en": "Classifications"}, "position": 2}
+  ],
   "$comment": "Statistical classifications this pipeline provides (not geographic): items in processed/classifications/items.parquet, correspondences in correspondences.parquet. Run details in meta.json.",
   "classifications": [
     {
       "id": "cnae2025",
+      "description": {
+        "es": "Clasificación Nacional de Actividades Económicas, versión de 2025: la lista oficial de actividades económicas, en cuatro niveles (sección, división, grupo y clase). Sirve para entender y agrupar los códigos de actividad que usan registros y estadísticas, y para traducirlos a la CNAE-2009 con las correspondencias.",
+        "en": "National Classification of Economic Activities, 2025 version: the official list of economic activities, in four levels (section, division, group and class). Use it to read and group the activity codes registers and statistics use, and to translate them to CNAE-2009 with the correspondences."
+      },
+      "processing": {
+        "es": "Del INE, tal como lo publica, con el nivel y el código padre de cada elemento.",
+        "en": "From INE, as published, with each item's level and parent code."
+      },
+      "keywords": {
+        "es": ["CNAE", "actividades económicas", "clasificación", "códigos"],
+        "en": ["CNAE", "NACE", "economic activities", "classification"]
+      },
+      "topics": ["classifications"],
       "title": {
         "es": "Clasificación Nacional de Actividades Económicas (CNAE-2025)",
         "en": "National Classification of Economic Activities (CNAE-2025)"
@@ -30,6 +46,19 @@
     },
     {
       "id": "cnae2009",
+      "description": {
+        "es": "Clasificación Nacional de Actividades Económicas de 2009, la que usan el censo y la mayoría de las series actuales, en cuatro niveles. Sirve para leer los desgloses por actividad, como los ocupados por sección de la CNAE.",
+        "en": "The 2009 National Classification of Economic Activities, used by the census and most current series, in four levels. Use it to read breakdowns by activity, such as the employed by CNAE section."
+      },
+      "processing": {
+        "es": "Del INE, tal como lo publica.",
+        "en": "From INE, as published."
+      },
+      "keywords": {
+        "es": ["CNAE-2009", "actividades económicas", "clasificación"],
+        "en": ["CNAE-2009", "NACE Rev. 2", "economic activities", "classification"]
+      },
+      "topics": ["classifications"],
       "title": {
         "es": "Clasificación Nacional de Actividades Económicas (CNAE-2009)",
         "en": "National Classification of Economic Activities (CNAE-2009)"
@@ -57,6 +86,19 @@
     },
     {
       "id": "cno11",
+      "description": {
+        "es": "Clasificación Nacional de Ocupaciones de 2011: la lista oficial de ocupaciones, de los grandes grupos (1, directores y gerentes, a 9, ocupaciones elementales, y 0, militares) a las ocupaciones. Sirve para leer los desgloses por ocupación y traducirlos a la internacional CIUO-08.",
+        "en": "The 2011 National Classification of Occupations: the official list of occupations, from major groups (1, managers, to 9, elementary occupations, and 0, armed forces) down to occupations. Use it to read breakdowns by occupation and translate them to the international ISCO-08."
+      },
+      "processing": {
+        "es": "Del INE, tal como lo publica.",
+        "en": "From INE, as published."
+      },
+      "keywords": {
+        "es": ["CNO-11", "ocupaciones", "profesiones", "clasificación"],
+        "en": ["CNO-11", "ISCO", "occupations", "classification"]
+      },
+      "topics": ["classifications"],
       "title": {
         "es": "Clasificación Nacional de Ocupaciones (CNO-11)",
         "en": "National Classification of Occupations (CNO-11)"
@@ -85,6 +127,19 @@
     },
     {
       "id": "cned2014_a",
+      "description": {
+        "es": "Clasificación Nacional de Educación de 2014, niveles de formación alcanzados: de sin estudios a doctorado. Es la clasificación de los niveles de estudios del censo, y se corresponde con la internacional CINE-A.",
+        "en": "The 2014 National Classification of Education, levels attained: from no schooling to doctorate. It's the classification of the census's education levels, and maps to the international ISCED-A."
+      },
+      "processing": {
+        "es": "Del INE, tal como lo publica.",
+        "en": "From INE, as published."
+      },
+      "keywords": {
+        "es": ["CNED", "nivel de estudios", "educación", "clasificación"],
+        "en": ["CNED", "ISCED", "educational attainment", "classification"]
+      },
+      "topics": ["classifications"],
       "title": {
         "es": "Clasificación Nacional de Educación: niveles de formación alcanzados (CNED-A 2014)",
         "en": "National Classification of Education: levels attained (CNED-A 2014)"
@@ -112,6 +167,19 @@
     },
     {
       "id": "cned2014_f",
+      "description": {
+        "es": "Clasificación Nacional de Educación de 2014, sectores de estudio: las áreas de conocimiento de una titulación (educación, salud, ingeniería…).",
+        "en": "The 2014 National Classification of Education, fields of study: the subject areas of a qualification (education, health, engineering…)."
+      },
+      "processing": {
+        "es": "Del INE, tal como lo publica.",
+        "en": "From INE, as published."
+      },
+      "keywords": {
+        "es": ["CNED", "campos de estudio", "titulaciones", "clasificación"],
+        "en": ["CNED", "ISCED-F", "fields of study", "classification"]
+      },
+      "topics": ["classifications"],
       "title": {
         "es": "Clasificación Nacional de Educación: sectores de estudio (CNED-F 2014)",
         "en": "National Classification of Education: fields of study (CNED-F 2014)"
@@ -138,6 +206,19 @@
     },
     {
       "id": "cpa22",
+      "description": {
+        "es": "Clasificación de Productos por Actividades (CPA 2.2): los bienes y servicios ordenados según la actividad que los produce. Sirve para estadísticas de producción y comercio.",
+        "en": "Classification of Products by Activity (CPA 2.2): goods and services ordered by the activity that produces them. Used in production and trade statistics."
+      },
+      "processing": {
+        "es": "Del INE, tal como lo publica.",
+        "en": "From INE, as published."
+      },
+      "keywords": {
+        "es": ["CPA", "productos", "bienes y servicios", "clasificación"],
+        "en": ["CPA", "products", "goods and services", "classification"]
+      },
+      "topics": ["classifications"],
       "title": {
         "es": "Clasificación de Productos por Actividades (CPA 2.2)",
         "en": "Statistical Classification of Products by Activity (CPA 2.2)"

@@ -28,8 +28,22 @@
   "datasets": [
     {
       "id": "ign_au_provinces",
+      "description": {
+        "es": "Límites de las 52 provincias (incluidas Ceuta y Melilla), con su código INE y su nombre oficial.",
+        "en": "Boundaries of the 52 provinces (Ceuta and Melilla included), with their INE code and official name."
+      },
+      "processing": {
+        "es": "Del servicio WFS INSPIRE de unidades administrativas del IGN, en WGS84 (EPSG:4326).",
+        "en": "From IGN's INSPIRE administrative units WFS, in WGS84 (EPSG:4326)."
+      },
+      "keywords": {
+        "es": ["límites administrativos", "provincias", "cartografía", "IGN"],
+        "en": ["administrative boundaries", "provinces", "cartography", "IGN"]
+      },
+      "topics": ["territory"],
       "title": "Provincias de España (IGN, unidades administrativas INSPIRE)",
       "entity_type": "province",
+      "tiles": "provinces",
       "publisher": {
         "name": "Instituto Geográfico Nacional (IGN)",
         "url": "https://www.ign.es"
@@ -49,7 +63,7 @@
       "validity": {
         "kind": "current",
         "as_of": "retrieval",
-        "description": "The service publishes the current state of IGN's administrative boundaries, without validity dates; the data is valid as of its retrieval date."
+        "description": {"es": "El servicio publica el estado actual de los límites administrativos del IGN, sin fechas de vigencia: los datos son válidos a la fecha de su descarga.", "en": "The service publishes the current state of IGN's administrative boundaries, without validity dates; the data is valid as of its retrieval date."}
       },
       "coverage": {
         "country": "ES",
@@ -71,13 +85,13 @@
         "path": "processed/provinces/provinces.parquet",
         "format": "GeoParquet 1.1",
         "fields": [
-          { "name": "id", "type": "string", "description": "Catalogue id of the province (es:ine:prov:{ine_code})." },
-          { "name": "ine_code", "type": "string", "description": "INE province code." },
-          { "name": "name", "type": "string", "description": "Official name as published by IGN; bilingual where official (e.g. 'Alacant/Alicante')." },
-          { "name": "ccaa_code", "type": "string", "description": "INE code of the autonomous community." },
-          { "name": "parent_id", "type": "string", "description": "Catalogue id of the autonomous community (es:ine:ccaa:{ccaa_code})." },
-          { "name": "ign_code", "type": "string", "description": "IGN national code (34 + CCAA + province + 00000)." },
-          { "name": "geometry", "type": "geometry", "description": "Province boundary." }
+          { "name": "id", "type": "string", "description": {"es": "Id de la provincia en el catálogo (es:ine:prov:{ine_code}).", "en": "Catalogue id of the province (es:ine:prov:{ine_code})."} },
+          { "name": "ine_code", "type": "string", "description": {"es": "Código INE de la provincia.", "en": "INE province code."} },
+          { "name": "name", "type": "string", "description": {"es": "Nombre oficial tal como lo publica el IGN; bilingüe donde lo es (por ejemplo, 'Alacant/Alicante').", "en": "Official name as published by IGN; bilingual where official (e.g. 'Alacant/Alicante')."} },
+          { "name": "ccaa_code", "type": "string", "description": {"es": "Código INE de la comunidad autónoma.", "en": "INE code of the autonomous community."} },
+          { "name": "parent_id", "type": "string", "description": {"es": "Id de la comunidad autónoma en el catálogo (es:ine:ccaa:{ccaa_code}).", "en": "Catalogue id of the autonomous community (es:ine:ccaa:{ccaa_code})."} },
+          { "name": "ign_code", "type": "string", "description": {"es": "Código nacional del IGN (34 + comunidad + provincia + 00000).", "en": "IGN national code (34 + CCAA + province + 00000)."} },
+          { "name": "geometry", "type": "geometry", "description": {"es": "Límite de la provincia.", "en": "Province boundary."} }
         ]
       },
       "update_frequency": "on demand (provincial boundaries change rarely)"

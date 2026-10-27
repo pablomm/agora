@@ -248,6 +248,18 @@
   "datasets": [
     {
       "id": "registered_unemployment",
+      "description": {
+        "es": "Paro registrado: personas inscritas como demandantes de empleo paradas en los servicios públicos de empleo el último día de cada mes, por sexo, edad (menores de 25, 25 a 44, 45 y más) y sector de su última actividad. Es el indicador de paro más detallado y frecuente por municipio. No es el paro de la EPA (una encuesta, con otra definición) ni una tasa: para comparar lugares, relaciónalo con la población en edad de trabajar.",
+        "en": "Registered unemployment: people signed on as unemployed job seekers at the public employment services on the last day of each month, by sex, age (under 25, 25–44, 45 and over) and sector of their last job. It's the most detailed and frequent unemployment indicator by municipality. It isn't the Labour Force Survey's unemployment (a survey, defined differently) nor a rate: to compare places, relate it to the working-age population."
+      },
+      "processing": {
+        "es": "De los ficheros de datos abiertos del SEPE (un CSV por año, completado con los XLS semestrales). Desde enero de 2022 el SEPE oculta los valores menores de 5: se imputan para que cada desglose sume su total (cada celda oculta, entre 1 y 4, según la composición del propio municipio en 2019–2021 y la de su provincia ese mes). Diciembre de 2020 no se publicó y se interpola. Los totales nacionales cuadran con los del SEPE (hasta un ±0,03 % desde 2022).",
+        "en": "From SEPE's open data files (one CSV per year, completed with the half-year XLS files). Since January 2022 SEPE hides values under 5: they're imputed so every breakdown adds up to its total (each hidden cell 1 to 4, by the municipality's own mix in 2019–2021 and its province's that month). December 2020 wasn't published and is interpolated. National totals match SEPE's (within ±0.03% since 2022)."
+      },
+      "keywords": {
+        "es": ["paro registrado", "desempleo", "SEPE", "mercado laboral", "mensual"],
+        "en": ["registered unemployment", "unemployment", "SEPE", "labour market", "monthly"]
+      },
       "title": "Paro registrado por municipio",
       "publisher": {
         "name": "SEPE",
@@ -290,6 +302,18 @@
     },
     {
       "id": "job_seekers",
+      "description": {
+        "es": "Demandantes de empleo inscritos en los servicios públicos de empleo el último día de cada mes, por sexo, edad y sector. Incluye a los parados registrados y a quienes buscan empleo sin contar como parados (por ejemplo, ocupados que buscan otro trabajo o personas en formación).",
+        "en": "Job seekers signed on at the public employment services on the last day of each month, by sex, age and sector. It includes the registered unemployed and those looking for work who don't count as unemployed (for instance, employed people looking for another job or people in training)."
+      },
+      "processing": {
+        "es": "De los ficheros de datos abiertos del SEPE (un CSV por año, completado con los XLS semestrales). Desde enero de 2022 el SEPE oculta los valores menores de 5: se imputan para que cada desglose sume su total (cada celda oculta, entre 1 y 4, según la composición del propio municipio en 2019–2021 y la de su provincia ese mes). Diciembre de 2020 no se publicó y se interpola. Los totales nacionales cuadran con los del SEPE (hasta un ±0,03 % desde 2022).",
+        "en": "From SEPE's open data files (one CSV per year, completed with the half-year XLS files). Since January 2022 SEPE hides values under 5: they're imputed so every breakdown adds up to its total (each hidden cell 1 to 4, by the municipality's own mix in 2019–2021 and its province's that month). December 2020 wasn't published and is interpolated. National totals match SEPE's (within ±0.03% since 2022)."
+      },
+      "keywords": {
+        "es": ["demandantes de empleo", "SEPE", "mercado laboral", "mensual"],
+        "en": ["job seekers", "SEPE", "labour market", "monthly"]
+      },
       "title": "Demandantes de empleo por municipio",
       "publisher": {
         "name": "SEPE",
@@ -332,6 +356,18 @@
     },
     {
       "id": "contracts",
+      "description": {
+        "es": "Contratos de trabajo registrados cada mes en el municipio del centro de trabajo, por sexo, tipo (indefinido o temporal) y sector. Mide la contratación, un flujo: no cuenta personas (una puede firmar varios contratos) ni empleo vigente.",
+        "en": "Employment contracts registered each month in the municipality of the workplace, by sex, kind (permanent or temporary) and sector. It measures hiring, a flow: it doesn't count people (one can sign several contracts) nor current jobs."
+      },
+      "processing": {
+        "es": "De los ficheros de datos abiertos del SEPE (un CSV por año, completado con los XLS semestrales). Desde enero de 2022 el SEPE oculta los valores menores de 5: se imputan para que cada desglose sume su total (cada celda oculta, entre 1 y 4, según la composición del propio municipio en 2019–2021 y la de su provincia ese mes). Diciembre de 2020 no se publicó y se interpola. Los totales nacionales cuadran con los del SEPE (hasta un ±0,03 % desde 2022).",
+        "en": "From SEPE's open data files (one CSV per year, completed with the half-year XLS files). Since January 2022 SEPE hides values under 5: they're imputed so every breakdown adds up to its total (each hidden cell 1 to 4, by the municipality's own mix in 2019–2021 and its province's that month). December 2020 wasn't published and is interpolated. National totals match SEPE's (within ±0.03% since 2022)."
+      },
+      "keywords": {
+        "es": ["contratos", "contratación", "temporalidad", "SEPE", "mensual"],
+        "en": ["contracts", "hiring", "temporary work", "SEPE", "monthly"]
+      },
       "title": "Contratos registrados por municipio",
       "publisher": {
         "name": "SEPE",
@@ -374,6 +410,18 @@
     },
     {
       "id": "census_activity",
+      "description": {
+        "es": "Población de 16 años o más por sexo y relación con la actividad: ocupada, parada, pensionista, estudiante u otra inactiva, a 1 de enero. Es la base para calcular tasas de actividad, empleo y paro hasta el nivel de sección censal, algo que la EPA no permite.",
+        "en": "Population aged 16 and over by sex and relation with economic activity: employed, unemployed, pensioner, student or other inactive, on 1 January. It's the basis for activity, employment and unemployment rates down to census sections, which the Labour Force Survey can't give."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE. Las secciones y municipios que el INE oculta por ser pequeños se imputan repartiendo el resto de la unidad superior según su población, y quedan marcados como imputados (origin = imputed).",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures. Sections and municipalities INE hides for being small are imputed by sharing out the remainder of the unit above by population, and flagged as imputed (origin = imputed)."
+      },
+      "keywords": {
+        "es": ["actividad", "ocupados", "parados", "inactivos", "censo anual"],
+        "en": ["economic activity", "employed", "unemployed", "inactive", "yearly census"]
+      },
       "title": "Población de 16 y más años por sexo y relación con la actividad (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -419,6 +467,18 @@
     },
     {
       "id": "census_activity_born",
+      "description": {
+        "es": "Población de 16 años o más según haya nacido en España o en el extranjero y su relación con la actividad, a 1 de enero. Sirve para comparar la situación laboral de la población nacida fuera con la nacida en España.",
+        "en": "Population aged 16 and over by whether born in Spain or abroad and their relation with economic activity, on 1 January. It compares the labour situation of people born abroad with those born in Spain."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE. Las secciones y municipios que el INE oculta por ser pequeños se imputan repartiendo el resto de la unidad superior según su población, y quedan marcados como imputados (origin = imputed).",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures. Sections and municipalities INE hides for being small are imputed by sharing out the remainder of the unit above by population, and flagged as imputed (origin = imputed)."
+      },
+      "keywords": {
+        "es": ["actividad", "nacidos en el extranjero", "inmigración", "censo anual"],
+        "en": ["economic activity", "born abroad", "immigration", "yearly census"]
+      },
       "title": "Población de 16 y más años por país de nacimiento (España/extranjero) y relación con la actividad (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -515,6 +575,18 @@
     },
     {
       "id": "census_activity_groups",
+      "description": {
+        "es": "Población de 16 años o más por grupo (toda, hombres, mujeres, nacida en España, nacida fuera) y relación con la actividad, con activos e inactivos como grupos. Une los dos conjuntos anteriores en uno solo para calcular las tasas de actividad, empleo y paro de cada grupo.",
+        "en": "Population aged 16 and over by group (everyone, men, women, born in Spain, born abroad) and relation with economic activity, with active and inactive as groups. It joins the two datasets above into one to compute each group's activity, employment and unemployment rates."
+      },
+      "processing": {
+        "es": "Derivado de census_activity y census_activity_born, sin cambiar sus cifras; los activos son ocupados más parados.",
+        "en": "Derived from census_activity and census_activity_born, with their figures unchanged; the active are the employed plus the unemployed."
+      },
+      "keywords": {
+        "es": ["tasa de paro", "tasa de actividad", "tasa de empleo", "censo anual"],
+        "en": ["unemployment rate", "activity rate", "employment rate", "yearly census"]
+      },
       "title": "Población de 16 y más años por sexo o país de nacimiento y relación con la actividad (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -560,6 +632,18 @@
     },
     {
       "id": "census_activity_gaps",
+      "description": {
+        "es": "Brechas en las tasas de actividad, empleo y paro, en puntos porcentuales: la de las mujeres menos la de los hombres, y la de la población nacida fuera menos la nacida en España. Un valor negativo en la brecha de empleo de mujeres indica que trabajan menos que los hombres de su zona.",
+        "en": "Gaps in activity, employment and unemployment rates, in percentage points: women's rate minus men's, and that of people born abroad minus those born in Spain. A negative women's employment gap means they work less than the men of their area."
+      },
+      "processing": {
+        "es": "Derivado de census_activity_groups: la tasa del primer grupo menos la del segundo, en cada unidad y año.",
+        "en": "Derived from census_activity_groups: the first group's rate minus the second's, in every unit and year."
+      },
+      "keywords": {
+        "es": ["brecha de género", "brecha laboral", "desigualdad", "censo anual"],
+        "en": ["gender gap", "labour gap", "inequality", "yearly census"]
+      },
       "title": "Brechas en las tasas de actividad, empleo y paro (a partir del Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -603,6 +687,18 @@
     },
     {
       "id": "employed_occupation",
+      "description": {
+        "es": "Población ocupada de 16 años o más por sexo y ocupación agregada: directivos, profesionales y técnicos (CNO-11 grupos 1–3), empleos intermedios y manuales cualificados (4–8) y ocupaciones elementales (9). Aproxima la composición social de cada zona hasta la sección censal.",
+        "en": "Employed population aged 16 and over by sex and grouped occupation: managers, professionals and technicians (CNO-11 groups 1–3), intermediate and skilled manual jobs (4–8) and elementary occupations (9). It approximates each area's social make-up down to census sections."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE. Las secciones y municipios que el INE oculta por ser pequeños se imputan repartiendo el resto de la unidad superior según su población, y quedan marcados como imputados (origin = imputed).",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures. Sections and municipalities INE hides for being small are imputed by sharing out the remainder of the unit above by population, and flagged as imputed (origin = imputed)."
+      },
+      "keywords": {
+        "es": ["ocupación", "CNO-11", "clase social", "ocupados", "censo anual"],
+        "en": ["occupation", "CNO-11", "social class", "employed", "yearly census"]
+      },
       "title": "Ocupados de 16 y más años por sexo y ocupación (agregada) (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -699,6 +795,18 @@
     },
     {
       "id": "employed_sector",
+      "description": {
+        "es": "Población ocupada de 16 años o más por sexo y rama de actividad: agricultura, industria, construcción y servicios (secciones de la CNAE-2009). Muestra de qué vive cada zona según dónde trabajan sus residentes.",
+        "en": "Employed population aged 16 and over by sex and branch of activity: agriculture, industry, construction and services (CNAE-2009 sections). It shows what each area lives on, by where its residents work."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE. Las secciones y municipios que el INE oculta por ser pequeños se imputan repartiendo el resto de la unidad superior según su población, y quedan marcados como imputados (origin = imputed).",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures. Sections and municipalities INE hides for being small are imputed by sharing out the remainder of the unit above by population, and flagged as imputed (origin = imputed)."
+      },
+      "keywords": {
+        "es": ["sector económico", "CNAE", "ocupados", "censo anual"],
+        "en": ["economic sector", "CNAE", "employed", "yearly census"]
+      },
       "title": "Ocupados de 16 y más años por sexo y rama de actividad (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -795,6 +903,18 @@
     },
     {
       "id": "employed_cno11",
+      "description": {
+        "es": "Población ocupada de 16 años o más por sexo y gran grupo de ocupación de la CNO-11 (del 1, directores y gerentes, al 9, ocupaciones elementales). Es el detalle de la ocupación por municipio.",
+        "en": "Employed population aged 16 and over by sex and CNO-11 major occupation group (from 1, managers, to 9, elementary occupations). It's the occupation in detail by municipality."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Solo municipios de 500 habitantes o más (unos 4.100) y sin agregar a niveles superiores: el INE no publica el resto.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Only municipalities of 500 residents or more (about 4,100), not summed up: INE doesn't publish the rest."
+      },
+      "keywords": {
+        "es": ["ocupación", "CNO-11", "ocupados", "censo anual"],
+        "en": ["occupation", "CNO-11", "employed", "yearly census"]
+      },
       "title": "Ocupados de 16 y más años por sexo y ocupación (CNO-11, 1 dígito), municipios de 500 habitantes o más (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -835,6 +955,18 @@
     },
     {
       "id": "employed_cnae2009",
+      "description": {
+        "es": "Población ocupada de 16 años o más por sexo y sección de actividad de la CNAE-2009 (de la A, agricultura, a la U), con grupos para los servicios profesionales y para administración pública, educación y sanidad. Es el detalle de la actividad por municipio.",
+        "en": "Employed population aged 16 and over by sex and CNAE-2009 activity section (from A, agriculture, to U), with groups for professional services and for public administration, education and health. It's the activity in detail by municipality."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Solo municipios de 500 habitantes o más (unos 4.100) y sin agregar a niveles superiores: el INE no publica el resto.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Only municipalities of 500 residents or more (about 4,100), not summed up: INE doesn't publish the rest."
+      },
+      "keywords": {
+        "es": ["actividad económica", "CNAE-2009", "ocupados", "censo anual"],
+        "en": ["economic activity", "CNAE-2009", "employed", "yearly census"]
+      },
       "title": "Ocupados de 16 y más años por sexo y actividad (CNAE-2009, sección), municipios de 500 habitantes o más (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -875,6 +1007,18 @@
     },
     {
       "id": "employed_status",
+      "description": {
+        "es": "Población ocupada de 16 años o más por sexo y situación profesional agregada: por cuenta propia, o asalariada y otras. Mide el peso del trabajo autónomo hasta la sección censal.",
+        "en": "Employed population aged 16 and over by sex and grouped professional status: self-employed, or employees and others. It measures the weight of self-employment down to census sections."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Se descarga al nivel más detallado que publica el INE y se suma hacia arriba; cada nivel se comprueba contra lo que publica el INE. Las secciones y municipios que el INE oculta por ser pequeños se imputan repartiendo el resto de la unidad superior según su población, y quedan marcados como imputados (origin = imputed).",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Downloaded at the most detailed level INE publishes and summed up; every level is checked against INE's own figures. Sections and municipalities INE hides for being small are imputed by sharing out the remainder of the unit above by population, and flagged as imputed (origin = imputed)."
+      },
+      "keywords": {
+        "es": ["autónomos", "asalariados", "situación profesional", "censo anual"],
+        "en": ["self-employed", "employees", "professional status", "yearly census"]
+      },
       "title": "Ocupados de 16 y más años por sexo y situación profesional (agregada) (Censo de Población anual)",
       "publisher": {
         "name": "INE",
@@ -971,6 +1115,18 @@
     },
     {
       "id": "employed_status_detail",
+      "description": {
+        "es": "Población ocupada de 16 años o más por sexo y situación profesional en detalle: empleadores, autónomos sin asalariados, y asalariados con contrato indefinido o temporal. Permite ver la temporalidad del empleo por municipio.",
+        "en": "Employed population aged 16 and over by sex and detailed professional status: employers, own-account workers, and employees on permanent or temporary contracts. It shows temporary employment by municipality."
+      },
+      "processing": {
+        "es": "Del Censo de Población anual del INE, que se elabora a 1 de enero a partir de registros administrativos (Padrón, Seguridad Social, Agencia Tributaria…). Solo municipios de 500 habitantes o más (unos 4.100) y sin agregar a niveles superiores: el INE no publica el resto.",
+        "en": "From INE's yearly Population Census, made as of 1 January from administrative registers (the municipal register, Social Security, the Tax Agency…). Only municipalities of 500 residents or more (about 4,100), not summed up: INE doesn't publish the rest."
+      },
+      "keywords": {
+        "es": ["temporalidad", "empleadores", "autónomos", "asalariados", "censo anual"],
+        "en": ["temporary employment", "employers", "self-employed", "employees", "yearly census"]
+      },
       "title": "Ocupados de 16 y más años por sexo y situación profesional, municipios de 500 habitantes o más (Censo de Población anual)",
       "publisher": {
         "name": "INE",

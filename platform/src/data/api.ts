@@ -95,6 +95,31 @@ export interface DatasetFile {
   rows: number
   /** Its size, when the dataset has all of the file (not a classification's share of the items). */
   bytes: number | null
+  /** Its checksum, when the dataset has all of the file. */
+  sha256: string | null
+}
+
+/** Text in Spanish and English. */
+export interface Localized<T = string> {
+  es: T
+  en: T
+}
+
+/** A license datasets are under: what it allows and requires, and its datasets. */
+export interface LicenseEntry {
+  id: string
+  short: string
+  title_es: string
+  title_en: string
+  url: string | null
+  legal_url: string | null
+  /** Open: reuse and redistribution allowed. */
+  open: boolean
+  summary: Localized
+  permissions: Localized<string[]>
+  conditions: Localized<string[]>
+  limitations: Localized<string[]>
+  datasets: string[]
 }
 
 /** A table: statistics at one or more levels (one file per level), a geometry or a reference table. */
@@ -119,10 +144,49 @@ export interface Dataset {
   downloadable: boolean
   files: DatasetFile[]
   tags: DatasetTag[]
+  publisher_url: string | null
+  /** Statistics: what `value` is. */
+  measure: { id: string; unit: string; aggregation: string } | null
+  /** Geometries: the vector tile layer that draws them. */
+  tiles: string | null
+  /** Geometries: [west, south, east, north]. */
+  extent: [number, number, number, number] | null
+  /** Geometries: the municipality with most of their rows, to show layers only drawn up close. */
+  focus: [number, number, number, number] | null
+  /** What it measures, what it's for and how to read it. */
+  description: Localized | null
+  /** How it was made: sources joined, imputation, checks. */
+  processing: Localized | null
+  keywords: Localized<string[]> | null
+  /** Its own topics (geometries and reference tables; statistics also take their variables'). */
+  topics: string[]
   /** Periods with data (years, or months as YYYYMM), by level. */
   coverage: Partial<Record<DataLevel, number[]>>
   /** The most units a level has data for in any period. */
   units: Partial<Record<DataLevel, number>>
+}
+
+/** A dataset as /datasets/{id} describes it: its columns, codes, files and run, besides what the catalogue says. */
+export interface DatasetDetail {
+  id: string
+  /** Column → type, of its first file. */
+  columns: Record<string, string>
+  /** Column → what it means, where the pipeline says. */
+  fields?: Record<string, Localized | string | null>
+  /** Statistics: each dimension's codes and labels. */
+  dimensions?: { id: string; label: string; values: Record<string, string> }[]
+  files: (DatasetFile & { periods?: number[]; units?: number; units_by_period?: Record<string, number> })[]
+  /** What the pipeline's run says: when, from where, and its checks between levels. */
+  run?: {
+    generated_at?: string
+    retrieved_at?: string
+    source_url?: string
+    tables?: (number | string)[]
+    checks?: { level: string; compared: number; mismatches: number; max_difference: number | null }[]
+  }
+  license?: License & { title?: string; terms_url?: string; conditions?: string[]; note?: string }
+  source?: Record<string, unknown>
+  validity?: { kind?: string; as_of?: string | null; description?: string }
 }
 
 export interface Catalog {
@@ -131,7 +195,14 @@ export interface Catalog {
   topics: { id: string; label: string }[]
   variables: Variable[]
   datasets: Dataset[]
-  dimensions: Dimension[]
+  dimensions: (Dimension & { classification: string | null; groups_of: string | null })[]
+  licenses: LicenseEntry[]
+}
+
+/** The first rows of one of a dataset's files. */
+export interface FileHead {
+  columns: Record<string, string>
+  rows: Record<string, string | number | boolean | null>[]
 }
 
 export interface Observations {
@@ -215,7 +286,13 @@ export const api = {
   breakdown: (entityId: string, dataset: string, period?: number) =>
     get<Breakdown>(`/entities/${encodeURIComponent(entityId)}/breakdown`, { dataset, period }),
   search: (query: string) => get<Place[]>('/search', { q: query, limit: 8 }),
+  dataset: (id: string) => get<DatasetDetail>(`/datasets/${encodeURIComponent(id)}`),
+  head: (dataset: string, file: string) => get<FileHead>(`/datasets/${encodeURIComponent(dataset)}/${encodeURIComponent(file)}/head`, { limit: 20 }),
 }
+
+/** Where one of a dataset's files is downloaded (whole), as Parquet or CSV. */
+export const datasetFileUrl = (dataset: string, file: string, format: 'parquet' | 'csv') =>
+  new URL(`/datasets/${encodeURIComponent(dataset)}/${encodeURIComponent(file)}.${format}`, config.api.url).toString()
 
 /** Choices as query parameters (option=sex:female), sorted so the same choice is the same request. */
 const optionParams = (choices: Choices) =>

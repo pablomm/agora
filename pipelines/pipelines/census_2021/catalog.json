@@ -668,6 +668,18 @@
   "datasets": [
     {
       "id": "dwellings_2021",
+      "description": {
+        "es": "Viviendas familiares convencionales a 1 de enero de 2021, separadas en principales (residencia habitual de un hogar) y no principales (vacías, segundas residencias o de uso esporádico), y las principales por régimen de tenencia: en propiedad, en alquiler u otras formas. Sirve para ver dónde predomina el alquiler o dónde hay muchas viviendas que no son residencia habitual. Es una foto única: el censo anual no recoge viviendas.",
+        "en": "Conventional family dwellings on 1 January 2021, split into principal (a household's usual residence) and non-principal (empty, second homes or occasionally used), and principal ones by tenure: owned, rented or other. It shows where renting prevails or where many dwellings aren't anyone's usual home. It's a one-off picture: the yearly census has no dwellings."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Las secciones vacías (1.363, casi todas de municipios de menos de 100 habitantes con una sola sección) toman las cifras de su municipio menos sus secciones publicadas, repartidas por población, y quedan marcadas como imputadas. Los distritos se suman de las secciones y los niveles superiores de los municipios; se comprueba contra las tablas del INE.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. Blank sections (1,363, nearly all in municipalities under 100 residents with a single section) take their municipality's figures less its published sections', shared out by population, and are flagged as imputed. Districts are summed from sections and higher levels from municipalities; checked against INE's tables."
+      },
+      "keywords": {
+        "es": ["viviendas", "vivienda principal", "alquiler", "propiedad", "tenencia", "censo 2021"],
+        "en": ["dwellings", "tenure", "renting", "home ownership", "census 2021"]
+      },
       "title": "Viviendas familiares convencionales por tipo y viviendas principales por régimen de tenencia (Censos de Población y Viviendas 2021)",
       "publisher": {
         "name": "INE",
@@ -715,6 +727,18 @@
     },
     {
       "id": "households_2021",
+      "description": {
+        "es": "Hogares por número de personas (1, 2, 3, 4, 5 o más) a 1 de enero de 2021. Sirve para ver dónde abundan los hogares unipersonales o los numerosos, y para dimensionar servicios que dependen de los hogares más que de las personas. Un hogar es el conjunto de personas que residen en la misma vivienda.",
+        "en": "Households by number of people (1, 2, 3, 4, 5 or more) on 1 January 2021. It shows where single-person or large households abound, and helps size services that depend on households rather than people. A household is everyone living in the same dwelling."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Las secciones vacías (1.363, casi todas de municipios de menos de 100 habitantes con una sola sección) toman las cifras de su municipio menos sus secciones publicadas, repartidas por población, y quedan marcadas como imputadas. Los distritos se suman de las secciones y los niveles superiores de los municipios; se comprueba contra las tablas del INE.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. Blank sections (1,363, nearly all in municipalities under 100 residents with a single section) take their municipality's figures less its published sections', shared out by population, and are flagged as imputed. Districts are summed from sections and higher levels from municipalities; checked against INE's tables."
+      },
+      "keywords": {
+        "es": ["hogares", "tamaño del hogar", "hogares unipersonales", "censo 2021"],
+        "en": ["households", "household size", "single-person households", "census 2021"]
+      },
       "title": "Hogares por tamaño (Censos de Población y Viviendas 2021)",
       "publisher": {
         "name": "INE",
@@ -761,6 +785,18 @@
     },
     {
       "id": "housing_means_2021",
+      "description": {
+        "es": "Tres medias del censo de 2021: superficie útil media de las viviendas principales (m²), superficie por ocupante (m²) y tamaño medio del hogar (personas). Indican cuánto espacio tienen los hogares y dónde hay más hacinamiento. Son medias de cada unidad: no se suman ni se promedian entre unidades.",
+        "en": "Three means from the 2021 census: mean usable floor area of principal dwellings (m²), floor area per occupant (m²) and mean household size (people). They show how much room households have and where crowding is higher. They're each unit's means: they don't add up or average across units."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Cada nivel es el que publica el INE: una superficie media no se puede reconstruir sumando secciones. Una media oculta (un 0 en el original: cuatro secciones, un distrito y un municipio) toma la de la unidad superior.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. Every level is INE's: a mean floor area can't be rebuilt from the sections. A hidden mean (a 0 in the original: four sections, one district and one municipality) takes the unit above's."
+      },
+      "keywords": {
+        "es": ["superficie de la vivienda", "metros cuadrados", "hacinamiento", "tamaño del hogar", "censo 2021"],
+        "en": ["floor area", "square metres", "crowding", "household size", "census 2021"]
+      },
       "title": "Superficie media de las viviendas, superficie por ocupante y tamaño medio del hogar (Censos de Población y Viviendas 2021)",
       "publisher": {
         "name": "INE",
@@ -804,6 +840,18 @@
     },
     {
       "id": "dwelling_use_2021",
+      "description": {
+        "es": "Viviendas según su consumo eléctrico en 2020, como aproximación a cuánto se usan: vacías (sin consumo apreciable), de consumo muy bajo, esporádico o habitual por tramos de kWh. Sirve para estimar viviendas vacías o de uso ocasional. Es una estimación del INE a partir de los datos de las distribuidoras eléctricas, no una inspección, y solo llega a municipios de 1.000 habitantes o más.",
+        "en": "Dwellings by their electricity use in 2020, as a proxy for how much they're lived in: empty (no appreciable use), very low, sporadic or regular use by kWh bands. It estimates empty or occasionally used dwellings. It's INE's estimate from the power distributors' data, not an inspection, and only reaches municipalities of 1,000 residents or more."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Tal como lo publica el INE, sin imputar: los usos suman el total de viviendas en cada unidad (comprobado).",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. As INE publishes it, nothing imputed: the uses add up to the dwellings in every unit (checked)."
+      },
+      "keywords": {
+        "es": ["viviendas vacías", "consumo eléctrico", "uso de la vivienda", "segunda residencia", "censo 2021"],
+        "en": ["empty dwellings", "electricity use", "second homes", "census 2021"]
+      },
       "title": "Viviendas según su intensidad de uso a partir del consumo eléctrico (Censos de Población y Viviendas 2021)",
       "publisher": {
         "name": "INE",
@@ -846,6 +894,18 @@
     },
     {
       "id": "electricity_consumption_2021",
+      "description": {
+        "es": "Consumo eléctrico anual de las viviendas en 2020 (kWh): la mediana y los percentiles de su distribución en cada distrito censal y en los niveles superiores. Sirve para comparar el uso de energía de los hogares entre barrios y municipios. Son estadísticos de una distribución: no se suman ni se promedian entre unidades.",
+        "en": "Yearly electricity use of dwellings in 2020 (kWh): the median and percentiles of its distribution in each census district and higher levels. It compares households' energy use across neighbourhoods and municipalities. They're statistics of a distribution: they don't add up or average across units."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Como lo publica el INE: cada nivel es su propia distribución.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. As INE publishes it: each level is its own distribution."
+      },
+      "keywords": {
+        "es": ["consumo eléctrico", "energía", "kWh", "hogares", "censo 2021"],
+        "en": ["electricity use", "energy", "kWh", "households", "census 2021"]
+      },
       "title": "Consumo eléctrico anual de las viviendas: percentiles por distrito y mediana (Censos de Población y Viviendas 2021)",
       "publisher": {
         "name": "INE",
@@ -890,6 +950,18 @@
     },
     {
       "id": "dwellings_by_year_2021",
+      "description": {
+        "es": "Viviendas familiares según el periodo de construcción del edificio en el que están, en 2021. Sirve para ver la antigüedad del parque de viviendas: barrios históricos, ensanches de los sesenta o crecimientos recientes, y por tanto necesidades de rehabilitación o eficiencia energética.",
+        "en": "Family dwellings by when the building they're in was built, in 2021. It shows the age of the housing stock: historic centres, 1960s expansions or recent growth, and so the needs for renovation or energy efficiency."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["año de construcción", "antigüedad", "parque de viviendas", "rehabilitación", "censo 2021"],
+        "en": ["year built", "housing age", "housing stock", "renovation", "census 2021"]
+      },
       "title": "Viviendas familiares por año de construcción del edificio (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -936,6 +1008,18 @@
     },
     {
       "id": "dwellings_mean_age_2021",
+      "description": {
+        "es": "Edad media de las viviendas familiares en 2021 (años desde la construcción de su edificio), para todas y por tipo de vivienda. Resume en un número la antigüedad del parque. Es una media de cada unidad: no se suma entre unidades.",
+        "en": "Mean age of family dwellings in 2021 (years since their building was built), for all and by kind of dwelling. It sums up the age of the housing stock in one number. It's each unit's mean: it doesn't add up across units."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Calculada a partir de las viviendas por año de construcción de las tablas a medida del INE, con cada periodo en su punto medio.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. Computed from the dwellings by year built in INE's custom tables, each period at its midpoint."
+      },
+      "keywords": {
+        "es": ["edad de la vivienda", "antigüedad", "año de construcción", "censo 2021"],
+        "en": ["dwelling age", "year built", "census 2021"]
+      },
       "title": "Edad media de las viviendas familiares (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -982,6 +1066,18 @@
     },
     {
       "id": "dwellings_by_building_2021",
+      "description": {
+        "es": "Viviendas familiares según el tipo de edificio en el que están (de una vivienda, de dos, de tres o más…), en 2021. Distingue tejidos de vivienda unifamiliar de los de bloques.",
+        "en": "Family dwellings by the kind of building they're in (one dwelling, two, three or more…), in 2021. It tells single-family areas from blocks of flats."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["tipo de edificio", "vivienda unifamiliar", "bloques", "censo 2021"],
+        "en": ["building type", "single-family", "flats", "census 2021"]
+      },
       "title": "Viviendas familiares por tipo de edificio (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1028,6 +1124,18 @@
     },
     {
       "id": "dwellings_by_floor_area_2021",
+      "description": {
+        "es": "Viviendas familiares por tramos de superficie útil (m²), en 2021. Muestra el tamaño de las viviendas de cada zona, más allá de la media.",
+        "en": "Family dwellings by usable floor area bands (m²), in 2021. It shows how big the dwellings of each area are, beyond the mean."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["superficie útil", "metros cuadrados", "tamaño de la vivienda", "censo 2021"],
+        "en": ["floor area", "dwelling size", "census 2021"]
+      },
       "title": "Viviendas familiares por superficie útil (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1074,6 +1182,18 @@
     },
     {
       "id": "dwellings_by_floors_2021",
+      "description": {
+        "es": "Viviendas familiares según el número de plantas sobre rasante del edificio, en 2021. Es un indicador de densidad y altura de la edificación.",
+        "en": "Family dwellings by the number of floors above ground of their building, in 2021. It's an indicator of building density and height."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["plantas", "altura de los edificios", "densidad", "censo 2021"],
+        "en": ["floors", "building height", "density", "census 2021"]
+      },
       "title": "Viviendas familiares por plantas sobre rasante del edificio (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1120,6 +1240,18 @@
     },
     {
       "id": "households_by_structure_2021",
+      "description": {
+        "es": "Hogares según su estructura (una persona, pareja sola, pareja con hijos, un adulto con hijos, varios núcleos…), en 2021. Describe la composición familiar de cada zona.",
+        "en": "Households by structure (one person, couple alone, couple with children, one adult with children, several nuclei…), in 2021. It describes each area's family make-up."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["estructura del hogar", "familias", "hogares", "censo 2021"],
+        "en": ["household structure", "families", "households", "census 2021"]
+      },
       "title": "Hogares por estructura (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1166,6 +1298,18 @@
     },
     {
       "id": "households_by_type_2021",
+      "description": {
+        "es": "Hogares por tipo, según la clasificación del censo de 2021. Complementa la estructura del hogar con otra forma de agruparlos.",
+        "en": "Households by type, as the 2021 census classifies them. It complements household structure with another grouping."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["tipo de hogar", "hogares", "censo 2021"],
+        "en": ["household type", "households", "census 2021"]
+      },
       "title": "Hogares por tipo (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1212,6 +1356,18 @@
     },
     {
       "id": "households_by_nuclei_2021",
+      "description": {
+        "es": "Hogares según cuántos núcleos familiares contienen (ninguno, uno, dos o más), en 2021. Un núcleo es una pareja, con o sin hijos, o un adulto con hijos; los hogares con varios núcleos suelen ser de convivencia de generaciones.",
+        "en": "Households by how many family nuclei they hold (none, one, two or more), in 2021. A nucleus is a couple, with or without children, or one adult with children; households with several are often multigenerational."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["núcleos familiares", "hogares multigeneracionales", "censo 2021"],
+        "en": ["family nuclei", "multigenerational households", "census 2021"]
+      },
       "title": "Hogares por número de núcleos familiares (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1258,6 +1414,18 @@
     },
     {
       "id": "households_by_families_2021",
+      "description": {
+        "es": "Hogares según el número de familias que los forman, en 2021.",
+        "en": "Households by the number of families in them, in 2021."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["familias", "hogares", "censo 2021"],
+        "en": ["families", "households", "census 2021"]
+      },
       "title": "Hogares por número de familias (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1304,6 +1472,18 @@
     },
     {
       "id": "households_by_members_2021",
+      "description": {
+        "es": "Hogares según cuántos de sus miembros cumplen una condición: tener cierta edad (menores, mayores de 65…) o estar trabajando o en paro, en 2021. Sirve, por ejemplo, para contar hogares con algún menor, hogares solo de mayores o hogares en los que nadie trabaja.",
+        "en": "Households by how many of their members meet a condition: being of some age (children, over 65…) or working or unemployed, in 2021. It counts, for instance, households with children, households of elderly people only or households where nobody works."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["hogares", "menores", "mayores", "hogares sin empleo", "censo 2021"],
+        "en": ["households", "children", "elderly", "jobless households", "census 2021"]
+      },
       "title": "Hogares según cuántos de sus miembros tienen cada edad o están trabajando o en paro (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1356,6 +1536,18 @@
     },
     {
       "id": "nuclei_by_type_2021",
+      "description": {
+        "es": "Núcleos familiares por tipo: pareja sin hijos, pareja con hijos, padre con hijos o madre con hijos, en 2021. Sirve para ver dónde hay más familias monoparentales.",
+        "en": "Family nuclei by type: couple without children, couple with children, father or mother with children, in 2021. It shows where single-parent families are more common."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["núcleos familiares", "monoparentales", "parejas", "censo 2021"],
+        "en": ["family nuclei", "single parents", "couples", "census 2021"]
+      },
       "title": "Núcleos familiares por tipo (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1402,6 +1594,18 @@
     },
     {
       "id": "nuclei_by_couple_kind_2021",
+      "description": {
+        "es": "Parejas según su tipo de unión: matrimonio o pareja de hecho, en 2021.",
+        "en": "Couples by kind of union: married or unmarried partners, in 2021."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["parejas", "matrimonio", "pareja de hecho", "censo 2021"],
+        "en": ["couples", "marriage", "cohabitation", "census 2021"]
+      },
       "title": "Núcleos familiares por tipo de unión de la pareja (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1448,6 +1652,18 @@
     },
     {
       "id": "nuclei_by_couple_sexes_2021",
+      "description": {
+        "es": "Parejas según el sexo de sus miembros: de distinto sexo o del mismo sexo, en 2021.",
+        "en": "Couples by their members' sex: different-sex or same-sex, in 2021."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["parejas del mismo sexo", "parejas", "censo 2021"],
+        "en": ["same-sex couples", "couples", "census 2021"]
+      },
       "title": "Núcleos familiares por sexo de los miembros de la pareja (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1494,6 +1710,18 @@
     },
     {
       "id": "nuclei_by_children_2021",
+      "description": {
+        "es": "Núcleos familiares según su número de hijos, en 2021.",
+        "en": "Family nuclei by number of children, in 2021."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Sale de las tablas a medida del INE (su herramienta «Crear tablas»), descargadas por grupos de municipios con las secciones como filas; las secciones y municipios ocultos se imputan con el resto de la unidad superior y quedan marcados (origin = imputed). Se suma de sección a España.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. From INE's custom tables tool («Crear tablas»), downloaded by groups of municipalities with sections as rows; hidden sections and municipalities are imputed from the remainder of the unit above and flagged (origin = imputed). Summed from sections to Spain."
+      },
+      "keywords": {
+        "es": ["hijos", "familias numerosas", "núcleos familiares", "censo 2021"],
+        "en": ["children", "large families", "family nuclei", "census 2021"]
+      },
       "title": "Núcleos familiares por número de hijos (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
@@ -1540,6 +1768,18 @@
     },
     {
       "id": "nuclei_mean_children_2021",
+      "description": {
+        "es": "Número medio de hijos por núcleo familiar en 2021, para todos y por tipo de núcleo. Es una media de cada unidad: no se suma entre unidades.",
+        "en": "Mean number of children per family nucleus in 2021, for all and by type of nucleus. It's each unit's mean: it doesn't add up across units."
+      },
+      "processing": {
+        "es": "De los Censos de Población y Viviendas 2021 del INE, referidos al 1 de enero de 2021, con las secciones censales tal como estaban dibujadas entonces. Calculada a partir de los núcleos por número de hijos de las tablas a medida del INE.",
+        "en": "From INE's 2021 Population and Housing Census, as of 1 January 2021, with census sections as they were drawn then. Computed from the nuclei by number of children in INE's custom tables."
+      },
+      "keywords": {
+        "es": ["hijos por familia", "fecundidad", "núcleos familiares", "censo 2021"],
+        "en": ["children per family", "family nuclei", "census 2021"]
+      },
       "title": "Número medio de hijos por núcleo familiar (Censos de Población y Viviendas 2021, tablas a medida)",
       "publisher": {
         "name": "INE",
