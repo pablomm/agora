@@ -1,0 +1,192 @@
+{
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in each dataset's meta.json. A denominator can come from another dataset ({dataset, filter}): its yearly values divide every year's.",
+  "topics": [
+    {"id": "business", "label": {"es": "Empresas", "en": "Businesses"}}
+  ],
+  "dimensions": [
+    {
+      "id": "activity_group",
+      "label": {"es": "Actividad principal", "en": "Main activity"},
+      "values": {
+        "total": "Total",
+        "industry": "Industria (B–E)",
+        "construction": "Construcción (F)",
+        "trade_transport_hospitality": "Comercio, transporte y hostelería (G–I)",
+        "other_services": "Resto de servicios (J–S)",
+        "information_communication": "Información y comunicaciones (J)",
+        "finance_insurance": "Actividades financieras y de seguros (K)",
+        "real_estate": "Actividades inmobiliarias (L)",
+        "professional_technical": "Actividades profesionales y técnicas (M–N)",
+        "education_health_social": "Educación, sanidad y servicios sociales (P–Q)",
+        "other_personal_services": "Otros servicios personales (R–S)"
+      },
+      "order": [
+        "total",
+        "industry",
+        "construction",
+        "trade_transport_hospitality",
+        "other_services",
+        "information_communication",
+        "finance_insurance",
+        "real_estate",
+        "professional_technical",
+        "education_health_social",
+        "other_personal_services"
+      ],
+      "parents": {
+        "information_communication": "other_services",
+        "finance_insurance": "other_services",
+        "real_estate": "other_services",
+        "professional_technical": "other_services",
+        "education_health_social": "other_services",
+        "other_personal_services": "other_services"
+      }
+    }
+  ],
+  "datasets": [
+    {
+      "id": "companies",
+      "title": "Empresas por municipio y actividad principal (Directorio Central de Empresas, DIRCE)",
+      "publisher": {"name": "INE", "url": "https://www.ine.es"},
+      "source": {
+        "kind": "ine_table",
+        "operation": "Explotación Estadística del Directorio Central de Empresas (DIRCE)",
+        "tables": [4721],
+        "method": "provinces and Spain as published, communities summed from provinces; municipal totals hidden by secrecy (under 4) take their province's remainder by population, capped at 3; hidden groups of a municipality with a breakdown take its remainder by the province's mix"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es; valores ocultos imputados por Agora."
+      },
+      "measure": {"id": "companies", "unit": "empresas", "aggregation": "sum"},
+      "dimensions": ["activity_group"],
+      "base_level": "municipality",
+      "levels": ["municipality", "province", "autonomous_community", "country"],
+      "periods": "2012–2025",
+      "validity": {"kind": "yearly", "as_of": "1 January"},
+      "output": "processed/businesses/companies/{level}.parquet"
+    }
+  ],
+  "variables": [
+    {
+      "id": "companies",
+      "topic": "business",
+      "label": {"es": "Empresas", "en": "Companies"},
+      "description": {
+        "es": "Empresas activas a 1 de enero, en el municipio de su sede, por actividad principal (CNAE-2009). Sin agricultura y pesca, administración pública, hogares ni organismos extraterritoriales. El desglose por actividad solo se publica para unos 3.100 municipios (grandes grupos) y 1.300 (servicios en detalle). Los municipios que el INE oculta por secreto estadístico (menos de 4 empresas) están imputados.",
+        "en": "Active companies on 1 January, in the municipality of their registered seat, by main activity (CNAE-2009). Without agriculture and fishing, public administration, households or extraterritorial bodies. The breakdown by activity is only published for about 3,100 municipalities (main groups) and 1,300 (services in detail). Municipalities INE hides for statistical secrecy (fewer than 4 companies) are imputed."
+      },
+      "unit": "empresas",
+      "kind": "count",
+      "options": [
+        {
+          "dimension": "activity_group",
+          "values": [
+            "total",
+            "industry",
+            "construction",
+            "trade_transport_hospitality",
+            "other_services",
+            "information_communication",
+            "finance_insurance",
+            "real_estate",
+            "professional_technical",
+            "education_health_social",
+            "other_personal_services"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "dirce",
+          "label": {"es": "DIRCE", "en": "DIRCE"},
+          "dataset": "companies",
+          "numerator": {"activity_group": "$activity_group"}
+        }
+      ]
+    },
+    {
+      "id": "companies_share",
+      "topic": "business",
+      "label": {"es": "Proporción de empresas por actividad", "en": "Share of companies by activity"},
+      "measure_of": "companies",
+      "description": {
+        "es": "Empresas de cada actividad principal sobre el total, a 1 de enero. Solo en los municipios cuyo desglose publica el INE (unos 3.100 en grandes grupos, 1.300 en servicios en detalle), y en provincias, comunidades y España.",
+        "en": "Companies in each main activity over all companies, on 1 January. Only in the municipalities whose breakdown INE publishes (about 3,100 in main groups, 1,300 in services in detail), and in provinces, communities and Spain."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "scale": 100,
+      "options": [
+        {
+          "dimension": "activity_group",
+          "values": [
+            "industry",
+            "construction",
+            "trade_transport_hospitality",
+            "other_services",
+            "information_communication",
+            "finance_insurance",
+            "real_estate",
+            "professional_technical",
+            "education_health_social",
+            "other_personal_services"
+          ],
+          "default": "trade_transport_hospitality"
+        }
+      ],
+      "facets": [
+        {
+          "id": "dirce",
+          "label": {"es": "DIRCE", "en": "DIRCE"},
+          "dataset": "companies",
+          "numerator": {"activity_group": "$activity_group"},
+          "denominator": {"activity_group": "total"}
+        }
+      ]
+    },
+    {
+      "id": "companies_per_1000",
+      "topic": "business",
+      "label": {"es": "Empresas por 1.000 habitantes", "en": "Companies per 1,000 residents"},
+      "description": {
+        "es": "Empresas a 1 de enero por cada 1.000 habitantes (cifras oficiales de población del mismo año). Cuenta las empresas donde tienen su sede, así que los municipios con muchas sedes y pocos vecinos salen altos.",
+        "en": "Companies on 1 January per 1,000 residents (official population figures of the same year). Companies count where their seat is, so municipalities with many seats and few residents come out high."
+      },
+      "unit": "empresas por 1.000 hab.",
+      "kind": "ratio",
+      "scale": 1000,
+      "options": [
+        {
+          "dimension": "activity_group",
+          "values": [
+            "total",
+            "industry",
+            "construction",
+            "trade_transport_hospitality",
+            "other_services",
+            "information_communication",
+            "finance_insurance",
+            "real_estate",
+            "professional_technical",
+            "education_health_social",
+            "other_personal_services"
+          ],
+          "default": "total"
+        }
+      ],
+      "facets": [
+        {
+          "id": "dirce",
+          "label": {"es": "DIRCE", "en": "DIRCE"},
+          "dataset": "companies",
+          "numerator": {"activity_group": "$activity_group"},
+          "denominator": {"dataset": "population_official", "filter": {"sex": "total"}}
+        }
+      ]
+    }
+  ]
+}

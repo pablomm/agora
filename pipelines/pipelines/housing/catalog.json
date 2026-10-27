@@ -1,0 +1,125 @@
+{
+  "$comment": "Catalogue entries this pipeline provides, to be ingested into the Agora catalogue. Run details are in each dataset's meta.json.",
+  "topics": [
+    {"id": "housing", "label": {"es": "Vivienda", "en": "Housing"}}
+  ],
+  "dimensions": [
+    {
+      "id": "tourist_measure",
+      "label": {"es": "Medida", "en": "Measure"},
+      "values": {
+        "dwellings": "Viviendas turísticas",
+        "beds": "Plazas",
+        "share": "Porcentaje sobre el total de viviendas"
+      },
+      "order": ["dwellings", "beds", "share"]
+    }
+  ],
+  "datasets": [
+    {
+      "id": "tourist_dwellings",
+      "title": "Viviendas turísticas, plazas y porcentaje sobre el total de viviendas (estadística experimental)",
+      "publisher": {"name": "INE", "url": "https://www.ine.es"},
+      "source": {
+        "kind": "ine_experimental",
+        "operation": "Medición del número de viviendas turísticas en España y su capacidad",
+        "url": "https://www.ine.es/experimental/viv_turistica/experimental_viv_turistica.htm",
+        "tables": ["exp_viv_turistica_tabla5_{period}.xlsx (districts and sections)", 39363, 39366, 39364, 39365],
+        "method": "every level as published; counts checked to add up from sections to Spain; the share is hidden where the census counted few dwellings"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "terms_url": "https://ine.es/dyngs/AYU/index.htm?cid=125",
+        "attribution": "Elaboración propia con datos extraídos del sitio web del INE: www.ine.es"
+      },
+      "measure": {"id": "tourist_dwellings", "unit": "viviendas, plazas o %", "aggregation": "none"},
+      "dimensions": ["tourist_measure"],
+      "base_level": "census_section",
+      "levels": ["census_section", "census_district", "municipality", "province", "autonomous_community", "country"],
+      "periods": "2020-08 – 2026-05, twice a year (February and August until 2024, May and November since)",
+      "validity": {"kind": "monthly", "as_of": "the reference month's scraping"},
+      "output": "processed/housing/tourist_dwellings/{level}.parquet"
+    }
+  ],
+  "variables": [
+    {
+      "id": "tourist_dwellings",
+      "topic": "housing",
+      "label": {"es": "Viviendas turísticas", "en": "Tourist dwellings"},
+      "description": {
+        "es": "Viviendas anunciadas en tres de las principales plataformas de alquiler turístico, según la estadística experimental del INE. Dos veces al año desde agosto de 2020, hasta sección censal (secciones de cada periodo).",
+        "en": "Dwellings listed on three of the main short-let platforms, from INE's experimental statistic. Twice a year since August 2020, down to census sections (as drawn in each period)."
+      },
+      "unit": "viviendas",
+      "kind": "count",
+      "facets": [
+        {
+          "id": "ine_experimental",
+          "label": {"es": "INE (experimental)", "en": "INE (experimental)"},
+          "dataset": "tourist_dwellings",
+          "numerator": {"tourist_measure": "dwellings"}
+        }
+      ]
+    },
+    {
+      "id": "tourist_dwellings_share",
+      "topic": "housing",
+      "label": {"es": "Proporción de viviendas turísticas", "en": "Share of tourist dwellings"},
+      "measure_of": "tourist_dwellings",
+      "description": {
+        "es": "Viviendas turísticas sobre el total de viviendas del censo (de 2011 hasta 2023, de 2021 después), según el INE. Oculta donde el censo contó pocas viviendas.",
+        "en": "Tourist dwellings over all dwellings in the census (2011 until 2023, 2021 since), as INE publishes it. Hidden where the census counted few dwellings."
+      },
+      "unit": "%",
+      "kind": "ratio",
+      "facets": [
+        {
+          "id": "ine_experimental",
+          "label": {"es": "INE (experimental)", "en": "INE (experimental)"},
+          "dataset": "tourist_dwellings",
+          "numerator": {"tourist_measure": "share"}
+        }
+      ]
+    },
+    {
+      "id": "tourist_beds",
+      "topic": "housing",
+      "label": {"es": "Plazas en viviendas turísticas", "en": "Beds in tourist dwellings"},
+      "description": {
+        "es": "Plazas (personas que pueden alojarse) en las viviendas turísticas anunciadas en tres de las principales plataformas, según la estadística experimental del INE. Dos veces al año desde agosto de 2020, hasta sección censal.",
+        "en": "Beds (guests they can host) in the tourist dwellings listed on three of the main platforms, from INE's experimental statistic. Twice a year since August 2020, down to census sections."
+      },
+      "unit": "plazas",
+      "kind": "count",
+      "facets": [
+        {
+          "id": "ine_experimental",
+          "label": {"es": "INE (experimental)", "en": "INE (experimental)"},
+          "dataset": "tourist_dwellings",
+          "numerator": {"tourist_measure": "beds"}
+        }
+      ]
+    },
+    {
+      "id": "tourist_beds_per_dwelling",
+      "topic": "housing",
+      "label": {"es": "Plazas por vivienda turística", "en": "Beds per tourist dwelling"},
+      "description": {
+        "es": "Plazas medias de las viviendas turísticas anunciadas, según la estadística experimental del INE. Sin dato donde no hay viviendas turísticas.",
+        "en": "Mean beds of the listed tourist dwellings, from INE's experimental statistic. No value where there are none."
+      },
+      "unit": "plazas por vivienda",
+      "kind": "ratio",
+      "facets": [
+        {
+          "id": "ine_experimental",
+          "label": {"es": "INE (experimental)", "en": "INE (experimental)"},
+          "dataset": "tourist_dwellings",
+          "numerator": {"tourist_measure": "beds"},
+          "denominator": {"tourist_measure": "dwellings"}
+        }
+      ]
+    }
+  ]
+}

@@ -2,6 +2,23 @@
 
 Log of what the platform does, newest first. Add an entry with every feature that ships.
 
+## 2026-10-27 · Tourist dwellings and companies
+
+- New topic **Vivienda**, from INE's experimental statistic on tourist dwellings (listed on three of
+  the main short-let platforms), twice a year since August 2020, down to census sections:
+  - **Viviendas turísticas**, nº · %: the share is over all dwellings in the census (2011 until
+    2023, 2021 since), hidden by INE where the census counted few dwellings.
+  - **Plazas en viviendas turísticas** and **Plazas por vivienda turística**.
+- New topic **Empresas**, from INE's Directorio Central de Empresas (DIRCE), 2012–2025, by
+  municipality and up to Spain:
+  - **Empresas**, nº · %, by main activity: industry, construction, trade, transport and
+    hospitality, and the other services, these in six (information, finance, real estate,
+    professional, education and health, other personal services). The breakdown is only published
+    for about 3,100 municipalities (main groups) and 1,300 (services in detail).
+  - **Empresas por 1.000 habitantes**, by activity, over the official population of the same year.
+  - Municipalities INE hides (fewer than 4 companies) are imputed from their province's remainder.
+- Beds and companies show as whole numbers.
+
 ## 2026-10-27 · Census 2021 detail: dwellings, households and family nuclei by section
 
 - 15 new layers in **Censo 2021**, down to census sections, from INE's custom tables (20 tables,

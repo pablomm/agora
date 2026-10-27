@@ -174,13 +174,14 @@ def _values(facet: dict, scale: float, level: str, where: str, parameters: list)
         rows = _divide_by_other(rows, other, source["frequency"], level)
     out = []
     for row in rows:
+        # A unit without the numerator's cells (a breakdown not published for it) has no value.
+        if row["numerator"] is None:
+            continue
         if facet["denominator"]:
             if not row["denominator"]:
                 continue
             value = row["numerator"] / row["denominator"] * scale
         else:
-            if row["numerator"] is None:
-                continue
             value = row["numerator"] * scale
         out.append({"entity_id": row["entity_id"], "period": int(row["period"]), "value": value})
     return out
