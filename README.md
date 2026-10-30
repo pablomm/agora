@@ -38,6 +38,9 @@ python3.13 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 cd platform && npm install && npm run dev               # http://localhost:5173
 ```
 
+Once installed, `./dev.sh` runs the three servers together (their output prefixed with each name);
+Ctrl-C stops them all.
+
 Without the tile server the web still opens, with the basemap only and a notice that the
 boundaries can't be loaded; without the API, the map works but there are no data layers or search.
 
